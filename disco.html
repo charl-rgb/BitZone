@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Almacenamiento: HDD, SSD, M.2 — BitZone</title>
+  <meta name="description" content="Aprende todo sobre el almacenamiento: discos duros (HDD), SSD SATA, SSD M.2 NVMe, diferencias de velocidad, capacidades y cómo elegir el mejor para tu PC." />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230d2a5e'/><rect x='8' y='8' width='16' height='16' rx='3' fill='none' stroke='%2360a5fa' stroke-width='2'/><rect x='12' y='12' width='8' height='8' rx='1' fill='%233b82f6'/><rect x='5' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='5' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='11' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='11' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --c950: #03080f;
+      --c900: #061526;
+      --c800: #0a1e3d;
+      --c700: #0d2a5e;
+      --c600: #1345a0;
+      --c500: #1e5fd4;
+      --c400: #3b82f6;
+      --c300: #60a5fa;
+      --c200: #93c5fd;
+      --c100: #bfdbfe;
+      --c50:  #eff6ff;
+      --white: #ffffff;
+
+      --h-grad:    linear-gradient(180deg,#061526 0%,#0d2a5e 100%);
+      --a-grad:    linear-gradient(90deg,#1e5fd4,#60a5fa);
+      --shimmer:   linear-gradient(90deg,transparent,#3b82f6,#93c5fd,#3b82f6,transparent);
+      --drop-bg:   #07192e;
+      --card-bg:   rgba(10,30,61,.7);
+
+      --sh-header: 0 2px 20px rgba(4,12,26,.75);
+      --sh-drop:   0 12px 32px rgba(4,12,26,.7);
+      --sh-card:   0 4px 24px rgba(4,12,26,.45);
+      --tr: .28s cubic-bezier(.4,0,.2,1);
+      --radius: 12px;
+    }
+
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Poppins',sans-serif;background:var(--c900);color:var(--c100);padding-top:68px;overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+    img{display:block;max-width:100%;}
+    ul{list-style:none;}
+
+    .container{max-width:1200px;margin:0 auto;padding:0 1.5rem;}
+    .section-label{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c300);background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .9rem;margin-bottom:1rem;}
+    .section-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:var(--white);line-height:1.2;margin-bottom:.75rem;}
+    .section-sub{font-size:.95rem;color:var(--c200);line-height:1.7;max-width:620px;}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:8px;font-size:.875rem;font-weight:600;letter-spacing:.03em;cursor:pointer;transition:all var(--tr);border:none;}
+    .btn-primary{background:var(--a-grad);color:var(--white);box-shadow:0 4px 20px rgba(30,95,212,.4);}
+    .btn-primary:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 8px 28px rgba(30,95,212,.55);}
+    .btn-outline{background:transparent;color:var(--c200);border:1.5px solid rgba(96,165,250,.4);}
+    .btn-outline:hover{background:rgba(59,130,246,.12);color:var(--white);border-color:var(--c300);}
+
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    .accent-line{position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--shimmer);background-size:300% 100%;animation:shimmer 4s linear infinite;pointer-events:none;}
+    @keyframes shimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}
+
+    .site-header{position:fixed;top:0;left:0;width:100%;z-index:900;background:var(--h-grad);box-shadow:var(--sh-header);}
+    .header-inner{max-width:1280px;margin:0 auto;padding:0 1.75rem;height:68px;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+    .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;flex-shrink:0;}
+    .brand-logo{width:38px;height:35px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .brand-logo img{width:100%;height:100%;object-fit:contain;}
+    .brand-name{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:.06em;color:var(--white);}
+    .brand-name em{font-style:normal;color:var(--c300);}
+    .main-nav{display:flex;align-items:center;}
+    .nav-list{list-style:none;display:flex;align-items:center;gap:.05rem;}
+    .nav-item{position:relative;}
+    .nav-link{display:flex;align-items:center;gap:.28rem;padding:.42rem .72rem;font-size:.8rem;font-weight:500;color:var(--c100);text-decoration:none;border-radius:6px;white-space:nowrap;cursor:pointer;transition:color var(--tr),background var(--tr);user-select:none;position:relative;}
+    .nav-link::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%) scaleX(0);width:calc(100% - 1.44rem);height:2px;background:var(--a-grad);border-radius:2px;transition:transform var(--tr);pointer-events:none;}
+    .nav-link:hover{color:var(--white);background:rgba(59,130,246,.15);}
+    .nav-link:hover::after,.nav-link.active::after{transform:translateX(-50%) scaleX(1);}
+    .nav-link.active{color:var(--white);background:rgba(30,95,212,.35);}
+    .chevron{width:10px;height:10px;display:inline-block;flex-shrink:0;transition:transform var(--tr);}
+    .nav-item.open>.nav-link .chevron{transform:rotate(180deg);}
+    .dropdown{position:absolute;top:calc(100% + 10px);left:0;min-width:220px;background:var(--drop-bg);border:1px solid rgba(59,130,246,.18);border-radius:10px;box-shadow:var(--sh-drop);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity var(--tr),transform var(--tr),visibility var(--tr);z-index:100;}
+    .dropdown::before{content:'';display:block;height:2px;background:var(--a-grad);}
+    .nav-item.open>.dropdown{opacity:1;visibility:visible;transform:translateY(0);}
+    .dropdown-list{padding:.45rem 0;}
+    .dropdown-link{display:block;padding:.55rem 1.1rem;font-size:.78rem;font-weight:400;color:var(--c200);text-decoration:none;transition:color var(--tr),background var(--tr),padding-left var(--tr);}
+    .dropdown-link:hover{color:var(--white);background:rgba(59,130,246,.14);padding-left:1.45rem;}
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:8px;cursor:pointer;flex-shrink:0;transition:background var(--tr);}
+    .hamburger:hover{background:rgba(59,130,246,.26);}
+    .hbar{display:block;width:20px;height:2px;background:var(--c200);border-radius:2px;transition:transform var(--tr),opacity var(--tr),background var(--tr);transform-origin:center;}
+    .hamburger.open .hbar:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--white);}
+    .hamburger.open .hbar:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open .hbar:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--white);}
+    .overlay{position:fixed;inset:0;background:rgba(4,12,26,.65);z-index:950;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity var(--tr);}
+    .overlay.open{opacity:1;pointer-events:all;}
+    .drawer{position:fixed;top:0;left:0;width:285px;height:100dvh;z-index:960;background:linear-gradient(180deg,#061526 0%,#0a1e3d 55%,#0d2a5e 100%);box-shadow:6px 0 40px rgba(4,12,26,.8);transform:translateX(-100%);transition:transform var(--tr);display:flex;flex-direction:column;overflow-y:auto;}
+    .drawer.open{transform:translateX(0);}
+    .drawer-header{display:flex;align-items:center;justify-content:space-between;padding:0 1.1rem;height:68px;border-bottom:1px solid rgba(96,165,250,.14);flex-shrink:0;}
+    .drawer-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+    .drawer-logo-slot{width:34px;height:34px;border-radius:7px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .drawer-logo-slot img{width:34px;height:34px;object-fit:contain;}
+    .drawer-brand-name{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--white);}
+    .drawer-brand-name em{font-style:normal;color:var(--c300);}
+    .drawer-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.2);border-radius:6px;cursor:pointer;color:var(--c200);font-size:1rem;transition:background var(--tr),color var(--tr);}
+    .drawer-close:hover{background:rgba(59,130,246,.3);color:var(--white);}
+    .drawer-nav{flex:1;padding:.6rem 0 1rem;}
+    .drawer-nav-list{list-style:none;}
+    .d-link{display:flex;align-items:center;justify-content:space-between;padding:.72rem 1.3rem;font-size:.875rem;font-weight:500;color:var(--c100);text-decoration:none;border-left:3px solid transparent;cursor:pointer;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-link:hover{color:var(--white);background:rgba(59,130,246,.13);border-left-color:var(--c400);padding-left:1.75rem;}
+    .d-link.active{color:var(--white);background:rgba(30,95,212,.22);border-left-color:var(--c400);}
+    .d-chevron{width:10px;height:10px;flex-shrink:0;transition:transform var(--tr);}
+    .d-group.open>.d-link .d-chevron{transform:rotate(180deg);}
+    .d-sub{list-style:none;max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.18);}
+    .d-group.open>.d-sub{max-height:500px;}
+    .d-sub-link{display:block;padding:.52rem 1rem .52rem 2.2rem;font-size:.8rem;font-weight:400;color:var(--c200);text-decoration:none;border-left:3px solid transparent;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-sub-link:hover{color:var(--white);background:rgba(59,130,246,.1);border-left-color:var(--c300);padding-left:2.6rem;}
+    .d-sep{height:1px;background:rgba(96,165,250,.1);margin:.35rem 1.1rem;}
+
+    @media(max-width:1024px){.nav-link{font-size:.75rem;padding:.38rem .55rem;}.dropdown{min-width:195px;}}
+    @media(max-width:768px){.main-nav{display:none;}.hamburger{display:flex;}.header-inner{height:60px;padding:0 1.1rem;}body{padding-top:60px;}.drawer-header{height:60px;}}
+
+    .page-hero{
+      position:relative;
+      background:linear-gradient(135deg,#03080f 0%,#061526 35%,#0d2a5e 70%,#1345a0 100%);
+      padding:7.5rem 0 7.5rem;
+      overflow:hidden;
+    }
+    .page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+    .page-hero::after{content:'';position:absolute;right:-80px;top:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(30,95,212,.22) 0%,transparent 70%);pointer-events:none;}
+    .page-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;align-items:center;gap:3rem;}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--c200);margin-bottom:1.25rem;flex-wrap:wrap;}
+    .breadcrumb a{color:var(--c300);transition:color var(--tr);}
+    .breadcrumb a:hover{color:var(--white);}
+    .breadcrumb-sep{opacity:.4;}
+    .page-hero-title{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--white);line-height:1.1;margin-bottom:1rem;}
+    .page-hero-title .hl{background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero-sub{font-size:1rem;color:var(--c200);line-height:1.75;max-width:540px;margin-bottom:1.75rem;}
+    .page-hero-tags{display:flex;flex-wrap:wrap;gap:.5rem;}
+    .hero-tag{background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .85rem;font-size:.7rem;font-weight:600;color:var(--c200);letter-spacing:.06em;}
+    .storage-hero-visual{position:relative;z-index:5;}
+    .storage-diagram{width:420px;height:320px;position:relative;flex-shrink:0;}
+    .storage-diagram img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
+
+    .sec-pad{padding:5rem 0;}
+    .sec-dark{background:var(--c900);}
+    .sec-mid{background:var(--c800);}
+
+    .what-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+    .what-text p{font-size:.9rem;color:var(--c200);line-height:1.8;margin-bottom:1rem;}
+    .what-text p:last-child{margin-bottom:0;}
+    .what-highlight{background:rgba(30,95,212,.12);border-left:3px solid var(--c400);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin:1.25rem 0;}
+    .what-highlight p{font-size:.88rem;color:var(--c100);font-style:italic;margin:0;}
+    .storage-visual-box{background:linear-gradient(135deg,var(--c800),var(--c700));border-radius:16px;border:1px solid rgba(96,165,250,.18);padding:2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;min-height:320px;box-shadow:var(--sh-card);}
+    .storage-visual-box img{width:100%;max-width:500px;border-radius:12px;}
+    .storage-visual-box p{font-size:.78rem;color:var(--c200);text-align:center;line-height:1.6;}
+
+    .function-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .fn-card{background:var(--card-bg);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.75rem 1.4rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .fn-card:hover{transform:translateY(-5px);border-color:rgba(96,165,250,.35);box-shadow:0 10px 32px rgba(30,95,212,.28);}
+    .fn-icon{width:48px;height:48px;border-radius:11px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;box-shadow:0 4px 16px rgba(30,95,212,.35);}
+    .fn-icon svg{width:22px;height:22px;stroke:var(--white);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .fn-card h3{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .fn-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .comparison-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin:2.5rem 0;}
+    .drive-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.5rem;transition:transform var(--tr),border-color var(--tr);}
+    .drive-card:hover{transform:translateY(-5px);border-color:rgba(96,165,250,.4);}
+    .drive-icon{width:60px;height:60px;margin:0 auto 1rem;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:900;color:var(--white);}
+    .drive-icon.hdd{background:linear-gradient(135deg,#0d2a5e,#1e5fd4);}
+    .drive-icon.ssd{background:linear-gradient(135deg,#1e5fd4,#3b82f6);}
+    .drive-icon.nvme{background:linear-gradient(135deg,#3b82f6,#60a5fa);}
+    .drive-card h3{font-size:1.2rem;font-weight:700;color:var(--white);text-align:center;margin-bottom:.5rem;}
+    .drive-speed{font-size:.7rem;color:var(--c300);text-align:center;margin-bottom:1rem;}
+    .drive-pros{list-style:none;margin-top:.8rem;}
+    .drive-pros li{font-size:.7rem;color:var(--c200);padding:.3rem 0;border-bottom:1px solid rgba(96,165,250,.1);}
+    .drive-pros li:last-child{border-bottom:none;}
+
+    .speed-comparison{background:rgba(6,21,38,.7);border-radius:var(--radius);padding:1.5rem;margin:2rem 0;}
+    .speed-bar{display:flex;align-items:center;gap:1rem;margin:.8rem 0;flex-wrap:wrap;}
+    .speed-label{width:80px;font-size:.75rem;font-weight:600;color:var(--c300);}
+    .speed-bar-bg{flex:1;height:28px;background:rgba(13,42,94,.6);border-radius:6px;overflow:hidden;}
+    .speed-bar-fill{height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:.5rem;font-size:.6rem;font-weight:700;color:white;border-radius:6px;}
+    .fill-hdd{width:3%;background:linear-gradient(90deg,#1e5fd4,#3b82f6);}
+    .fill-ssd{width:30%;background:linear-gradient(90deg,#3b82f6,#60a5fa);}
+    .fill-nvme{width:100%;background:linear-gradient(90deg,#60a5fa,#93c5fd);}
+    .speed-value{font-size:.7rem;color:var(--c200);min-width:70px;text-align:right;}
+
+    .formats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.5rem;}
+    .format-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.2rem;text-align:center;transition:transform var(--tr),border-color var(--tr);}
+    .format-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);}
+    .format-size{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .format-card h4{font-size:.85rem;font-weight:700;color:var(--white);margin:.5rem 0 .2rem;}
+    .format-card p{font-size:.68rem;color:var(--c200);}
+
+    .brands-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem;}
+    .brand-card-storage{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1rem;text-align:center;transition:transform var(--tr),border-color var(--tr);}
+    .brand-card-storage:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);}
+    .brand-logo-storage{width:50px;height:50px;background:var(--a-grad);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto .8rem;font-family:'Orbitron',sans-serif;font-weight:900;font-size:.7rem;color:var(--white);}
+    .brand-card-storage h4{font-size:.8rem;font-weight:700;color:var(--white);margin-bottom:.2rem;}
+    .brand-card-storage p{font-size:.6rem;color:var(--c200);}
+
+    .timeline-v{position:relative;padding-left:2.5rem;margin-top:2.5rem;}
+    .timeline-v::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--c400),transparent);}
+    .tl-v-item{position:relative;margin-bottom:2rem;}
+    .tl-v-dot{position:absolute;left:-2.5rem;top:.2rem;width:22px;height:22px;border-radius:50%;background:var(--a-grad);border:3px solid var(--c800);box-shadow:0 0 12px rgba(59,130,246,.5);display:flex;align-items:center;justify-content:center;}
+    .tl-v-dot span{font-size:.55rem;font-weight:700;font-family:'Orbitron',sans-serif;color:var(--white);}
+    .tl-v-year{font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;color:var(--c300);letter-spacing:.1em;margin-bottom:.3rem;}
+    .tl-v-item h4{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.3rem;}
+    .tl-v-item p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .tips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .tip-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.6rem 1.3rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .tip-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);box-shadow:0 8px 28px rgba(30,95,212,.22);}
+    .tip-num{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.6rem;}
+    .tip-card h3{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .tip-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .faq-grid-storage{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem;}
+    .faq-item{background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.13);border-radius:var(--radius);overflow:hidden;}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.3rem;cursor:pointer;font-size:.875rem;font-weight:600;color:var(--white);transition:background var(--tr);gap:1rem;}
+    .faq-q:hover{background:rgba(30,95,212,.1);}
+    .faq-q svg{width:16px;height:16px;stroke:var(--c300);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform var(--tr);}
+    .faq-item.open .faq-q svg{transform:rotate(180deg);}
+    .faq-a{max-height:0;overflow:hidden;font-size:.8rem;color:var(--c200);line-height:1.65;transition:max-height .3s ease,padding .3s ease;padding:0 1.3rem;}
+    .faq-item.open .faq-a{max-height:200px;padding:.2rem 1.3rem 1.1rem;}
+
+    .cta-storage{padding:5rem 0;background:linear-gradient(135deg,var(--c900) 0%,var(--c700) 50%,var(--c600) 100%);text-align:center;position:relative;overflow:hidden;}
+    .cta-storage::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.07) 1px,transparent 1px);background-size:40px 40px;}
+    .cta-inner{position:relative;z-index:2;}
+    .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem;}
+
+    .site-footer{background:var(--c950);border-top:1px solid rgba(96,165,250,.1);padding:3.5rem 0 0;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(96,165,250,.08);}
+    .footer-brand-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;}
+    .footer-logo{width:32px;height:32px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .footer-logo img{width:32px;height:32px;object-fit:contain;}
+    .footer-brand-name{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
+    .footer-brand-name em{font-style:normal;color:var(--c300);}
+    .footer-desc{font-size:.8rem;color:var(--c200);line-height:1.7;max-width:280px;margin-bottom:1.25rem;}
+    .footer-socials{display:flex;gap:.7rem;}
+    .social-btn{width:36px;height:36px;border-radius:8px;background:rgba(30,95,212,.15);border:1px solid rgba(96,165,250,.18);display:flex;align-items:center;justify-content:center;color:var(--c300);transition:background var(--tr),color var(--tr),border-color var(--tr);}
+    .social-btn:hover{background:rgba(30,95,212,.35);color:var(--white);border-color:var(--c400);}
+    .social-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .footer-col h5{font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:1rem;}
+    .footer-links-col{display:flex;flex-direction:column;gap:.5rem;}
+    .footer-link{font-size:.8rem;color:var(--c200);text-decoration:none;transition:color var(--tr),padding-left var(--tr);}
+    .footer-link:hover{color:var(--c300);padding-left:.4rem;}
+    .footer-bottom{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 0;gap:1rem;flex-wrap:wrap;}
+    .footer-copy{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev a{color:var(--c300);text-decoration:none;font-weight:600;transition:color var(--tr);}
+    .footer-dev a:hover{color:var(--white);}
+
+    @media(max-width:1024px){
+      .comparison-grid{grid-template-columns:repeat(2,1fr);}
+      .formats-grid{grid-template-columns:repeat(2,1fr);}
+      .brands-grid{grid-template-columns:repeat(2,1fr);}
+      .footer-grid{grid-template-columns:1fr 1fr;}
+      .page-hero-inner{grid-template-columns:1fr;}
+      .storage-hero-visual{display:block;}
+      .what-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:768px){
+      .function-cards{grid-template-columns:1fr;}
+      .comparison-grid{grid-template-columns:1fr;}
+      .formats-grid{grid-template-columns:1fr;}
+      .brands-grid{grid-template-columns:1fr;}
+      .tips-grid{grid-template-columns:1fr;}
+      .faq-grid-storage{grid-template-columns:1fr;}
+      .footer-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="accent-line" aria-hidden="true"></div>
+
+  <div class="header-inner">
+
+    <!-- LOGO -->
+    <a href="index.html" class="brand" aria-label="BitZone inicio">
+      <img src="Img/logo.png"
+           width="38"
+           height="35"
+           alt="BitZone"
+           style="border-radius:6px;display:block;">
+
+      <div class="brand-name">
+        Bit<em>Zone</em>
+      </div>
+    </a>
+
+    <!-- MENU -->
+    <nav class="main-nav" aria-label="Navegacion principal">
+
+      <ul class="nav-list" role="list">
+
+        <!-- INICIO -->
+        <li class="nav-item">
+          <a href="index.html"
+             class="nav-link active"
+             data-page="index">
+            Inicio
+          </a>
+        </li>
+
+        <!-- PARTES -->
+        <li class="nav-item" data-drop>
+
+          <span class="nav-link" data-page="partes">
+            Partes
+
+            <svg class="chevron"
+                 viewBox="0 0 10 6"
+                 fill="none"
+                 aria-hidden="true">
+
+              <path d="M1 1l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+          </span>
+
+          <ul class="dropdown" role="menu">
+
+            <li class="dropdown-list">
+
+              <a href="procesaro.html" class="dropdown-link">
+                Procesador (CPU)
+              </a>
+
+              <a href="tarjeta_madre.html" class="dropdown-link">
+                Tarjeta Madre
+              </a>
+
+              <a href="ram.html" class="dropdown-link">
+                Memoria RAM
+              </a>
+
+              <a href="disco.html" class="dropdown-link">
+                Disco Duro / SSD
+              </a>
+
+              <a href="fuente.html" class="dropdown-link">
+                Fuente de Poder
+              </a>
+
+              <a href="gpu.html" class="dropdown-link">
+                Tarjeta Grafica
+              </a>
+
+              <a href="refrigeracion.html" class="dropdown-link">
+                Refrigeracion
+              </a>
+
+              <a href="puertos.html" class="dropdown-link">
+                Puertos y Conectores
+              </a>
+
+            </li>
+
+          </ul>
+        </li>
+
+        <!-- VIDEOS -->
+        <li class="nav-item">
+          <a href="index.html#videos-destacados"
+             class="nav-link"
+             data-page="videos">
+            Videos
+          </a>
+        </li>
+
+        <!-- FAQ -->
+        <li class="nav-item">
+          <a href="index.html#faq-rapido"
+             class="nav-link"
+             data-page="faq">
+            FAQ
+          </a>
+        </li>
+
+        <!-- CONTACTO -->
+        <li class="nav-item">
+          <a href="index.html#footer"
+             class="nav-link"
+             data-page="contacto">
+            Contacto
+          </a>
+        </li>
+
+      </ul>
+
+    </nav>
+
+    <!-- BOTON MENU -->
+    <button class="hamburger"
+            id="hamburgerBtn"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="drawer">
+
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+
+    </button>
+
+  </div>
+</header>
+
+<div class="overlay" id="overlay" aria-hidden="true"></div>
+
+<aside class="drawer" id="drawer" role="dialog" aria-label="Menú móvil" aria-modal="true">
+  <div class="drawer-header">
+    <a href="../index.html" class="drawer-brand" aria-label="BitZone inicio">
+      <div class="drawer-logo-slot"><img src="Img/logo.png" alt="BitZone"></div>
+      <div class="drawer-brand-name">Bit<em>Zone</em></div>
+    </a>
+    <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&#x2715;</button>
+  </div>
+  <nav class="drawer-nav" aria-label="Navegación móvil">
+    <ul class="drawer-nav-list">
+      <li><a href="../index.html" class="d-link" data-page="index">Inicio</a></li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link active" data-page="partes">Partes de la Computadora
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="cpu.html" class="d-sub-link">Procesador (CPU)</a></li>
+          <li><a href="tarjeta_madre.html" class="d-sub-link">Tarjeta Madre</a></li>
+          <li><a href="ram.html" class="d-sub-link">Memoria RAM</a></li>
+          <li><a href="disco.html" class="d-sub-link">Disco Duro / SSD</a></li>
+          <li><a href="fuente.html" class="d-sub-link">Fuente de Poder</a></li>
+          <li><a href="gpu.html" class="d-sub-link">Tarjeta Gráfica</a></li>
+          <li><a href="refrigeracion.html" class="d-sub-link">Refrigeración</a></li>
+          <li><a href="puertos.html" class="d-sub-link">Puertos y Conectores</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="ensamblaje">Ensamblaje
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../ensamblaje/herramientas.html" class="d-sub-link">Herramientas</a></li>
+          <li><a href="../ensamblaje/paso-a-paso.html" class="d-sub-link">Paso a Paso</a></li>
+          <li><a href="../ensamblaje/instalacion.html" class="d-sub-link">Instalación de Componentes</a></li>
+          <li><a href="../ensamblaje/cableado.html" class="d-sub-link">Cableado</a></li>
+          <li><a href="../ensamblaje/errores.html" class="d-sub-link">Errores Comunes</a></li>
+          <li><a href="../ensamblaje/consejos.html" class="d-sub-link">Consejos</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="actividades">Actividades
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../actividades/quiz.html" class="d-sub-link">Quiz</a></li>
+          <li><a href="../actividades/ejercicios.html" class="d-sub-link">Ejercicios</a></li>
+          <li><a href="../actividades/preguntas.html" class="d-sub-link">Preguntas</a></li>
+          <li><a href="../actividades/evaluacion.html" class="d-sub-link">Evaluación</a></li>
+          <li><a href="../actividades/juegos.html" class="d-sub-link">Juegos Educativos</a></li>
+        </ul>
+      </li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li><a href="../index.html#videos-destacados" class="d-link">Videos</a></li>
+      <li><a href="../index.html#faq-rapido" class="d-link">FAQ</a></li>
+      <li><a href="../index.html#footer" class="d-link">Contacto</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div>
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a><span class="breadcrumb-sep">/</span>
+            <a href="../partes.html">Partes</a><span class="breadcrumb-sep">/</span>
+            <span>Almacenamiento: HDD, SSD, M.2</span>
+          </nav>
+          <span class="section-label">Almacenamiento</span>
+          <h1 class="page-hero-title">Disco Duro, <span class="hl">SSD y M.2</span></h1>
+          <p class="page-hero-sub">El almacenamiento de tu PC. Aprende las diferencias entre discos duros (HDD), SSD SATA, SSD M.2 NVMe, sus velocidades y cómo elegir el mejor para tus necesidades.</p>
+          <div class="page-hero-tags">
+            <span class="hero-tag">HDD</span><span class="hero-tag">SSD SATA</span>
+            <span class="hero-tag">M.2 NVMe</span><span class="hero-tag">PCIe 4.0/5.0</span>
+          </div>
+        </div>
+        <div class="storage-hero-visual">
+          <div class="storage-diagram"><img src="Img/hddddd.avif" alt="Almacenamiento HDD SSD M.2"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="que-es">
+    <div class="container">
+      <div class="what-grid">
+        <div class="what-text reveal">
+          <span class="section-label">Definición</span>
+          <h2 class="section-title">¿Qué es el Almacenamiento?</h2>
+          <p>El <strong style="color:var(--white)">almacenamiento</strong> es el componente donde se guardan <strong style="color:var(--white)">todos tus datos de forma permanente</strong>: el sistema operativo, programas, juegos, fotos, música y documentos.</p>
+          <p>A diferencia de la RAM (que es volátil y se borra al apagar), el almacenamiento <strong style="color:var(--c300)">conserva la información incluso sin energía</strong>. Existen tres tipos principales: HDD (disco mecánico), SSD SATA y SSD M.2 NVMe.</p>
+          <div class="what-highlight">
+            <p>La velocidad de tu almacenamiento afecta directamente el <strong>tiempo de arranque</strong> del sistema, la <strong>carga de programas/juegos</strong> y la <strong>transferencia de archivos</strong>.</p>
+          </div>
+          <p>Un SSD puede hacer que tu PC arranque en 10 segundos, mientras que un HDD puede tardar más de 1 minuto. La diferencia es enorme y mejora toda la experiencia de uso.</p>
+        </div>
+        <div class="storage-visual-box reveal">
+          <img src="Img/sddhdd.jpg" alt="Comparativa HDD vs SSD">
+          <p>HDD (izquierda) vs SSD (derecha) — <strong style="color:var(--c300)">Sin partes móviles</strong> = más rápido y durable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="tipos">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Tipos</span>
+        <h2 class="section-title">Tipos de Almacenamiento</h2>
+        <p class="section-sub" style="margin:0 auto;">Conoce las diferencias entre HDD, SSD SATA y SSD M.2 NVMe.</p>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="drive-card reveal">
+          <div class="drive-icon hdd">💿</div>
+          <h3>HDD</h3>
+          <div class="drive-speed">Disco Duro Mecánico</div>
+          <ul class="drive-pros">
+            <li>✅ Bajo costo por GB (~$20/TB)</li>
+            <li>✅ Alta capacidad (hasta 20TB+)</li>
+            <li>❌ Lento (~80-160 MB/s)</li>
+            <li>❌ Se fragmenta con el uso</li>
+            <li>❌ Ruidoso y vibra</li>
+            <li>❌ Más propenso a fallos mecánicos</li>
+          </ul>
+        </div>
+        <div class="drive-card reveal" style="animation-delay:.1s">
+          <div class="drive-icon ssd">⚡</div>
+          <h3>SSD SATA</h3>
+          <div class="drive-speed">Unidad de Estado Sólido (2.5")</div>
+          <ul class="drive-pros">
+            <li>✅ Silencioso (sin partes móviles)</li>
+            <li>✅ Rápido (~500-560 MB/s)</li>
+            <li>✅ Más durable que HDD</li>
+            <li>✅ Bajo consumo energético</li>
+            <li>❌ Más caro que HDD (~$50/500GB)</li>
+            <li>❌ Más lento que M.2 NVMe</li>
+          </ul>
+        </div>
+        <div class="drive-card reveal" style="animation-delay:.2s">
+          <div class="drive-icon nvme">🚀</div>
+          <h3>SSD M.2 NVMe</h3>
+          <div class="drive-speed">PCIe 3.0 / 4.0 / 5.0</div>
+          <ul class="drive-pros">
+            <li>✅ Extremadamente rápido (3500-14000 MB/s)</li>
+            <li>✅ Conexión directa PCIe (sin cables)</li>
+            <li>✅ Tamaño muy pequeño (tarjeta)</li>
+            <li>✅ Ideal para sistema y juegos pesados</li>
+            <li>❌ Más caro por GB</li>
+            <li>❌ Puede calentarse (requiere disipador)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="speed-comparison reveal">
+        <div class="fact-box-title">Comparativa de Velocidad (Lectura secuencial)</div>
+        <div class="speed-bar"><span class="speed-label">HDD</span><div class="speed-bar-bg"><div class="speed-bar-fill fill-hdd">~120 MB/s</div></div><span class="speed-value">120 MB/s</span></div>
+        <div class="speed-bar"><span class="speed-label">SSD SATA</span><div class="speed-bar-bg"><div class="speed-bar-fill fill-ssd">~560 MB/s</div></div><span class="speed-value">560 MB/s</span></div>
+        <div class="speed-bar"><span class="speed-label">M.2 PCIe 3.0</span><div class="speed-bar-bg"><div class="speed-bar-fill fill-nvme" style="width:70%">~3500 MB/s</div></div><span class="speed-value">3500 MB/s</span></div>
+        <div class="speed-bar"><span class="speed-label">M.2 PCIe 4.0</span><div class="speed-bar-bg"><div class="speed-bar-fill fill-nvme" style="width:85%">~7000 MB/s</div></div><span class="speed-value">7000 MB/s</span></div>
+        <div class="speed-bar"><span class="speed-label">M.2 PCIe 5.0</span><div class="speed-bar-bg"><div class="speed-bar-fill fill-nvme" style="width:100%">~14000 MB/s</div></div><span class="speed-value">14000 MB/s</span></div>
+        <p style="margin-top:1rem;font-size:.7rem;color:var(--c200);">⚠️ Un SSD M.2 NVMe es hasta <strong style="color:var(--c300);">100 veces más rápido</strong> que un HDD tradicional.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="formato">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Formatos</span>
+        <h2 class="section-title">Formatos Físicos</h2>
+        <p class="section-sub" style="margin:0 auto;">Cómo se ven y dónde se instalan cada tipo de almacenamiento.</p>
+      </div>
+      <div class="formats-grid">
+        <div class="format-card reveal"><div class="format-size">3.5"</div><h4>HDD 3.5 pulgadas</h4><p>Discos duros de escritorio. Se instalan en bahías del gabinete. Usan cable SATA + alimentación.</p></div>
+        <div class="format-card reveal" style="animation-delay:.1s"><div class="format-size">2.5"</div><h4>SSD / HDD 2.5"</h4><p>Formato para portátiles y SSDs. Se instala en bahía de 2.5" o con adaptador. Usa SATA.</p></div>
+        <div class="format-card reveal" style="animation-delay:.2s"><div class="format-size">M.2 2280</div><h4>M.2 NVMe / SATA</h4><p>Tarjeta pequeña que se inserta directamente en la motherboard. No necesita cables. 22mm x 80mm.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="evolucion">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Evolución</span>
+        <h2 class="section-title">Historia del Almacenamiento</h2>
+        <p class="section-sub">Cómo hemos pasado de discos de 5MB a SSD de 8TB en pocas décadas.</p>
+      </div>
+      <div class="timeline-v">
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>01</span></div><div class="tl-v-year">1956</div><h4>Primer disco duro (IBM 350)</h4><p>Pesaba más de una tonelada, medía 1.5 metros y almacenaba solo 5MB. 50 discos de 24 pulgadas.</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>02</span></div><div class="tl-v-year">1980s-90s</div><h4>HDD en PCs domésticas</h4><p>Discos duros de 5.25" y 3.5" con capacidades de 10MB a 500MB. IDE y después SATA.</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>03</span></div><div class="tl-v-year">2007-2010</div><h4>Primeros SSDs comerciales</h4><p>Unidades de estado sólido sin partes móviles. Muy caros (~$1000 por 64GB) pero revolucionarios.</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>04</span></div><div class="tl-v-year">2015-2017</div><h4>M.2 NVMe popularización</h4><p>Los SSD M.2 NVMe usan PCIe directamente, alcanzando velocidades de 3500 MB/s (10x SATA).</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>05</span></div><div class="tl-v-year">2020-2022</div><h4>PCIe 4.0 y 5.0</h4><p>Velocidades de hasta 14,000 MB/s. SSD de 8TB se vuelven accesibles para consumidores.</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>06</span></div><div class="tl-v-year">2024-Actual</div><h4>SSD de alta capacidad</h4><p>SSD de 4TB-8TB a precios razonables. HDD siguen siendo rey para almacenamiento masivo (16TB-24TB).</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="marcas">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Fabricantes</span>
+        <h2 class="section-title">Principales Marcas</h2>
+        <p class="section-sub" style="margin:0 auto;">Las marcas más confiables para discos duros y SSDs.</p>
+      </div>
+      <div class="brands-grid">
+        <div class="brand-card-storage reveal"><div class="brand-logo-storage">WD</div><h4>Western Digital</h4><p>Blue, Black, Red, Gold</p></div>
+        <div class="brand-card-storage reveal" style="animation-delay:.08s"><div class="brand-logo-storage">SEAGATE</div><h4>Seagate</h4><p>BarraCuda, FireCuda, IronWolf</p></div>
+        <div class="brand-card-storage reveal" style="animation-delay:.16s"><div class="brand-logo-storage">SAMSUNG</div><h4>Samsung</h4><p>870/990 EVO/PRO, T7 Shield</p></div>
+        <div class="brand-card-storage reveal" style="animation-delay:.24s"><div class="brand-logo-storage">KINGSTON</div><h4>Kingston</h4><p>KC3000, NV2, FURY Renegade</p></div>
+        <div class="brand-card-storage reveal" style="animation-delay:.32s"><div class="brand-logo-storage">CRUCIAL</div><h4>Crucial</h4><p>MX500, P3, P5 Plus, T700</p></div>
+        <div class="brand-card-storage reveal" style="animation-delay:.40s"><div class="brand-logo-storage">SABRENT</div><h4>Sabrent</h4><p>Rocket, Rocket 4 Plus, QLC</p></div>
+        <div class="brand-card-storage reveal" style="animation-delay:.48s"><div class="brand-logo-storage">ADATA</div><h4>ADATA</h4><p>XPG Gammix, Legend, SU800</p></div>
+        <div class="brand-card-storage reveal" style="animation-delay:.56s"><div class="brand-logo-storage">TOSHIBA</div><h4>Toshiba / Kioxia</h4><p>Exceria, MG Series</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="consejos">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Guía de Compra</span>
+        <h2 class="section-title">¿Qué almacenamiento elegir?</h2>
+        <p class="section-sub" style="margin:0 auto;">Recomendaciones según tu presupuesto y necesidades.</p>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-card reveal"><div class="tip-num">01</div><h3>Configuración básica</h3><p>SSD SATA de 500GB-1TB para sistema y programas. Es la mejora más notoria que puedes hacer a una PC vieja. HDD de 1TB para guardar archivos.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.08s"><div class="tip-num">02</div><h3>Configuración gaming</h3><p>SSD M.2 NVMe de 1TB-2TB para juegos actuales (aprovechan las altas velocidades para cargar más rápido). HDD adicional de 2TB para juegos viejos.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.16s"><div class="tip-num">03</div><h3>Edición profesional</h3><p>SSD M.2 PCIe 4.0 o 5.0 de 1TB para sistema/proyectos activos. SSD SATA de 2TB-4TB para archivos recientes + HDD de 8TB+ para respaldo.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.24s"><div class="tip-num">04</div><h3>Almacenamiento masivo</h3><p>HDD de 4TB a 12TB (Seagate IronWolf o WD Red) para servidores NAS o archivos multimedia. Precio por GB muy bajo (~$15-20/TB).</p></div>
+        <div class="tip-card reveal" style="animation-delay:.32s"><div class="tip-num">05</div><h3>Durabilidad</h3><p>Los SSD tienen TBW (Total Bytes Written) que indica vida útil. Un SSD de 500GB típico soporta 300-600TB escritos = más de 10 años de uso normal.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.40s"><div class="tip-num">06</div><h3>Disipador M.2</h3><p>Los SSD M.2 PCIe 4.0/5.0 se calientan mucho (hasta 80-90°C). Usa un disipador (muchas motherboards incluyen uno) para evitar throttling.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="faq">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Preguntas Frecuentes</span>
+        <h2 class="section-title">FAQ — Almacenamiento</h2>
+        <p class="section-sub" style="margin:0 auto 0;">Las dudas más comunes sobre discos duros y SSDs.</p>
+      </div>
+      <div class="faq-grid-storage">
+        <div class="faq-item reveal"><div class="faq-q">¿Puedo usar un SSD M.2 en una motherboard sin ranura M.2?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">No directamente. Puedes usar un adaptador PCIe a M.2, pero necesitas una ranura PCIe libre en tu motherboard. También perderías velocidad si el adaptador no es NVMe.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.06s"><div class="faq-q">¿Qué es mejor, un SSD M.2 NVMe o un SSD SATA?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">M.2 NVMe es mucho más rápido (hasta 12x). Para sistema operativo y juegos modernos, NVMe es ideal. Para almacenamiento secundario o PCs viejas, SSD SATA es suficiente.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.12s"><div class="faq-q">¿Cuánto dura un SSD?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Entre 5 y 10+ años de uso normal. Los SSD actuales tienen TBW (Total Bytes Written) que garantiza cierta cantidad de escrituras. Para uso doméstico, duran más que la vida útil de la PC.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.18s"><div class="faq-q">¿Necesito desfragmentar un SSD?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">¡NO! La desfragmentación daña los SSD (reduce su vida útil). Windows detecta automáticamente SSDs y ejecuta TRIM (optimización) en lugar de desfragmentación.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.24s"><div class="faq-q">¿Qué es NVMe?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">NVMe (Non-Volatile Memory Express) es un protocolo de comunicación diseñado específicamente para SSDs, que usa el bus PCIe directamente. Es mucho más rápido que AHCI (usado en SSDs SATA).</div></div>
+        <div class="faq-item reveal" style="animation-delay:.30s"><div class="faq-q">¿Cuánto espacio necesito para el sistema operativo?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Windows 10/11 ocupa unos 30-40GB. Recomendamos SSD de 240GB como mínimo, pero ideal 500GB-1TB para tener espacio para programas esenciales.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.36s"><div class="faq-q">¿Puedo clonar mi HDD a un SSD sin reinstalar?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Sí. La mayoría de marcas de SSD incluyen software de clonación (ej. Acronis, Samsung Data Migration). Solo necesitas que el SSD tenga capacidad igual o mayor a los datos usados del HDD.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.42s"><div class="faq-q">¿Qué diferencia hay entre QLC, TLC y MLC?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Son tipos de celdas NAND: SLC (1 bit/celda, muy rápida, cara), MLC (2 bits), TLC (3 bits, equilibrado), QLC (4 bits, más barato pero menos duradero). Para consumo, TLC es el estándar actual.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-storage">
+    <div class="container">
+      <div class="cta-inner reveal">
+        <span class="section-label">Siguiente Paso</span>
+        <h2 class="section-title">¿Listo para seguir aprendiendo?</h2>
+        <p class="section-sub" style="margin:0 auto;">Ahora que conoces el almacenamiento, explora los demás componentes o pon a prueba lo que aprendiste.</p>
+        <div class="cta-btns">
+          <a href="fuente.html" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Ver Fuente de Poder
+          </a>
+          <a href="../actividades/quiz.html" class="btn btn-outline">Hacer el Quiz</a>
+          <a href="../partes.html" class="btn btn-outline">Todos los Componentes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><div class="footer-brand-row"><div class="footer-logo"><img src="Img/logo.png" alt="BitZone"></div><div class="footer-brand-name">Bit<em>Zone</em></div></div><p class="footer-desc">Plataforma educativa dedicada al aprendizaje de hardware, partes de la computadora y ensamblaje de PC.</p><div class="footer-socials"><a href="#" class="social-btn"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a href="#" class="social-btn"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a><a href="#" class="social-btn"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a></div></div>
+      <div><h5 class="footer-col">Contenido</h5><nav class="footer-links-col"><a href="../partes.html" class="footer-link">Partes de la Computadora</a><a href="../ensamblaje.html" class="footer-link">Ensamblaje</a><a href="../videos.html" class="footer-link">Videos</a><a href="../actividades.html" class="footer-link">Actividades</a></nav></div>
+      <div><h5 class="footer-col">Componentes</h5><nav class="footer-links-col"><a href="cpu.html" class="footer-link">Procesador (CPU)</a><a href="tarjeta-madre.html" class="footer-link">Tarjeta Madre</a><a href="ram.html" class="footer-link">Memoria RAM</a><a href="disco.html" class="footer-link">Disco Duro / SSD</a><a href="gpu.html" class="footer-link">Tarjeta Gráfica</a></nav></div>
+      <div><h5 class="footer-col">Información</h5><nav class="footer-links-col"><a href="../index.html" class="footer-link">Inicio</a><a href="../index.html#faq-rapido" class="footer-link">FAQ General</a><a href="../index.html#footer" class="footer-link">Contacto</a></nav></div>
+    </div>
+    <div class="footer-bottom"><p class="footer-copy">&copy; 2026 BitZone. Todos los derechos reservados.</p><p class="footer-dev">Desarrollado por <a href="https://datafoxsv.ct.ws">DataFox</a></p></div>
+  </div>
+</footer>
+
+<script>
+  (function markActive() {
+    const file = window.location.pathname.split('/').pop() || 'index.html';
+    const page = file.replace('.html','') || 'index';
+    document.querySelectorAll('[data-page]').forEach(el => {
+      if (el.dataset.page === page) {
+        el.classList.add('active');
+        if (el.tagName === 'A') el.setAttribute('aria-current','page');
+      }
+    });
+  })();
+
+  document.querySelectorAll('[data-drop]').forEach(item => {
+    item.querySelector('.nav-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+  });
+
+  document.querySelectorAll('.dropdown').forEach(d => d.addEventListener('click', e => e.stopPropagation()));
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const drawerClose  = document.getElementById('drawerClose');
+  const drawer       = document.getElementById('drawer');
+  const overlay      = document.getElementById('overlay');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    hamburgerBtn.classList.add('open');
+    hamburgerBtn.setAttribute('aria-expanded','true');
+    overlay.removeAttribute('aria-hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded','false');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  drawer.querySelectorAll('a.d-link, .d-sub-link').forEach(l => l.addEventListener('click', closeDrawer));
+  window.addEventListener('resize', () => { if (window.innerWidth > 768) closeDrawer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open')); } });
+
+  document.querySelectorAll('[data-dgroup]').forEach(group => {
+    group.querySelector('.d-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = group.classList.contains('open');
+      document.querySelectorAll('[data-dgroup].open').forEach(g => g.classList.remove('open'));
+      if (!isOpen) group.classList.add('open');
+    });
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>

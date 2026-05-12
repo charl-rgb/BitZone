@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarjeta Madre (Motherboard) — BitZone</title>
+  <meta name="description" content="Aprende todo sobre la tarjeta madre (motherboard): qué es, cómo funciona, partes, formas, sockets, chipsets y consejos para elegir la mejor." />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230d2a5e'/><rect x='8' y='8' width='16' height='16' rx='3' fill='none' stroke='%2360a5fa' stroke-width='2'/><rect x='12' y='12' width='8' height='8' rx='1' fill='%233b82f6'/><rect x='5' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='5' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='11' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='11' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --c950: #03080f;
+      --c900: #061526;
+      --c800: #0a1e3d;
+      --c700: #0d2a5e;
+      --c600: #1345a0;
+      --c500: #1e5fd4;
+      --c400: #3b82f6;
+      --c300: #60a5fa;
+      --c200: #93c5fd;
+      --c100: #bfdbfe;
+      --c50:  #eff6ff;
+      --white: #ffffff;
+
+      --h-grad:    linear-gradient(180deg,#061526 0%,#0d2a5e 100%);
+      --a-grad:    linear-gradient(90deg,#1e5fd4,#60a5fa);
+      --shimmer:   linear-gradient(90deg,transparent,#3b82f6,#93c5fd,#3b82f6,transparent);
+      --drop-bg:   #07192e;
+      --card-bg:   rgba(10,30,61,.7);
+
+      --sh-header: 0 2px 20px rgba(4,12,26,.75);
+      --sh-drop:   0 12px 32px rgba(4,12,26,.7);
+      --sh-card:   0 4px 24px rgba(4,12,26,.45);
+      --tr: .28s cubic-bezier(.4,0,.2,1);
+      --radius: 12px;
+    }
+
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Poppins',sans-serif;background:var(--c900);color:var(--c100);padding-top:68px;overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+    img{display:block;max-width:100%;}
+    ul{list-style:none;}
+
+    .container{max-width:1200px;margin:0 auto;padding:0 1.5rem;}
+    .section-label{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c300);background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .9rem;margin-bottom:1rem;}
+    .section-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:var(--white);line-height:1.2;margin-bottom:.75rem;}
+    .section-sub{font-size:.95rem;color:var(--c200);line-height:1.7;max-width:620px;}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:8px;font-size:.875rem;font-weight:600;letter-spacing:.03em;cursor:pointer;transition:all var(--tr);border:none;}
+    .btn-primary{background:var(--a-grad);color:var(--white);box-shadow:0 4px 20px rgba(30,95,212,.4);}
+    .btn-primary:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 8px 28px rgba(30,95,212,.55);}
+    .btn-outline{background:transparent;color:var(--c200);border:1.5px solid rgba(96,165,250,.4);}
+    .btn-outline:hover{background:rgba(59,130,246,.12);color:var(--white);border-color:var(--c300);}
+
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    .accent-line{position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--shimmer);background-size:300% 100%;animation:shimmer 4s linear infinite;pointer-events:none;}
+    @keyframes shimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}
+
+    .site-header{position:fixed;top:0;left:0;width:100%;z-index:900;background:var(--h-grad);box-shadow:var(--sh-header);}
+    .header-inner{max-width:1280px;margin:0 auto;padding:0 1.75rem;height:68px;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+    .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;flex-shrink:0;}
+    .brand-logo{width:38px;height:35px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .brand-logo img{width:100%;height:100%;object-fit:contain;}
+    .brand-name{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:.06em;color:var(--white);}
+    .brand-name em{font-style:normal;color:var(--c300);}
+    .main-nav{display:flex;align-items:center;}
+    .nav-list{list-style:none;display:flex;align-items:center;gap:.05rem;}
+    .nav-item{position:relative;}
+    .nav-link{display:flex;align-items:center;gap:.28rem;padding:.42rem .72rem;font-size:.8rem;font-weight:500;color:var(--c100);text-decoration:none;border-radius:6px;white-space:nowrap;cursor:pointer;transition:color var(--tr),background var(--tr);user-select:none;position:relative;}
+    .nav-link::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%) scaleX(0);width:calc(100% - 1.44rem);height:2px;background:var(--a-grad);border-radius:2px;transition:transform var(--tr);pointer-events:none;}
+    .nav-link:hover{color:var(--white);background:rgba(59,130,246,.15);}
+    .nav-link:hover::after,.nav-link.active::after{transform:translateX(-50%) scaleX(1);}
+    .nav-link.active{color:var(--white);background:rgba(30,95,212,.35);}
+    .chevron{width:10px;height:10px;display:inline-block;flex-shrink:0;transition:transform var(--tr);}
+    .nav-item.open>.nav-link .chevron{transform:rotate(180deg);}
+    .dropdown{position:absolute;top:calc(100% + 10px);left:0;min-width:220px;background:var(--drop-bg);border:1px solid rgba(59,130,246,.18);border-radius:10px;box-shadow:var(--sh-drop);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity var(--tr),transform var(--tr),visibility var(--tr);z-index:100;}
+    .dropdown::before{content:'';display:block;height:2px;background:var(--a-grad);}
+    .nav-item.open>.dropdown{opacity:1;visibility:visible;transform:translateY(0);}
+    .dropdown-list{padding:.45rem 0;}
+    .dropdown-link{display:block;padding:.55rem 1.1rem;font-size:.78rem;font-weight:400;color:var(--c200);text-decoration:none;transition:color var(--tr),background var(--tr),padding-left var(--tr);}
+    .dropdown-link:hover{color:var(--white);background:rgba(59,130,246,.14);padding-left:1.45rem;}
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:8px;cursor:pointer;flex-shrink:0;transition:background var(--tr);}
+    .hamburger:hover{background:rgba(59,130,246,.26);}
+    .hbar{display:block;width:20px;height:2px;background:var(--c200);border-radius:2px;transition:transform var(--tr),opacity var(--tr),background var(--tr);transform-origin:center;}
+    .hamburger.open .hbar:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--white);}
+    .hamburger.open .hbar:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open .hbar:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--white);}
+    .overlay{position:fixed;inset:0;background:rgba(4,12,26,.65);z-index:950;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity var(--tr);}
+    .overlay.open{opacity:1;pointer-events:all;}
+    .drawer{position:fixed;top:0;left:0;width:285px;height:100dvh;z-index:960;background:linear-gradient(180deg,#061526 0%,#0a1e3d 55%,#0d2a5e 100%);box-shadow:6px 0 40px rgba(4,12,26,.8);transform:translateX(-100%);transition:transform var(--tr);display:flex;flex-direction:column;overflow-y:auto;}
+    .drawer.open{transform:translateX(0);}
+    .drawer-header{display:flex;align-items:center;justify-content:space-between;padding:0 1.1rem;height:68px;border-bottom:1px solid rgba(96,165,250,.14);flex-shrink:0;}
+    .drawer-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+    .drawer-logo-slot{width:34px;height:34px;border-radius:7px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .drawer-logo-slot img{width:34px;height:34px;object-fit:contain;}
+    .drawer-brand-name{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--white);}
+    .drawer-brand-name em{font-style:normal;color:var(--c300);}
+    .drawer-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.2);border-radius:6px;cursor:pointer;color:var(--c200);font-size:1rem;transition:background var(--tr),color var(--tr);}
+    .drawer-close:hover{background:rgba(59,130,246,.3);color:var(--white);}
+    .drawer-nav{flex:1;padding:.6rem 0 1rem;}
+    .drawer-nav-list{list-style:none;}
+    .d-link{display:flex;align-items:center;justify-content:space-between;padding:.72rem 1.3rem;font-size:.875rem;font-weight:500;color:var(--c100);text-decoration:none;border-left:3px solid transparent;cursor:pointer;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-link:hover{color:var(--white);background:rgba(59,130,246,.13);border-left-color:var(--c400);padding-left:1.75rem;}
+    .d-link.active{color:var(--white);background:rgba(30,95,212,.22);border-left-color:var(--c400);}
+    .d-chevron{width:10px;height:10px;flex-shrink:0;transition:transform var(--tr);}
+    .d-group.open>.d-link .d-chevron{transform:rotate(180deg);}
+    .d-sub{list-style:none;max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.18);}
+    .d-group.open>.d-sub{max-height:500px;}
+    .d-sub-link{display:block;padding:.52rem 1rem .52rem 2.2rem;font-size:.8rem;font-weight:400;color:var(--c200);text-decoration:none;border-left:3px solid transparent;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-sub-link:hover{color:var(--white);background:rgba(59,130,246,.1);border-left-color:var(--c300);padding-left:2.6rem;}
+    .d-sep{height:1px;background:rgba(96,165,250,.1);margin:.35rem 1.1rem;}
+
+    @media(max-width:1024px){.nav-link{font-size:.75rem;padding:.38rem .55rem;}.dropdown{min-width:195px;}}
+    @media(max-width:768px){.main-nav{display:none;}.hamburger{display:flex;}.header-inner{height:60px;padding:0 1.1rem;}body{padding-top:60px;}.drawer-header{height:60px;}}
+
+    .page-hero{
+      position:relative;
+      background:linear-gradient(135deg,#03080f 0%,#061526 35%,#0d2a5e 70%,#1345a0 100%);
+      padding:7.5rem 0 7.5rem;
+      overflow:hidden;
+    }
+    .page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+    .page-hero::after{content:'';position:absolute;right:-80px;top:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(30,95,212,.22) 0%,transparent 70%);pointer-events:none;}
+    .page-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;align-items:center;gap:3rem;}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--c200);margin-bottom:1.25rem;flex-wrap:wrap;}
+    .breadcrumb a{color:var(--c300);transition:color var(--tr);}
+    .breadcrumb a:hover{color:var(--white);}
+    .breadcrumb-sep{opacity:.4;}
+    .page-hero-title{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--white);line-height:1.1;margin-bottom:1rem;}
+    .page-hero-title .hl{background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero-sub{font-size:1rem;color:var(--c200);line-height:1.75;max-width:540px;margin-bottom:1.75rem;}
+    .page-hero-tags{display:flex;flex-wrap:wrap;gap:.5rem;}
+    .hero-tag{background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .85rem;font-size:.7rem;font-weight:600;color:var(--c200);letter-spacing:.06em;}
+    .mb-hero-visual{position:relative;z-index:5;}
+    .mb-chip-diagram{width:520px;height:420px;position:relative;flex-shrink:0;}
+    .mb-chip-diagram img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
+
+    .toc-bar{background:rgba(10,30,61,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(96,165,250,.12);position:sticky;top:68px;z-index:50;overflow-x:auto;}
+    .toc-inner{max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;gap:0;white-space:nowrap;}
+    .toc-link{display:inline-flex;align-items:center;padding:.75rem .85rem;font-size:.72rem;font-weight:600;color:var(--c200);text-decoration:none;border-bottom:2px solid transparent;transition:color var(--tr),border-color var(--tr);letter-spacing:.04em;text-transform:uppercase;}
+    .toc-link:hover{color:var(--white);border-bottom-color:var(--c400);}
+    .toc-link.active{color:var(--c300);border-bottom-color:var(--c300);}
+
+    @media(max-width:768px){.toc-bar{top:60px;}}
+
+    .sec-pad{padding:5rem 0;}
+    .sec-dark{background:var(--c900);}
+    .sec-mid{background:var(--c800);}
+
+    .what-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+    .what-text p{font-size:.9rem;color:var(--c200);line-height:1.8;margin-bottom:1rem;}
+    .what-text p:last-child{margin-bottom:0;}
+    .what-highlight{background:rgba(30,95,212,.12);border-left:3px solid var(--c400);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin:1.25rem 0;}
+    .what-highlight p{font-size:.88rem;color:var(--c100);font-style:italic;margin:0;}
+    .mb-visual-box{background:linear-gradient(135deg,var(--c800),var(--c700));border-radius:16px;border:1px solid rgba(96,165,250,.18);padding:2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;min-height:320px;box-shadow:var(--sh-card);}
+    .mb-visual-box img{width:100%;max-width:500px;border-radius:12px;}
+    .mb-visual-box p{font-size:.78rem;color:var(--c200);text-align:center;line-height:1.6;}
+
+    .function-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .fn-card{background:var(--card-bg);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.75rem 1.4rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .fn-card:hover{transform:translateY(-5px);border-color:rgba(96,165,250,.35);box-shadow:0 10px 32px rgba(30,95,212,.28);}
+    .fn-icon{width:48px;height:48px;border-radius:11px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;box-shadow:0 4px 16px rgba(30,95,212,.35);}
+    .fn-icon svg{width:22px;height:22px;stroke:var(--white);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .fn-card h3{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .fn-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .timeline-v{position:relative;padding-left:2.5rem;margin-top:2.5rem;}
+    .timeline-v::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--c400),transparent);}
+    .tl-v-item{position:relative;margin-bottom:2rem;}
+    .tl-v-dot{position:absolute;left:-2.5rem;top:.2rem;width:22px;height:22px;border-radius:50%;background:var(--a-grad);border:3px solid var(--c800);box-shadow:0 0 12px rgba(59,130,246,.5);display:flex;align-items:center;justify-content:center;}
+    .tl-v-dot span{font-size:.55rem;font-weight:700;font-family:'Orbitron',sans-serif;color:var(--white);}
+    .tl-v-year{font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;color:var(--c300);letter-spacing:.1em;margin-bottom:.3rem;}
+    .tl-v-item h4{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.3rem;}
+    .tl-v-item p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .how-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
+    .cycle-diagram{display:flex;flex-direction:column;gap:.75rem;}
+    .cycle-step{display:flex;align-items:center;gap:1rem;background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:10px;padding:1rem 1.25rem;transition:border-color var(--tr);}
+    .cycle-step:hover{border-color:rgba(96,165,250,.35);}
+    .cycle-num{width:38px;height:38px;border-radius:8px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.78rem;font-weight:700;color:var(--white);flex-shrink:0;}
+    .cycle-info strong{display:block;font-size:.875rem;font-weight:700;color:var(--white);}
+    .cycle-info span{font-size:.75rem;color:var(--c200);}
+    .cycle-arrow{text-align:center;color:var(--c300);font-size:1.2rem;line-height:1;}
+    .how-extra{display:flex;flex-direction:column;gap:1rem;}
+    .fact-box{background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.15);border-radius:12px;padding:1.25rem 1.4rem;}
+    .fact-box-title{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c300);margin-bottom:.6rem;}
+    .fact-box p{font-size:.8rem;color:var(--c200);line-height:1.65;}
+
+    .parts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .part-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);overflow:hidden;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .part-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);box-shadow:0 10px 30px rgba(30,95,212,.28);}
+    .part-card-head{padding:1.25rem 1.4rem 0;display:flex;align-items:center;gap:.9rem;}
+    .part-badge{width:44px;height:44px;border-radius:10px;background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .part-badge svg{width:20px;height:20px;stroke:var(--c300);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .part-card-head h3{font-size:1rem;font-weight:700;color:var(--white);}
+    .part-card-head span{font-size:.7rem;color:var(--c300);font-weight:600;}
+    .part-card-body{padding:.9rem 1.4rem 1.4rem;}
+    .part-card-body p{font-size:.8rem;color:var(--c200);line-height:1.65;margin-bottom:.75rem;}
+    .part-detail{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--c100);background:rgba(30,95,212,.1);border-radius:6px;padding:.45rem .75rem;}
+    .part-detail svg{width:13px;height:13px;stroke:var(--c300);fill:none;stroke-width:2;flex-shrink:0;}
+
+    .brands-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2.5rem;}
+    .brand-card{border-radius:var(--radius);overflow:hidden;border:1px solid rgba(96,165,250,.18);transition:border-color var(--tr),box-shadow var(--tr);}
+    .brand-card:hover{border-color:rgba(96,165,250,.38);box-shadow:0 12px 36px rgba(30,95,212,.28);}
+    .brand-card-head{padding:2rem;display:flex;align-items:center;gap:1.25rem;}
+    .brand-logo-box{width:64px;height:64px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;color:var(--white);}
+    .brand-logo-box.intel{background:linear-gradient(135deg,#0068b5,#00a3e0);}
+    .brand-logo-box.amd{background:linear-gradient(135deg,#ed1c24,#ff6900);}
+    .brand-card-head h3{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:.25rem;}
+    .brand-card-head p{font-size:.78rem;color:var(--c200);}
+    .brand-card-body{padding:0 2rem 2rem;}
+    .brand-line{display:flex;align-items:center;gap:.75rem;padding:.65rem 0;border-bottom:1px solid rgba(96,165,250,.08);}
+    .brand-line:last-child{border-bottom:none;}
+    .brand-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+    .brand-dot.intel{background:#00a3e0;}
+    .brand-dot.amd{background:#ed1c24;}
+    .brand-line span{font-size:.8rem;color:var(--c200);}
+    .brand-line strong{font-size:.8rem;color:var(--white);margin-left:auto;}
+
+    .compare-table{margin-top:2.5rem;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(96,165,250,.15);}
+    .compare-row{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:0;}
+    .compare-row.head{background:rgba(13,42,94,.9);}
+    .compare-cell{padding:.9rem 1.2rem;font-size:.8rem;border-bottom:1px solid rgba(96,165,250,.08);}
+    .compare-row:last-child .compare-cell{border-bottom:none;}
+    .compare-cell.label{color:var(--c200);font-weight:500;}
+    .compare-cell.intel-col{color:#60c5f1;text-align:center;border-left:1px solid rgba(96,165,250,.08);}
+    .compare-cell.amd-col{color:#f97370;text-align:center;border-left:1px solid rgba(96,165,250,.08);}
+    .compare-cell.head-label{font-weight:700;color:var(--white);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;}
+    .compare-cell.intel-head{background:linear-gradient(135deg,rgba(0,104,181,.3),rgba(0,163,224,.15));color:#60c5f1;font-weight:700;font-size:.82rem;text-align:center;border-left:1px solid rgba(96,165,250,.08);}
+    .compare-cell.amd-head{background:linear-gradient(135deg,rgba(237,28,36,.25),rgba(255,105,0,.12));color:#f97370;font-weight:700;font-size:.82rem;text-align:center;border-left:1px solid rgba(96,165,250,.08);}
+
+    .formats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin-top:2.5rem;}
+    .format-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.4rem 1.1rem;text-align:center;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .format-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.32);box-shadow:0 8px 24px rgba(30,95,212,.22);}
+    .format-size{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.4rem;}
+    .format-card h4{font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.35rem;}
+    .format-card p{font-size:.72rem;color:var(--c200);line-height:1.5;}
+    .format-tag{display:inline-block;background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.2);border-radius:20px;padding:.2rem .65rem;font-size:.62rem;font-weight:600;color:var(--c300);margin-bottom:.65rem;}
+
+    .name-box{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.18);border-radius:var(--radius);padding:2rem;margin-top:2.5rem;}
+    .name-example{font-family:'Orbitron',sans-serif;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;color:var(--white);text-align:center;margin-bottom:2rem;letter-spacing:.04em;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.1rem;}
+    .name-part{position:relative;cursor:default;transition:color var(--tr);}
+    .name-part.brand-p{color:#60c5f1;}
+    .name-part.line-p{color:var(--c300);}
+    .name-part.gen-p{color:#a78bfa;}
+    .name-part.model-p{color:var(--white);}
+    .name-part.suffix-p{color:#34d399;}
+    .name-legend{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;}
+    .legend-item{text-align:center;}
+    .legend-color{height:3px;border-radius:2px;margin-bottom:.5rem;}
+    .legend-color.brand-c{background:#60c5f1;}
+    .legend-color.line-c{background:var(--c300);}
+    .legend-color.gen-c{background:#a78bfa;}
+    .legend-color.model-c{background:var(--white);}
+    .legend-color.suffix-c{background:#34d399;}
+    .legend-item span{font-size:.7rem;font-weight:700;color:var(--c200);text-transform:uppercase;letter-spacing:.08em;}
+    .legend-item p{font-size:.72rem;color:var(--c200);line-height:1.4;margin-top:.2rem;}
+
+    .chipset-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2.5rem;align-items:start;}
+    .chipset-explain p{font-size:.875rem;color:var(--c200);line-height:1.75;margin-bottom:1rem;}
+    .chipset-list{display:flex;flex-direction:column;gap:.75rem;}
+    .chipset-item{display:flex;align-items:center;gap:1rem;background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.13);border-radius:10px;padding:.9rem 1.1rem;transition:border-color var(--tr);}
+    .chipset-item:hover{border-color:rgba(96,165,250,.3);}
+    .chipset-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.65rem;font-weight:700;color:var(--white);flex-shrink:0;}
+    .chipset-icon.intel-c{background:linear-gradient(135deg,#0068b5,#00a3e0);}
+    .chipset-icon.amd-c{background:linear-gradient(135deg,#ed1c24,#ff6900);}
+    .chipset-item h4{font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.2rem;}
+    .chipset-item span{font-size:.72rem;color:var(--c200);}
+
+    .connectors-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.5rem;}
+    .connectors-block{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.5rem;}
+    .connectors-block-title{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;}
+    .connectors-brand-badge{padding:.3rem .8rem;border-radius:20px;font-size:.72rem;font-weight:700;font-family:'Orbitron',sans-serif;color:var(--white);}
+    .connectors-brand-badge.front-b{background:linear-gradient(90deg,#1e5fd4,#60a5fa);}
+    .connectors-brand-badge.rear-b{background:linear-gradient(90deg,#1345a0,#3b82f6);}
+    .connector-row{display:flex;align-items:center;gap:.85rem;padding:.55rem 0;border-bottom:1px solid rgba(96,165,250,.07);}
+    .connector-row:last-child{border-bottom:none;}
+    .connector-code{width:36px;height:36px;border-radius:7px;background:rgba(30,95,212,.15);border:1px solid rgba(96,165,250,.2);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:900;color:var(--c300);flex-shrink:0;}
+    .connector-row span{font-size:.78rem;color:var(--c200);}
+
+    .tips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .tip-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.6rem 1.3rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .tip-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);box-shadow:0 8px 28px rgba(30,95,212,.22);}
+    .tip-num{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.6rem;}
+    .tip-card h3{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .tip-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .faq-grid-mb{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem;}
+    .faq-item{background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.13);border-radius:var(--radius);overflow:hidden;}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.3rem;cursor:pointer;font-size:.875rem;font-weight:600;color:var(--white);transition:background var(--tr);gap:1rem;}
+    .faq-q:hover{background:rgba(30,95,212,.1);}
+    .faq-q svg{width:16px;height:16px;stroke:var(--c300);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform var(--tr);}
+    .faq-item.open .faq-q svg{transform:rotate(180deg);}
+    .faq-a{max-height:0;overflow:hidden;font-size:.8rem;color:var(--c200);line-height:1.65;transition:max-height .3s ease,padding .3s ease;padding:0 1.3rem;}
+    .faq-item.open .faq-a{max-height:200px;padding:.2rem 1.3rem 1.1rem;}
+
+    .cta-mb{padding:5rem 0;background:linear-gradient(135deg,var(--c900) 0%,var(--c700) 50%,var(--c600) 100%);text-align:center;position:relative;overflow:hidden;}
+    .cta-mb::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.07) 1px,transparent 1px);background-size:40px 40px;}
+    .cta-inner{position:relative;z-index:2;}
+    .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem;}
+
+    .site-footer{background:var(--c950);border-top:1px solid rgba(96,165,250,.1);padding:3.5rem 0 0;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(96,165,250,.08);}
+    .footer-brand-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;}
+    .footer-logo{width:32px;height:32px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .footer-logo img{width:32px;height:32px;object-fit:contain;}
+    .footer-logo svg{width:18px;height:18px;stroke:var(--white);fill:none;stroke-width:1.8;}
+    .footer-brand-name{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
+    .footer-brand-name em{font-style:normal;color:var(--c300);}
+    .footer-desc{font-size:.8rem;color:var(--c200);line-height:1.7;max-width:280px;margin-bottom:1.25rem;}
+    .footer-socials{display:flex;gap:.7rem;}
+    .social-btn{width:36px;height:36px;border-radius:8px;background:rgba(30,95,212,.15);border:1px solid rgba(96,165,250,.18);display:flex;align-items:center;justify-content:center;color:var(--c300);transition:background var(--tr),color var(--tr),border-color var(--tr);}
+    .social-btn:hover{background:rgba(30,95,212,.35);color:var(--white);border-color:var(--c400);}
+    .social-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .footer-col h5{font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:1rem;}
+    .footer-links-col{display:flex;flex-direction:column;gap:.5rem;}
+    .footer-link{font-size:.8rem;color:var(--c200);text-decoration:none;transition:color var(--tr),padding-left var(--tr);}
+    .footer-link:hover{color:var(--c300);padding-left:.4rem;}
+    .footer-bottom{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 0;gap:1rem;flex-wrap:wrap;}
+    .footer-copy{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev a{color:var(--c300);text-decoration:none;font-weight:600;transition:color var(--tr);}
+    .footer-dev a:hover{color:var(--white);}
+
+    @media(max-width:1024px){
+      .formats-grid{grid-template-columns:repeat(2,1fr);}
+      .function-cards{grid-template-columns:repeat(2,1fr);}
+      .footer-grid{grid-template-columns:1fr 1fr;}
+      .page-hero-inner{grid-template-columns:1fr;}
+      .mb-hero-visual{display:block;}
+      .what-grid{grid-template-columns:1fr;}
+      .how-grid{grid-template-columns:1fr;}
+      .name-legend{grid-template-columns:repeat(3,1fr);}
+      .chipset-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:768px){
+      .function-cards{grid-template-columns:1fr;}
+      .brands-grid{grid-template-columns:1fr;}
+      .formats-grid{grid-template-columns:1fr 1fr;}
+      .connectors-grid{grid-template-columns:1fr;}
+      .tips-grid{grid-template-columns:1fr;}
+      .faq-grid-mb{grid-template-columns:1fr;}
+      .parts-grid{grid-template-columns:1fr;}
+      .compare-table{overflow-x:auto;}
+      .name-legend{grid-template-columns:repeat(2,1fr);}
+      .footer-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:480px){
+      .formats-grid{grid-template-columns:1fr;}
+      .name-example{font-size:1.2rem;}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="accent-line" aria-hidden="true"></div>
+
+  <div class="header-inner">
+
+    <!-- LOGO -->
+    <a href="index.html" class="brand" aria-label="BitZone inicio">
+      <img src="Img/logo.png"
+           width="38"
+           height="35"
+           alt="BitZone"
+           style="border-radius:6px;display:block;">
+
+      <div class="brand-name">
+        Bit<em>Zone</em>
+      </div>
+    </a>
+
+    <!-- MENU -->
+    <nav class="main-nav" aria-label="Navegacion principal">
+
+      <ul class="nav-list" role="list">
+
+        <!-- INICIO -->
+        <li class="nav-item">
+          <a href="index.html"
+             class="nav-link active"
+             data-page="index">
+            Inicio
+          </a>
+        </li>
+
+        <!-- PARTES -->
+        <li class="nav-item" data-drop>
+
+          <span class="nav-link" data-page="partes">
+            Partes
+
+            <svg class="chevron"
+                 viewBox="0 0 10 6"
+                 fill="none"
+                 aria-hidden="true">
+
+              <path d="M1 1l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+          </span>
+
+          <ul class="dropdown" role="menu">
+
+            <li class="dropdown-list">
+
+              <a href="procesaro.html" class="dropdown-link">
+                Procesador (CPU)
+              </a>
+
+              <a href="tarjeta_madre.html" class="dropdown-link">
+                Tarjeta Madre
+              </a>
+
+              <a href="ram.html" class="dropdown-link">
+                Memoria RAM
+              </a>
+
+              <a href="disco.html" class="dropdown-link">
+                Disco Duro / SSD
+              </a>
+
+              <a href="fuente.html" class="dropdown-link">
+                Fuente de Poder
+              </a>
+
+              <a href="gpu.html" class="dropdown-link">
+                Tarjeta Grafica
+              </a>
+
+              <a href="refrigeracion.html" class="dropdown-link">
+                Refrigeracion
+              </a>
+
+              <a href="puertos.html" class="dropdown-link">
+                Puertos y Conectores
+              </a>
+
+            </li>
+
+          </ul>
+        </li>
+
+        <!-- VIDEOS -->
+        <li class="nav-item">
+          <a href="index.html#videos-destacados"
+             class="nav-link"
+             data-page="videos">
+            Videos
+          </a>
+        </li>
+
+        <!-- FAQ -->
+        <li class="nav-item">
+          <a href="index.html#faq-rapido"
+             class="nav-link"
+             data-page="faq">
+            FAQ
+          </a>
+        </li>
+
+        <!-- CONTACTO -->
+        <li class="nav-item">
+          <a href="index.html#footer"
+             class="nav-link"
+             data-page="contacto">
+            Contacto
+          </a>
+        </li>
+
+      </ul>
+
+    </nav>
+
+    <!-- BOTON MENU -->
+    <button class="hamburger"
+            id="hamburgerBtn"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="drawer">
+
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+
+    </button>
+
+  </div>
+</header>
+
+<div class="overlay" id="overlay" aria-hidden="true"></div>
+
+<aside class="drawer" id="drawer" role="dialog" aria-label="Menú móvil" aria-modal="true">
+  <div class="drawer-header">
+    <a href="../index.html" class="drawer-brand" aria-label="BitZone inicio">
+      <div class="drawer-logo-slot">
+        <img src="Img/logo.png" alt="BitZone">
+      </div>
+      <div class="drawer-brand-name">Bit<em>Zone</em></div>
+    </a>
+    <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&#x2715;</button>
+  </div>
+  <nav class="drawer-nav" aria-label="Navegación móvil">
+    <ul class="drawer-nav-list">
+      <li><a href="../index.html" class="d-link" data-page="index">Inicio</a></li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link active" data-page="partes">Partes de la Computadora
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="cpu.html" class="d-sub-link">Procesador (CPU)</a></li>
+          <li><a href="tarjeta_madre.html" class="d-sub-link">Tarjeta Madre</a></li>
+          <li><a href="ram.html" class="d-sub-link">Memoria RAM</a></li>
+          <li><a href="disco.html" class="d-sub-link">Disco Duro / SSD</a></li>
+          <li><a href="fuente.html" class="d-sub-link">Fuente de Poder</a></li>
+          <li><a href="gpu.html" class="d-sub-link">Tarjeta Gráfica</a></li>
+          <li><a href="refrigeracion.html" class="d-sub-link">Refrigeración</a></li>
+          <li><a href="puertos.html" class="d-sub-link">Puertos y Conectores</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="ensamblaje">Ensamblaje
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../ensamblaje/herramientas.html" class="d-sub-link">Herramientas</a></li>
+          <li><a href="../ensamblaje/paso-a-paso.html" class="d-sub-link">Paso a Paso</a></li>
+          <li><a href="../ensamblaje/instalacion.html" class="d-sub-link">Instalación de Componentes</a></li>
+          <li><a href="../ensamblaje/cableado.html" class="d-sub-link">Cableado</a></li>
+          <li><a href="../ensamblaje/errores.html" class="d-sub-link">Errores Comunes</a></li>
+          <li><a href="../ensamblaje/consejos.html" class="d-sub-link">Consejos</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="actividades">Actividades
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../actividades/quiz.html" class="d-sub-link">Quiz</a></li>
+          <li><a href="../actividades/ejercicios.html" class="d-sub-link">Ejercicios</a></li>
+          <li><a href="../actividades/preguntas.html" class="d-sub-link">Preguntas</a></li>
+          <li><a href="../actividades/evaluacion.html" class="d-sub-link">Evaluación</a></li>
+          <li><a href="../actividades/juegos.html" class="d-sub-link">Juegos Educativos</a></li>
+        </ul>
+      </li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li><a href="../index.html#videos-destacados" class="d-link">Videos</a></li>
+      <li><a href="../index.html#faq-rapido" class="d-link">FAQ</a></li>
+      <li><a href="../index.html#footer" class="d-link">Contacto</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div>
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a>
+            <span class="breadcrumb-sep" aria-hidden="true">/</span>
+            <a href="../partes.html">Partes</a>
+            <span class="breadcrumb-sep" aria-hidden="true">/</span>
+            <span>Tarjeta Madre (Motherboard)</span>
+          </nav>
+          <span class="section-label">Componente Esencial</span>
+          <h1 class="page-hero-title">Tarjeta Madre <span class="hl">Motherboard</span></h1>
+          <p class="page-hero-sub">La columna vertebral de toda computadora. Aprende qué es, cómo funciona, sus partes, formatos, chipsets y cómo elegir la mejor para tu PC.</p>
+          <div class="page-hero-tags">
+            <span class="hero-tag">Principiantes</span>
+            <span class="hero-tag">Hardware</span>
+            <span class="hero-tag">ATX / Micro-ATX</span>
+            <span class="hero-tag">Chipset & Socket</span>
+          </div>
+        </div>
+        <div class="mb-hero-visual">
+          <div class="mb-chip-diagram">
+            <img src="Img/placaa.webp" alt="Tarjeta Madre">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="que-es">
+    <div class="container">
+      <div class="what-grid">
+        <div class="what-text reveal">
+          <span class="section-label">Definición</span>
+          <h2 class="section-title">¿Qué es una Tarjeta Madre?</h2>
+          <p>La <strong style="color:var(--white)">tarjeta madre</strong>, también llamada <strong style="color:var(--white)">placa base</strong> o <strong style="color:var(--white)">motherboard</strong>, es el componente principal que conecta todos los demás dispositivos de una computadora. Es una placa de circuito impreso (PCB) que aloja y comunica el procesador, la memoria RAM, las tarjetas de expansión y los periféricos.</p>
+          <p>Imagina la computadora como una ciudad: la tarjeta madre sería el sistema de calles y avenidas que conecta todos los edificios (componentes) entre sí. Sin ella, ningún componente podría comunicarse con otro.</p>
+          <div class="what-highlight">
+            <p>La tarjeta madre es el componente que determina qué procesador, qué memoria RAM y qué dispositivos de almacenamiento puedes instalar. Es la base sobre la que construyes toda tu PC.</p>
+          </div>
+          <p>La tarjeta madre contiene ranuras, conectores y chips que permiten la comunicación entre todos los componentes. Su diseño define la capacidad de expansión y actualización de tu computadora.</p>
+        </div>
+        <div class="mb-visual-box reveal">
+          <img src="Img/detalle.jpg" alt="Tarjeta Madre detalle">
+          <p>La tarjeta madre es el <strong style="color:var(--c300)">corazón de conexiones</strong> de tu PC. Todos los componentes se conectan a ella.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="funcion">
+    <div class="container">
+      <div class="reveal" style="text-align:center;margin-bottom:0;">
+        <span class="section-label">Función Principal</span>
+        <h2 class="section-title">¿Para qué sirve la Tarjeta Madre?</h2>
+        <p class="section-sub" style="margin:0 auto;">La placa base realiza tres funciones esenciales que permiten el funcionamiento de todo el sistema.</p>
+      </div>
+      <div class="function-cards">
+        <div class="fn-card reveal">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><line x1="9" y1="4" x2="9" y2="20"/><line x1="15" y1="4" x2="15" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg></div>
+          <h3>Conectar Componentes</h3>
+          <p>La tarjeta madre tiene ranuras y conectores donde se instalan el procesador (socket), la memoria RAM (DIMM), tarjetas de expansión (PCIe) y unidades de almacenamiento (SATA, M.2).</p>
+        </div>
+        <div class="fn-card reveal" style="animation-delay:.1s">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <h3>Comunicar Datos</h3>
+          <p>La motherboard es el sistema de carreteras de la PC. A través de sus pistas de cobre (buses) viajan los datos entre el CPU, la RAM y los demás componentes a altísima velocidad.</p>
+        </div>
+        <div class="fn-card reveal" style="animation-delay:.2s">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg></div>
+          <h3>Distribuir Energía</h3>
+          <p>La placa base recibe energía de la fuente de poder y la distribuye a todos los componentes a través de las fases de alimentación (VRM), regulando voltajes y protegiendo los dispositivos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="historia">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Evolución</span>
+        <h2 class="section-title">Breve Historia de la Tarjeta Madre</h2>
+        <p class="section-sub">Desde placas simples con pocos componentes hasta las modernas motherboards con tecnologías avanzadas.</p>
+      </div>
+      <div class="timeline-v">
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>01</span></div>
+          <div class="tl-v-year">1981</div>
+          <h4>IBM PC — Primera motherboard estándar</h4>
+          <p>La IBM PC introdujo el primer diseño estándar de placa base, con ranuras ISA para tarjetas de expansión y el procesador Intel 8088.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>02</span></div>
+          <div class="tl-v-year">1995</div>
+          <h4>Intel ATX — El estándar moderno</h4>
+          <p>Intel lanzó el formato ATX (Advanced Technology Extended) que sigue siendo la base de las placas madre modernas, mejorando la disposición de componentes y la refrigeración.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>03</span></div>
+          <div class="tl-v-year">2000</div>
+          <h4>Integración de componentes</h4>
+          <p>Las motherboards comenzaron a incluir audio, red y gráficos integrados (chipset), reduciendo la necesidad de tarjetas de expansión adicionales.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>04</span></div>
+          <div class="tl-v-year">2010</div>
+          <h4>UEFI y PCI Express</h4>
+          <p>El BIOS tradicional fue reemplazado por UEFI (interfaz gráfica). PCI Express se convirtió en el estándar para tarjetas gráficas y otros dispositivos de alta velocidad.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>05</span></div>
+          <div class="tl-v-year">2017</div>
+          <h4>M.2 y RGB</h4>
+          <p>Las ranuras M.2 para SSD NVMe se hicieron comunes, junto con la iluminación RGB personalizable. Los VRM mejoraron para manejar procesadores de alto consumo.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>06</span></div>
+          <div class="tl-v-year">Hoy</div>
+          <h4>PCIe 5.0, DDR5 y WiFi integrado</h4>
+          <p>Las motherboards modernas incluyen PCIe 5.0, soporte para DDR5, múltiples ranuras M.2, WiFi 6E/7, Bluetooth y conectividad USB 4.0 de alta velocidad.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="como-funciona">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Estructura</span>
+        <h2 class="section-title">¿Cómo está organizada?</h2>
+        <p class="section-sub">La tarjeta madre tiene una estructura jerárquica donde el chipset y los buses conectan todos los componentes.</p>
+      </div>
+      <div class="how-grid" style="margin-top:2.5rem;">
+        <div class="cycle-diagram">
+          <div class="cycle-step reveal">
+            <div class="cycle-num">CPU</div>
+            <div class="cycle-info">
+              <strong>Socket del Procesador</strong>
+              <span>El punto central. El CPU se conecta directamente al chipset y a las ranuras de memoria.</span>
+            </div>
+          </div>
+          <div class="cycle-arrow reveal">↓</div>
+          <div class="cycle-step reveal">
+            <div class="cycle-num">Chipset</div>
+            <div class="cycle-info">
+              <strong>Puente Norte / Sur</strong>
+              <span>El chipset controla la comunicación entre el CPU, RAM, tarjetas PCIe y dispositivos de almacenamiento.</span>
+            </div>
+          </div>
+          <div class="cycle-arrow reveal">↓</div>
+          <div class="cycle-step reveal">
+            <div class="cycle-num">Buses</div>
+            <div class="cycle-info">
+              <strong>Canales de datos</strong>
+              <span>Las líneas de comunicación que conectan los diferentes componentes entre sí.</span>
+            </div>
+          </div>
+          <div class="cycle-arrow reveal">↓</div>
+          <div class="cycle-step reveal">
+            <div class="cycle-num">Conectores</div>
+            <div class="cycle-info">
+              <strong>Puertos de E/S</strong>
+              <span>Los conectores externos e internos donde se enchufan periféricos, discos y tarjetas.</span>
+            </div>
+          </div>
+        </div>
+        <div class="how-extra reveal">
+          <div class="fact-box">
+            <div class="fact-box-title">¿Qué es el chipset?</div>
+            <p>El chipset es un conjunto de chips que gestionan el flujo de datos entre el procesador y el resto de componentes. Controla los puertos USB, SATA, audio, red y las ranuras de expansión. Los chipsets modernos son de una sola pieza (chip único).</p>
+          </div>
+          <div class="fact-box">
+            <div class="fact-box-title">Puente Norte y Puente Sur</div>
+            <p>En motherboards antiguas, el chipset se dividía en puente norte (conectaba CPU, RAM y GPU) y puente sur (conectaba discos, USB, audio). Hoy todo está integrado en un solo chip gracias a los procesadores modernos.</p>
+          </div>
+          <div class="fact-box">
+            <div class="fact-box-title">VRM (Módulo de Regulación de Voltaje)</div>
+            <p>Los VRM son circuitos que convierten la energía de la fuente (12V) a los voltajes que necesita el procesador (∼1.3V). Más fases de VRM significan mejor estabilidad para overclocking.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="partes">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Anatomía</span>
+        <h2 class="section-title">Partes Básicas de la Tarjeta Madre</h2>
+        <p class="section-sub" style="margin:0 auto;">Conoce los elementos clave que verás en cualquier placa base.</p>
+      </div>
+      <div class="parts-grid">
+        <div class="part-card reveal">
+          <div class="part-card-head">
+            <div class="part-badge"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="12" cy="12" r="2"/></svg></div>
+            <div>
+              <span>Asiento del CPU</span>
+              <h3>Socket</h3>
+            </div>
+          </div>
+          <div class="part-card-body">
+            <p>El socket es el conector donde se instala el procesador. Debe ser compatible con el CPU que elijas (LGA 1700, AM5, etc.). Cada generación de CPU puede requerir un socket diferente.</p>
+            <div class="part-detail">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Intel LGA vs AMD PGA / LGA
+            </div>
+          </div>
+        </div>
+        <div class="part-card reveal" style="animation-delay:.08s">
+          <div class="part-card-head">
+            <div class="part-badge"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="8" y1="2" x2="8" y2="22"/></svg></div>
+            <div>
+              <span>Memoria RAM</span>
+              <h3>Ranuras DIMM</h3>
+            </div>
+          </div>
+          <div class="part-card-body">
+            <p>Las ranuras donde se insertan los módulos de memoria RAM. Las motherboards modernas tienen 2 o 4 ranuras. Debes usarlas en pares para activar el dual channel y mejorar el rendimiento.</p>
+            <div class="part-detail">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              DDR4, DDR5 — Colores alternados para dual channel
+            </div>
+          </div>
+        </div>
+        <div class="part-card reveal" style="animation-delay:.16s">
+          <div class="part-card-head">
+            <div class="part-badge"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></div>
+            <div>
+              <span>Expansión</span>
+              <h3>Ranuras PCIe</h3>
+            </div>
+          </div>
+          <div class="part-card-body">
+            <p>Las ranuras PCI Express (PCIe) se usan para conectar tarjetas gráficas, tarjetas de sonido, capturadoras de video y otros dispositivos de expansión. La ranura principal suele ser x16 para la GPU.</p>
+            <div class="part-detail">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              PCIe x16, x8, x4, x1 según necesidades
+            </div>
+          </div>
+        </div>
+        <div class="part-card reveal" style="animation-delay:.24s">
+          <div class="part-card-head">
+            <div class="part-badge"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="8" y1="4" x2="8" y2="20"/><line x1="16" y1="4" x2="16" y2="20"/></svg></div>
+            <div>
+              <span>Almacenamiento</span>
+              <h3>SATA / M.2</h3>
+            </div>
+          </div>
+          <div class="part-card-body">
+            <p>Los conectores SATA se usan para discos duros y SSD de 2.5"/3.5". Las ranuras M.2 son para SSD NVMe ultrarrápidos que se conectan directamente al bus PCIe.</p>
+            <div class="part-detail">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              M.2 PCIe 3.0/4.0/5.0 según el modelo
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="formatos">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Tamaños</span>
+        <h2 class="section-title">Formatos de Tarjeta Madre</h2>
+        <p class="section-sub" style="margin:0 auto;">Elige el formato según el tamaño de tu gabinete y la cantidad de componentes que necesites instalar.</p>
+      </div>
+      <div class="formats-grid">
+        <div class="format-card reveal">
+          <div class="format-tag">Más pequeño</div>
+          <div class="format-size">Mini-ITX</div>
+          <h4>170mm x 170mm</h4>
+          <p>Ideal para gabinetes compactos y HTPC. Tiene 1 ranura PCIe x16 y 2 ranuras de RAM. Limitado en expansión pero muy portátil y estético.</p>
+        </div>
+        <div class="format-card reveal" style="animation-delay:.08s">
+          <div class="format-tag">Popular</div>
+          <div class="format-size">Micro-ATX</div>
+          <h4>244mm x 244mm</h4>
+          <p>El equilibrio perfecto entre tamaño y funcionalidad. Ofrece 4 ranuras RAM y hasta 3 PCIe x16. Ideal para la mayoría de usuarios domésticos.</p>
+        </div>
+        <div class="format-card reveal" style="animation-delay:.16s">
+          <div class="format-tag">Estándar</div>
+          <div class="format-size">ATX</div>
+          <h4>305mm x 244mm</h4>
+          <p>El formato más común para PCs de escritorio. Tiene hasta 4 ranuras PCIe, 4 ranuras RAM y múltiples conectores M.2. Perfecto para gaming y trabajo.</p>
+        </div>
+        <div class="format-card reveal" style="animation-delay:.24s">
+          <div class="format-tag">Entusiasta</div>
+          <div class="format-size">E-ATX</div>
+          <h4>305mm x 330mm</h4>
+          <p>Placas grandes para procesadores de gama alta (Threadripper / Core i9). Ofrecen 8 ranuras RAM y soporte para múltiples GPU. Necesitan gabinetes grandes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="chipsets">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Chipsets</span>
+        <h2 class="section-title">Chipsets Principales</h2>
+        <p class="section-sub" style="margin:0 auto;">El chipset determina qué funciones y conexiones tiene tu tarjeta madre.</p>
+      </div>
+      <div class="chipset-grid">
+        <div class="chipset-explain reveal">
+          <p>El chipset es el "director de orquesta" de la motherboard. Controla la comunicación entre el CPU y los demás componentes. Los chipsets más comunes para PCs de escritorio son:</p>
+          <p><strong style="color:var(--white)">Serie Z (Intel) / X (AMD):</strong> Para entusiastas y overclocking. Tienen más líneas PCIe y soporte para altas frecuencias de RAM.</p>
+          <p><strong style="color:var(--white)">Serie B:</strong> El equilibrio ideal entre precio y prestaciones. Son los más populares para la mayoría de usuarios.</p>
+          <p><strong style="color:var(--white)">Serie H / A:</strong> Chipsets de entrada, sin overclocking pero con buen precio. Ideales para oficina y equipos básicos.</p>
+        </div>
+        <div class="chipset-list reveal">
+          <div class="chipset-item">
+            <div class="chipset-icon intel-c">Z790</div>
+            <div>
+              <h4>Intel Z790 / Z690</h4>
+              <span>Top gama — Overclocking CPU y RAM. PCIe 5.0, múltiples USB 3.2, WiFi integrado.</span>
+            </div>
+          </div>
+          <div class="chipset-item">
+            <div class="chipset-icon intel-c">B760</div>
+            <div>
+              <h4>Intel B760 / B660</h4>
+              <span>Gama media — Sin overclocking de CPU pero permite overclock de RAM. Ideal para Core i5/i7.</span>
+            </div>
+          </div>
+          <div class="chipset-item">
+            <div class="chipset-icon amd-c">X870E</div>
+            <div>
+              <h4>AMD X870E / X670E</h4>
+              <span>Top gama — Overclocking, PCIe 5.0 para GPU y M.2. Para Ryzen 9 y entusiastas.</span>
+            </div>
+          </div>
+          <div class="chipset-item">
+            <div class="chipset-icon amd-c">B650</div>
+            <div>
+              <h4>AMD B650</h4>
+              <span>Gama media — La opción más popular para Ryzen 7000/9000. Excelente relación precio/rendimiento.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="conectores">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Puertos</span>
+        <h2 class="section-title">Conectores Internos y Externos</h2>
+        <p class="section-sub" style="margin:0 auto;">Una buena motherboard debe tener suficientes puertos para tus necesidades actuales y futuras.</p>
+      </div>
+      <div class="connectors-grid">
+        <div class="connectors-block reveal">
+          <div class="connectors-block-title">
+            <div class="connectors-brand-badge front-b">Internos</div>
+          </div>
+          <div class="connector-row"><div class="connector-code">USB 3.2</div><span>Conectores internos para USB frontales del gabinete.</span></div>
+          <div class="connector-row"><div class="connector-code">HD Audio</div><span>Conector para los jacks de audio frontales (micrófono y audífonos).</span></div>
+          <div class="connector-row"><div class="connector-code">SATA 3.0</div><span>Puertos para discos duros y SSD de 2.5"/3.5".</span></div>
+          <div class="connector-row"><div class="connector-code">M.2</div><span>Ranura para SSD NVMe ultrarrápidos.</span></div>
+          <div class="connector-row"><div class="connector-code">PCIe</div><span>Ranuras para tarjetas gráficas, de sonido, capturadoras, etc.</span></div>
+        </div>
+        <div class="connectors-block reveal" style="animation-delay:.12s">
+          <div class="connectors-block-title">
+            <div class="connectors-brand-badge rear-b">Traseros (panel I/O)</div>
+          </div>
+          <div class="connector-row"><div class="connector-code">USB-C</div><span>Puerto USB tipo C de alta velocidad (hasta 40Gbps).</span></div>
+          <div class="connector-row"><div class="connector-code">USB-A</div><span>Puertos USB tradicionales (USB 2.0, 3.0, 3.2).</span></div>
+          <div class="connector-row"><div class="connector-code">HDMI/DP</div><span>Salidas de video para procesadores con gráficos integrados.</span></div>
+          <div class="connector-row"><div class="connector-code">Ethernet</div><span>Puerto RJ45 para conexión por cable a internet (1Gb/2.5Gb).</span></div>
+          <div class="connector-row"><div class="connector-code">Audio Jacks</div><span>Salidas para altavoces, micrófono y auriculares.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="consejos">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Guía de Compra</span>
+        <h2 class="section-title">Consejos para Elegir una Tarjeta Madre</h2>
+        <p class="section-sub" style="margin:0 auto;">Antes de comprar una placa base, considera estos factores para tomar la mejor decisión.</p>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-card reveal">
+          <div class="tip-num">01</div>
+          <h3>Compatibilidad de socket</h3>
+          <p>Verifica que el socket de la motherboard sea compatible con tu procesador. Un Intel no funcionará en una placa AMD. Consulta siempre la lista de compatibilidad.</p>
+        </div>
+        <div class="tip-card reveal" style="animation-delay:.08s">
+          <div class="tip-num">02</div>
+          <h3>Elige el formato adecuado</h3>
+          <p>¿Tu gabinete es pequeño? Necesitas Mini-ITX o Micro-ATX. ¿Tienes un gabinete grande? Puedes usar ATX estándar con más ranuras de expansión.</p>
+        </div>
+        <div class="tip-card reveal" style="animation-delay:.16s">
+          <div class="tip-num">03</div>
+          <h3>Revisa los puertos USB</h3>
+          <p>¿Necesitas USB-C? ¿Cuántos USB-A usas? Asegúrate de que el panel trasero tenga suficientes puertos para tus periféricos actuales y futuros.</p>
+        </div>
+        <div class="tip-card reveal" style="animation-delay:.24s">
+          <div class="tip-num">04</div>
+          <h3>VRM para procesadores potentes</h3>
+          <p>Si vas a usar un Core i9 o Ryzen 9, busca una placa con buenos VRM (más fases y disipadores). Así evitarás sobrecalentamiento y throttling.</p>
+        </div>
+        <div class="tip-card reveal" style="animation-delay:.32s">
+          <div class="tip-num">05</div>
+          <h3>Ranuras M.2 y SATA</h3>
+          <p>¿Cuántos discos planeas instalar? Una buena motherboard debe tener al menos 2 ranuras M.2 y 4 puertos SATA para futuras expansiones.</p>
+        </div>
+        <div class="tip-card reveal" style="animation-delay:.40s">
+          <div class="tip-num">06</div>
+          <h3>WiFi y Bluetooth integrados</h3>
+          <p>Si no quieres cables, busca una placa con WiFi integrado. Muchas motherboards modernas incluyen WiFi 6E/7 y Bluetooth 5.x para mayor comodidad.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="faq">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Preguntas Frecuentes</span>
+        <h2 class="section-title">FAQ — Tarjeta Madre</h2>
+        <p class="section-sub" style="margin:0 auto 0;">Las dudas más comunes sobre motherboards resueltas de forma clara y sencilla.</p>
+      </div>
+      <div class="faq-grid-mb">
+        <div class="faq-item reveal">
+          <div class="faq-q">¿Puedo usar cualquier procesador en cualquier tarjeta madre?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">No. El procesador debe ser compatible con el socket de la placa base. Además, el chipset debe soportar esa generación de CPU. Por ejemplo, un Intel Core i9-14900K requiere socket LGA1700 y chipset Z790/B760.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.06s">
+          <div class="faq-q">¿Qué significa "flashing the BIOS"?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Es actualizar el firmware de la motherboard (BIOS/UEFI) para agregar compatibilidad con procesadores más nuevos, arreglar errores o mejorar el rendimiento. Muchas placas modernas permiten hacerlo sin CPU (BIOS Flashback).</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.12s">
+          <div class="faq-q">¿Qué es el overclocking y qué motherboards lo permiten?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">El overclocking es aumentar la frecuencia del procesador más allá de lo de fábrica. Solo lo permiten las motherboards con chipset Z (Intel) o X (AMD), junto con procesadores desbloqueados (K en Intel, X en AMD).</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.18s">
+          <div class="faq-q">¿La tarjeta madre influye en el rendimiento gaming?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Muy poco. El rendimiento en juegos depende principalmente del CPU y la GPU. Sin embargo, una buena placa base permite mejor overclocking, mejores VRM para CPU potentes y mayor velocidad de RAM.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.24s">
+          <div class="faq-q">¿Qué diferencia hay entre DDR4 y DDR5?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">DDR5 es más rápido (mayor frecuencia), consume menos voltaje y tiene mayor capacidad por módulo. Sin embargo, es más cara. La motherboard debe ser específica para DDR4 o DDR5: no son intercambiables.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.30s">
+          <div class="faq-q">¿Puedo mezclar marcas de RAM en mi motherboard?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Puedes, pero no es recomendable. Mezclar memorias de diferentes marcas, velocidades o latencias puede causar inestabilidad. Es mejor usar kits de dos o cuatro módulos idénticos (misma marca, modelo y frecuencia).</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.36s">
+          <div class="faq-q">¿Qué es PCIe 5.0? ¿Lo necesito?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">PCIe 5.0 es el doble de rápido que PCIe 4.0. No es necesario para gaming actual porque las GPU aún no saturan PCIe 4.0. Pero es una inversión a futuro para SSD y tarjetas gráficas de próxima generación.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.42s">
+          <div class="faq-q">¿Los RGB de la motherboard se pueden sincronizar?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Sí. La mayoría de marcas tienen sus propios ecosistemas: Asus Aura Sync, MSI Mystic Light, Gigabyte RGB Fusion, ASRock Polychrome. Puedes sincronizar ventiladores, tiras LED y memorias RAM compatibles.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-mb">
+    <div class="container">
+      <div class="cta-inner reveal">
+        <span class="section-label">Siguiente Paso</span>
+        <h2 class="section-title">¿Listo para seguir aprendiendo?</h2>
+        <p class="section-sub" style="margin:0 auto;">Ahora que conoces la tarjeta madre, explora los demás componentes o pon a prueba lo que aprendiste con nuestras actividades.</p>
+        <div class="cta-btns">
+          <a href="ram.html" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Ver Memoria RAM
+          </a>
+          <a href="../actividades/quiz.html" class="btn btn-outline">Hacer el Quiz</a>
+          <a href="../partes.html" class="btn btn-outline">Todos los Componentes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-row">
+          <div class="footer-logo">
+            <img src="Img/logo.png" alt="BitZone">
+          </div>
+          <div class="footer-brand-name">Bit<em>Zone</em></div>
+        </div>
+        <p class="footer-desc">Plataforma educativa dedicada al aprendizaje de hardware, partes de la computadora y ensamblaje de PC de forma clara y accesible.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Facebook">
+            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="YouTube">
+            <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="Instagram">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h5 class="footer-col">Contenido</h5>
+        <nav class="footer-links-col" aria-label="Links de contenido">
+          <a href="../partes.html" class="footer-link">Partes de la Computadora</a>
+          <a href="../ensamblaje.html" class="footer-link">Ensamblaje</a>
+          <a href="../videos.html" class="footer-link">Videos</a>
+          <a href="../actividades.html" class="footer-link">Actividades</a>
+          <a href="../recursos.html" class="footer-link">Recursos</a>
+        </nav>
+      </div>
+      <div>
+        <h5 class="footer-col">Componentes</h5>
+        <nav class="footer-links-col" aria-label="Links de componentes">
+          <a href="cpu.html" class="footer-link">Procesador (CPU)</a>
+          <a href="tarjeta-madre.html" class="footer-link">Tarjeta Madre</a>
+          <a href="ram.html" class="footer-link">Memoria RAM</a>
+          <a href="disco.html" class="footer-link">Disco Duro / SSD</a>
+          <a href="gpu.html" class="footer-link">Tarjeta Gráfica</a>
+        </nav>
+      </div>
+      <div>
+        <h5 class="footer-col">Información</h5>
+        <nav class="footer-links-col" aria-label="Links de información">
+          <a href="../index.html" class="footer-link">Inicio</a>
+          <a href="../index.html#faq-rapido" class="footer-link">FAQ General</a>
+          <a href="../index.html#footer" class="footer-link">Contacto</a>
+          <a href="../recursos.html" class="footer-link">Recursos</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 BitZone. Todos los derechos reservados.</p>
+      <p class="footer-dev">Desarrollado por <a href="https://datafoxsv.ct.ws" title="Ir al sitio de DataFox">DataFox</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function markActive() {
+    const file = window.location.pathname.split('/').pop() || 'index.html';
+    const page = file.replace('.html','') || 'index';
+    document.querySelectorAll('[data-page]').forEach(el => {
+      if (el.dataset.page === page) {
+        el.classList.add('active');
+        if (el.tagName === 'A') el.setAttribute('aria-current','page');
+      }
+    });
+  })();
+
+  document.querySelectorAll('[data-drop]').forEach(item => {
+    item.querySelector('.nav-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+  });
+
+  document.querySelectorAll('.dropdown').forEach(d => d.addEventListener('click', e => e.stopPropagation()));
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const drawerClose  = document.getElementById('drawerClose');
+  const drawer       = document.getElementById('drawer');
+  const overlay      = document.getElementById('overlay');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    hamburgerBtn.classList.add('open');
+    hamburgerBtn.setAttribute('aria-expanded','true');
+    overlay.removeAttribute('aria-hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded','false');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  drawer.querySelectorAll('a.d-link, .d-sub-link').forEach(l => l.addEventListener('click', closeDrawer));
+  window.addEventListener('resize', () => { if (window.innerWidth > 768) closeDrawer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open')); } });
+
+  document.querySelectorAll('[data-dgroup]').forEach(group => {
+    group.querySelector('.d-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = group.classList.contains('open');
+      document.querySelectorAll('[data-dgroup].open').forEach(g => g.classList.remove('open'));
+      if (!isOpen) group.classList.add('open');
+    });
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  const tocLinks = document.querySelectorAll('.toc-link');
+  const sections = document.querySelectorAll('section[id]');
+
+  const tocObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(link => link.classList.remove('active'));
+        const activeLink = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+        if (activeLink) {
+          activeLink.classList.add('active');
+          activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      }
+    });
+  }, { threshold: 0.35 });
+
+  sections.forEach(sec => tocObserver.observe(sec));
+</script>
+</body>
+</html>

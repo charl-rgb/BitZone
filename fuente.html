@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fuente de Poder (PSU) — BitZone</title>
+  <meta name="description" content="Aprende todo sobre la fuente de poder (PSU): tipos, certificación 80 PLUS, fuentes genéricas vs certificadas, protecciones, cálculos de vataje y cómo elegir la mejor para tu PC." />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230d2a5e'/><rect x='8' y='8' width='16' height='16' rx='3' fill='none' stroke='%2360a5fa' stroke-width='2'/><rect x='12' y='12' width='8' height='8' rx='1' fill='%233b82f6'/><rect x='5' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='5' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='11' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='11' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --c950: #03080f;
+      --c900: #061526;
+      --c800: #0a1e3d;
+      --c700: #0d2a5e;
+      --c600: #1345a0;
+      --c500: #1e5fd4;
+      --c400: #3b82f6;
+      --c300: #60a5fa;
+      --c200: #93c5fd;
+      --c100: #bfdbfe;
+      --c50:  #eff6ff;
+      --white: #ffffff;
+
+      --h-grad:    linear-gradient(180deg,#061526 0%,#0d2a5e 100%);
+      --a-grad:    linear-gradient(90deg,#1e5fd4,#60a5fa);
+      --shimmer:   linear-gradient(90deg,transparent,#3b82f6,#93c5fd,#3b82f6,transparent);
+      --drop-bg:   #07192e;
+      --card-bg:   rgba(10,30,61,.7);
+
+      --sh-header: 0 2px 20px rgba(4,12,26,.75);
+      --sh-drop:   0 12px 32px rgba(4,12,26,.7);
+      --sh-card:   0 4px 24px rgba(4,12,26,.45);
+      --tr: .28s cubic-bezier(.4,0,.2,1);
+      --radius: 12px;
+    }
+
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Poppins',sans-serif;background:var(--c900);color:var(--c100);padding-top:68px;overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+    img{display:block;max-width:100%;}
+    ul{list-style:none;}
+
+    .container{max-width:1200px;margin:0 auto;padding:0 1.5rem;}
+    .section-label{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c300);background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .9rem;margin-bottom:1rem;}
+    .section-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:var(--white);line-height:1.2;margin-bottom:.75rem;}
+    .section-sub{font-size:.95rem;color:var(--c200);line-height:1.7;max-width:620px;}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:8px;font-size:.875rem;font-weight:600;letter-spacing:.03em;cursor:pointer;transition:all var(--tr);border:none;}
+    .btn-primary{background:var(--a-grad);color:var(--white);box-shadow:0 4px 20px rgba(30,95,212,.4);}
+    .btn-primary:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 8px 28px rgba(30,95,212,.55);}
+    .btn-outline{background:transparent;color:var(--c200);border:1.5px solid rgba(96,165,250,.4);}
+    .btn-outline:hover{background:rgba(59,130,246,.12);color:var(--white);border-color:var(--c300);}
+
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    .accent-line{position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--shimmer);background-size:300% 100%;animation:shimmer 4s linear infinite;pointer-events:none;}
+    @keyframes shimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}
+
+    .site-header{position:fixed;top:0;left:0;width:100%;z-index:900;background:var(--h-grad);box-shadow:var(--sh-header);}
+    .header-inner{max-width:1280px;margin:0 auto;padding:0 1.75rem;height:68px;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+    .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;flex-shrink:0;}
+    .brand-logo{width:38px;height:35px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .brand-logo img{width:100%;height:100%;object-fit:contain;}
+    .brand-name{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:.06em;color:var(--white);}
+    .brand-name em{font-style:normal;color:var(--c300);}
+    .main-nav{display:flex;align-items:center;}
+    .nav-list{list-style:none;display:flex;align-items:center;gap:.05rem;}
+    .nav-item{position:relative;}
+    .nav-link{display:flex;align-items:center;gap:.28rem;padding:.42rem .72rem;font-size:.8rem;font-weight:500;color:var(--c100);text-decoration:none;border-radius:6px;white-space:nowrap;cursor:pointer;transition:color var(--tr),background var(--tr);user-select:none;position:relative;}
+    .nav-link::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%) scaleX(0);width:calc(100% - 1.44rem);height:2px;background:var(--a-grad);border-radius:2px;transition:transform var(--tr);pointer-events:none;}
+    .nav-link:hover{color:var(--white);background:rgba(59,130,246,.15);}
+    .nav-link:hover::after,.nav-link.active::after{transform:translateX(-50%) scaleX(1);}
+    .nav-link.active{color:var(--white);background:rgba(30,95,212,.35);}
+    .chevron{width:10px;height:10px;display:inline-block;flex-shrink:0;transition:transform var(--tr);}
+    .nav-item.open>.nav-link .chevron{transform:rotate(180deg);}
+    .dropdown{position:absolute;top:calc(100% + 10px);left:0;min-width:220px;background:var(--drop-bg);border:1px solid rgba(59,130,246,.18);border-radius:10px;box-shadow:var(--sh-drop);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity var(--tr),transform var(--tr),visibility var(--tr);z-index:100;}
+    .dropdown::before{content:'';display:block;height:2px;background:var(--a-grad);}
+    .nav-item.open>.dropdown{opacity:1;visibility:visible;transform:translateY(0);}
+    .dropdown-list{padding:.45rem 0;}
+    .dropdown-link{display:block;padding:.55rem 1.1rem;font-size:.78rem;font-weight:400;color:var(--c200);text-decoration:none;transition:color var(--tr),background var(--tr),padding-left var(--tr);}
+    .dropdown-link:hover{color:var(--white);background:rgba(59,130,246,.14);padding-left:1.45rem;}
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:8px;cursor:pointer;flex-shrink:0;transition:background var(--tr);}
+    .hamburger:hover{background:rgba(59,130,246,.26);}
+    .hbar{display:block;width:20px;height:2px;background:var(--c200);border-radius:2px;transition:transform var(--tr),opacity var(--tr),background var(--tr);transform-origin:center;}
+    .hamburger.open .hbar:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--white);}
+    .hamburger.open .hbar:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open .hbar:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--white);}
+    .overlay{position:fixed;inset:0;background:rgba(4,12,26,.65);z-index:950;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity var(--tr);}
+    .overlay.open{opacity:1;pointer-events:all;}
+    .drawer{position:fixed;top:0;left:0;width:285px;height:100dvh;z-index:960;background:linear-gradient(180deg,#061526 0%,#0a1e3d 55%,#0d2a5e 100%);box-shadow:6px 0 40px rgba(4,12,26,.8);transform:translateX(-100%);transition:transform var(--tr);display:flex;flex-direction:column;overflow-y:auto;}
+    .drawer.open{transform:translateX(0);}
+    .drawer-header{display:flex;align-items:center;justify-content:space-between;padding:0 1.1rem;height:68px;border-bottom:1px solid rgba(96,165,250,.14);flex-shrink:0;}
+    .drawer-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+    .drawer-logo-slot{width:34px;height:34px;border-radius:7px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .drawer-logo-slot img{width:34px;height:34px;object-fit:contain;}
+    .drawer-brand-name{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--white);}
+    .drawer-brand-name em{font-style:normal;color:var(--c300);}
+    .drawer-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.2);border-radius:6px;cursor:pointer;color:var(--c200);font-size:1rem;transition:background var(--tr),color var(--tr);}
+    .drawer-close:hover{background:rgba(59,130,246,.3);color:var(--white);}
+    .drawer-nav{flex:1;padding:.6rem 0 1rem;}
+    .drawer-nav-list{list-style:none;}
+    .d-link{display:flex;align-items:center;justify-content:space-between;padding:.72rem 1.3rem;font-size:.875rem;font-weight:500;color:var(--c100);text-decoration:none;border-left:3px solid transparent;cursor:pointer;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-link:hover{color:var(--white);background:rgba(59,130,246,.13);border-left-color:var(--c400);padding-left:1.75rem;}
+    .d-link.active{color:var(--white);background:rgba(30,95,212,.22);border-left-color:var(--c400);}
+    .d-chevron{width:10px;height:10px;flex-shrink:0;transition:transform var(--tr);}
+    .d-group.open>.d-link .d-chevron{transform:rotate(180deg);}
+    .d-sub{list-style:none;max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.18);}
+    .d-group.open>.d-sub{max-height:500px;}
+    .d-sub-link{display:block;padding:.52rem 1rem .52rem 2.2rem;font-size:.8rem;font-weight:400;color:var(--c200);text-decoration:none;border-left:3px solid transparent;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-sub-link:hover{color:var(--white);background:rgba(59,130,246,.1);border-left-color:var(--c300);padding-left:2.6rem;}
+    .d-sep{height:1px;background:rgba(96,165,250,.1);margin:.35rem 1.1rem;}
+
+    @media(max-width:1024px){.nav-link{font-size:.75rem;padding:.38rem .55rem;}.dropdown{min-width:195px;}}
+    @media(max-width:768px){.main-nav{display:none;}.hamburger{display:flex;}.header-inner{height:60px;padding:0 1.1rem;}body{padding-top:60px;}.drawer-header{height:60px;}}
+
+    .page-hero{
+      position:relative;
+      background:linear-gradient(135deg,#03080f 0%,#061526 35%,#0d2a5e 70%,#1345a0 100%);
+      padding:7.5rem 0 7.5rem;
+      overflow:hidden;
+    }
+    .page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+    .page-hero::after{content:'';position:absolute;right:-80px;top:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(30,95,212,.22) 0%,transparent 70%);pointer-events:none;}
+    .page-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;align-items:center;gap:3rem;}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--c200);margin-bottom:1.25rem;flex-wrap:wrap;}
+    .breadcrumb a{color:var(--c300);transition:color var(--tr);}
+    .breadcrumb a:hover{color:var(--white);}
+    .breadcrumb-sep{opacity:.4;}
+    .page-hero-title{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--white);line-height:1.1;margin-bottom:1rem;}
+    .page-hero-title .hl{background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero-sub{font-size:1rem;color:var(--c200);line-height:1.75;max-width:540px;margin-bottom:1.75rem;}
+    .page-hero-tags{display:flex;flex-wrap:wrap;gap:.5rem;}
+    .hero-tag{background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .85rem;font-size:.7rem;font-weight:600;color:var(--c200);letter-spacing:.06em;}
+    .psu-hero-visual{position:relative;z-index:5;}
+    .psu-diagram{width:420px;height:320px;position:relative;flex-shrink:0;}
+    .psu-diagram img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
+
+    .sec-pad{padding:5rem 0;}
+    .sec-dark{background:var(--c900);}
+    .sec-mid{background:var(--c800);}
+
+    .what-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+    .what-text p{font-size:.9rem;color:var(--c200);line-height:1.8;margin-bottom:1rem;}
+    .what-text p:last-child{margin-bottom:0;}
+    .what-highlight{background:rgba(30,95,212,.12);border-left:3px solid var(--c400);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin:1.25rem 0;}
+    .what-highlight p{font-size:.88rem;color:var(--c100);font-style:italic;margin:0;}
+    .psu-visual-box{background:linear-gradient(135deg,var(--c800),var(--c700));border-radius:16px;border:1px solid rgba(96,165,250,.18);padding:2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;min-height:320px;box-shadow:var(--sh-card);}
+    .psu-visual-box img{width:100%;max-width:500px;border-radius:12px;}
+    .psu-visual-box p{font-size:.78rem;color:var(--c200);text-align:center;line-height:1.6;}
+
+    .function-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .fn-card{background:var(--card-bg);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.75rem 1.4rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .fn-card:hover{transform:translateY(-5px);border-color:rgba(96,165,250,.35);box-shadow:0 10px 32px rgba(30,95,212,.28);}
+    .fn-icon{width:48px;height:48px;border-radius:11px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;box-shadow:0 4px 16px rgba(30,95,212,.35);}
+    .fn-icon svg{width:22px;height:22px;stroke:var(--white);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .fn-card h3{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .fn-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin:2.5rem 0;}
+    .psu-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.5rem;transition:transform var(--tr),border-color var(--tr);}
+    .psu-card:hover{transform:translateY(-5px);border-color:rgba(96,165,250,.4);}
+    .psu-icon{width:70px;height:70px;margin:0 auto 1rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;}
+    .psu-icon.generic{background:linear-gradient(135deg,#8B0000,#b91c1c);}
+    .psu-icon.certified{background:linear-gradient(135deg,#1e5fd4,#60a5fa);}
+    .psu-card h3{font-size:1.2rem;font-weight:700;color:var(--white);text-align:center;margin-bottom:.5rem;}
+    .psu-card ul{list-style:none;margin-top:1rem;}
+    .psu-card li{font-size:.7rem;color:var(--c200);padding:.4rem 0;border-bottom:1px solid rgba(96,165,250,.1);}
+    .psu-card li:last-child{border-bottom:none;}
+    .badge-danger{background:#b91c1c;color:white;padding:.2rem .6rem;border-radius:20px;font-size:.6rem;}
+    .badge-success{background:#1e5fd4;color:white;padding:.2rem .6rem;border-radius:20px;font-size:.6rem;}
+
+    .cert-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;}
+    .cert-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1rem;text-align:center;transition:transform var(--tr),border-color var(--tr);}
+    .cert-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);}
+    .cert-level{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .cert-efficiency{font-size:.7rem;color:var(--c300);margin:.3rem 0;}
+    .cert-desc{font-size:.6rem;color:var(--c200);}
+
+    .watt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2rem;}
+    .watt-card{background:rgba(6,21,38,.7);border-radius:var(--radius);padding:1rem;text-align:center;border-left:3px solid var(--c400);}
+    .watt-value{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;color:var(--white);}
+    .watt-desc{font-size:.65rem;color:var(--c200);margin-top:.3rem;}
+
+    .connector-table{overflow-x:auto;margin-top:2rem;}
+    .connector-table table{width:100%;border-collapse:collapse;background:rgba(6,21,38,.7);border-radius:var(--radius);}
+    .connector-table th,.connector-table td{padding:.8rem .5rem;text-align:left;border-bottom:1px solid rgba(96,165,250,.1);font-size:.7rem;}
+    .connector-table th{color:var(--c300);font-weight:700;background:rgba(13,42,94,.6);}
+    .connector-table td{color:var(--c200);}
+
+    .brands-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;}
+    .brand-card-psu{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1rem;text-align:center;transition:transform var(--tr),border-color var(--tr);}
+    .brand-card-psu:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);}
+    .brand-logo-psu{width:50px;height:50px;background:var(--a-grad);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto .8rem;font-family:'Orbitron',sans-serif;font-weight:900;font-size:.7rem;color:var(--white);}
+    .brand-card-psu h4{font-size:.8rem;font-weight:700;color:var(--white);margin-bottom:.2rem;}
+    .brand-card-psu p{font-size:.6rem;color:var(--c200);}
+
+    .timeline-v{position:relative;padding-left:2.5rem;margin-top:2.5rem;}
+    .timeline-v::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--c400),transparent);}
+    .tl-v-item{position:relative;margin-bottom:2rem;}
+    .tl-v-dot{position:absolute;left:-2.5rem;top:.2rem;width:22px;height:22px;border-radius:50%;background:var(--a-grad);border:3px solid var(--c800);box-shadow:0 0 12px rgba(59,130,246,.5);display:flex;align-items:center;justify-content:center;}
+    .tl-v-dot span{font-size:.55rem;font-weight:700;font-family:'Orbitron',sans-serif;color:var(--white);}
+    .tl-v-year{font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;color:var(--c300);letter-spacing:.1em;margin-bottom:.3rem;}
+    .tl-v-item h4{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.3rem;}
+    .tl-v-item p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .tips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .tip-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.6rem 1.3rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .tip-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);box-shadow:0 8px 28px rgba(30,95,212,.22);}
+    .tip-num{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.6rem;}
+    .tip-card h3{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .tip-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .faq-grid-psu{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem;}
+    .faq-item{background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.13);border-radius:var(--radius);overflow:hidden;}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.3rem;cursor:pointer;font-size:.875rem;font-weight:600;color:var(--white);transition:background var(--tr);gap:1rem;}
+    .faq-q:hover{background:rgba(30,95,212,.1);}
+    .faq-q svg{width:16px;height:16px;stroke:var(--c300);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform var(--tr);}
+    .faq-item.open .faq-q svg{transform:rotate(180deg);}
+    .faq-a{max-height:0;overflow:hidden;font-size:.8rem;color:var(--c200);line-height:1.65;transition:max-height .3s ease,padding .3s ease;padding:0 1.3rem;}
+    .faq-item.open .faq-a{max-height:200px;padding:.2rem 1.3rem 1.1rem;}
+
+    .cta-psu{padding:5rem 0;background:linear-gradient(135deg,var(--c900) 0%,var(--c700) 50%,var(--c600) 100%);text-align:center;position:relative;overflow:hidden;}
+    .cta-psu::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.07) 1px,transparent 1px);background-size:40px 40px;}
+    .cta-inner{position:relative;z-index:2;}
+    .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem;}
+
+    .site-footer{background:var(--c950);border-top:1px solid rgba(96,165,250,.1);padding:3.5rem 0 0;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(96,165,250,.08);}
+    .footer-brand-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;}
+    .footer-logo{width:32px;height:32px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .footer-logo img{width:32px;height:32px;object-fit:contain;}
+    .footer-brand-name{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
+    .footer-brand-name em{font-style:normal;color:var(--c300);}
+    .footer-desc{font-size:.8rem;color:var(--c200);line-height:1.7;max-width:280px;margin-bottom:1.25rem;}
+    .footer-socials{display:flex;gap:.7rem;}
+    .social-btn{width:36px;height:36px;border-radius:8px;background:rgba(30,95,212,.15);border:1px solid rgba(96,165,250,.18);display:flex;align-items:center;justify-content:center;color:var(--c300);transition:background var(--tr),color var(--tr),border-color var(--tr);}
+    .social-btn:hover{background:rgba(30,95,212,.35);color:var(--white);border-color:var(--c400);}
+    .social-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .footer-col h5{font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:1rem;}
+    .footer-links-col{display:flex;flex-direction:column;gap:.5rem;}
+    .footer-link{font-size:.8rem;color:var(--c200);text-decoration:none;transition:color var(--tr),padding-left var(--tr);}
+    .footer-link:hover{color:var(--c300);padding-left:.4rem;}
+    .footer-bottom{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 0;gap:1rem;flex-wrap:wrap;}
+    .footer-copy{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev a{color:var(--c300);text-decoration:none;font-weight:600;transition:color var(--tr);}
+    .footer-dev a:hover{color:var(--white);}
+
+    @media(max-width:1024px){
+      .cert-grid{grid-template-columns:repeat(2,1fr);}
+      .watt-grid{grid-template-columns:repeat(2,1fr);}
+      .brands-grid{grid-template-columns:repeat(2,1fr);}
+      .footer-grid{grid-template-columns:1fr 1fr;}
+      .page-hero-inner{grid-template-columns:1fr;}
+      .psu-hero-visual{display:block;}
+      .what-grid{grid-template-columns:1fr;}
+      .comparison-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:768px){
+      .function-cards{grid-template-columns:1fr;}
+      .cert-grid{grid-template-columns:1fr;}
+      .watt-grid{grid-template-columns:1fr;}
+      .brands-grid{grid-template-columns:1fr;}
+      .tips-grid{grid-template-columns:1fr;}
+      .faq-grid-psu{grid-template-columns:1fr;}
+      .footer-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="accent-line" aria-hidden="true"></div>
+
+  <div class="header-inner">
+
+    <!-- LOGO -->
+    <a href="index.html" class="brand" aria-label="BitZone inicio">
+      <img src="Img/logo.png"
+           width="38"
+           height="35"
+           alt="BitZone"
+           style="border-radius:6px;display:block;">
+
+      <div class="brand-name">
+        Bit<em>Zone</em>
+      </div>
+    </a>
+
+    <!-- MENU -->
+    <nav class="main-nav" aria-label="Navegacion principal">
+
+      <ul class="nav-list" role="list">
+
+        <!-- INICIO -->
+        <li class="nav-item">
+          <a href="index.html"
+             class="nav-link active"
+             data-page="index">
+            Inicio
+          </a>
+        </li>
+
+        <!-- PARTES -->
+        <li class="nav-item" data-drop>
+
+          <span class="nav-link" data-page="partes">
+            Partes
+
+            <svg class="chevron"
+                 viewBox="0 0 10 6"
+                 fill="none"
+                 aria-hidden="true">
+
+              <path d="M1 1l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+          </span>
+
+          <ul class="dropdown" role="menu">
+
+            <li class="dropdown-list">
+
+              <a href="procesaro.html" class="dropdown-link">
+                Procesador (CPU)
+              </a>
+
+              <a href="tarjeta_madre.html" class="dropdown-link">
+                Tarjeta Madre
+              </a>
+
+              <a href="ram.html" class="dropdown-link">
+                Memoria RAM
+              </a>
+
+              <a href="disco.html" class="dropdown-link">
+                Disco Duro / SSD
+              </a>
+
+              <a href="fuente.html" class="dropdown-link">
+                Fuente de Poder
+              </a>
+
+              <a href="gpu.html" class="dropdown-link">
+                Tarjeta Grafica
+              </a>
+
+              <a href="refrigeracion.html" class="dropdown-link">
+                Refrigeracion
+              </a>
+
+              <a href="puertos.html" class="dropdown-link">
+                Puertos y Conectores
+              </a>
+
+            </li>
+
+          </ul>
+        </li>
+
+        <!-- VIDEOS -->
+        <li class="nav-item">
+          <a href="index.html#videos-destacados"
+             class="nav-link"
+             data-page="videos">
+            Videos
+          </a>
+        </li>
+
+        <!-- FAQ -->
+        <li class="nav-item">
+          <a href="index.html#faq-rapido"
+             class="nav-link"
+             data-page="faq">
+            FAQ
+          </a>
+        </li>
+
+        <!-- CONTACTO -->
+        <li class="nav-item">
+          <a href="index.html#footer"
+             class="nav-link"
+             data-page="contacto">
+            Contacto
+          </a>
+        </li>
+
+      </ul>
+
+    </nav>
+
+    <!-- BOTON MENU -->
+    <button class="hamburger"
+            id="hamburgerBtn"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="drawer">
+
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+
+    </button>
+
+  </div>
+</header>
+
+<div class="overlay" id="overlay" aria-hidden="true"></div>
+
+<aside class="drawer" id="drawer" role="dialog" aria-label="Menú móvil" aria-modal="true">
+  <div class="drawer-header">
+    <a href="../index.html" class="drawer-brand" aria-label="BitZone inicio">
+      <div class="drawer-logo-slot"><img src="Img/logo.png" alt="BitZone"></div>
+      <div class="drawer-brand-name">Bit<em>Zone</em></div>
+    </a>
+    <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&#x2715;</button>
+  </div>
+  <nav class="drawer-nav" aria-label="Navegación móvil">
+    <ul class="drawer-nav-list">
+      <li><a href="../index.html" class="d-link" data-page="index">Inicio</a></li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link active" data-page="partes">Partes de la Computadora
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="cpu.html" class="d-sub-link">Procesador (CPU)</a></li>
+          <li><a href="tarjeta_madre.html" class="d-sub-link">Tarjeta Madre</a></li>
+          <li><a href="ram.html" class="d-sub-link">Memoria RAM</a></li>
+          <li><a href="disco.html" class="d-sub-link">Disco Duro / SSD</a></li>
+          <li><a href="fuente.html" class="d-sub-link">Fuente de Poder</a></li>
+          <li><a href="gpu.html" class="d-sub-link">Tarjeta Gráfica</a></li>
+          <li><a href="refrigeracion.html" class="d-sub-link">Refrigeración</a></li>
+          <li><a href="puertos.html" class="d-sub-link">Puertos y Conectores</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="ensamblaje">Ensamblaje
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../ensamblaje/herramientas.html" class="d-sub-link">Herramientas</a></li>
+          <li><a href="../ensamblaje/paso-a-paso.html" class="d-sub-link">Paso a Paso</a></li>
+          <li><a href="../ensamblaje/instalacion.html" class="d-sub-link">Instalación de Componentes</a></li>
+          <li><a href="../ensamblaje/cableado.html" class="d-sub-link">Cableado</a></li>
+          <li><a href="../ensamblaje/errores.html" class="d-sub-link">Errores Comunes</a></li>
+          <li><a href="../ensamblaje/consejos.html" class="d-sub-link">Consejos</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="actividades">Actividades
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../actividades/quiz.html" class="d-sub-link">Quiz</a></li>
+          <li><a href="../actividades/ejercicios.html" class="d-sub-link">Ejercicios</a></li>
+          <li><a href="../actividades/preguntas.html" class="d-sub-link">Preguntas</a></li>
+          <li><a href="../actividades/evaluacion.html" class="d-sub-link">Evaluación</a></li>
+          <li><a href="../actividades/juegos.html" class="d-sub-link">Juegos Educativos</a></li>
+        </ul>
+      </li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li><a href="../index.html#videos-destacados" class="d-link">Videos</a></li>
+      <li><a href="../index.html#faq-rapido" class="d-link">FAQ</a></li>
+      <li><a href="../index.html#footer" class="d-link">Contacto</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div>
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a><span class="breadcrumb-sep">/</span>
+            <a href="../partes.html">Partes</a><span class="breadcrumb-sep">/</span>
+            <span>Fuente de Poder (PSU)</span>
+          </nav>
+          <span class="section-label">Corazón Eléctrico</span>
+          <h1 class="page-hero-title">Fuente de <span class="hl">Poder (PSU)</span></h1>
+          <p class="page-hero-sub">El componente que alimenta toda tu PC. Aprende la diferencia entre fuentes genéricas y certificadas, las certificaciones 80 PLUS, protecciones y cómo elegir la mejor.</p>
+          <div class="page-hero-tags">
+            <span class="hero-tag">80 PLUS</span><span class="hero-tag">Genérica vs Certificada</span>
+            <span class="hero-tag">Vataje</span><span class="hero-tag">Protecciones</span>
+          </div>
+        </div>
+        <div class="psu-hero-visual">
+          <div class="psu-diagram"><img src="Img/fuentee.webp" alt="Fuente de Poder"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="que-es">
+    <div class="container">
+      <div class="what-grid">
+        <div class="what-text reveal">
+          <span class="section-label">Definición</span>
+          <h2 class="section-title">¿Qué es una Fuente de Poder?</h2>
+          <p>La <strong style="color:var(--white)">fuente de poder (PSU)</strong> (Power Supply Unit) es el componente encargado de <strong style="color:var(--c300)">convertir la corriente alterna (AC) de la pared en corriente continua (DC)</strong> que necesitan los componentes de tu PC en diferentes voltajes: +3.3V, +5V y +12V.</p>
+          <p>Es el <strong style="color:var(--white)">corazón eléctrico</strong> de la computadora. Sin una fuente de poder adecuada, ningún otro componente puede funcionar. Una mala fuente puede dañar todos los demás componentes o incluso causar incendios.</p>
+          <div class="what-highlight">
+            <p><strong>¡NUNCA ahorres en la fuente de poder!</strong> Es el único componente que puede destruir toda tu PC si falla. Una fuente genérica barata puede costarte cientos de dólares en componentes dañados.</p>
+          </div>
+          <p>Las fuentes de poder tienen diferentes <strong>vatajes (W)</strong>, <strong>eficiencias (80 PLUS)</strong> y <strong>certificaciones</strong> que determinan su calidad y precio.</p>
+        </div>
+        <div class="psu-visual-box reveal">
+          <img src="Img/interior.jpg" alt="Interior de fuente de poder">
+          <p>Interior de una fuente certificada — <strong style="color:var(--c300)">Componentes de calidad</strong> = seguridad y estabilidad.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="tipos">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Calidad</span>
+        <h2 class="section-title">Fuentes Genéricas vs Certificadas</h2>
+        <p class="section-sub" style="margin:0 auto;">La diferencia entre una fuente que protege tu PC y una que puede destruirla.</p>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="psu-card reveal">
+          <div class="psu-icon generic">⚠️</div>
+          <h3>Fuente Genérica</h3>
+          <ul>
+            <li>💰 <strong>Precio:</strong> Muy bajo ($10-25)</li>
+            <li>⚡ <strong>Eficiencia:</strong> ~60-70% (sin certificación)</li>
+            <li>📦 <strong>Componentes:</strong> Chinos, de baja calidad</li>
+            <li>🔌 <strong>Conectores:</strong> Pocos y de mala calidad</li>
+            <li>🛡️ <strong>Protecciones:</strong> Mínimas o nulas</li>
+            <li>⚠️ <strong>Riesgo:</strong> Puede dañar tu PC o quemarse</li>
+            <li>🔊 <strong>Ruido:</strong> Ventilador ruidoso</li>
+            <li>📊 <strong>Potencia real:</strong> Mucho menor a la etiquetada</li>
+          </ul>
+          <p style="margin-top:.8rem;text-align:center;"><span class="badge-danger">❌ NO RECOMENDADA</span></p>
+        </div>
+        <div class="psu-card reveal" style="animation-delay:.1s">
+          <div class="psu-icon certified">✅</div>
+          <h3>Fuente Certificada</h3>
+          <ul>
+            <li>💰 <strong>Precio:</strong> Moderado-Alto ($40-300+)</li>
+            <li>⚡ <strong>Eficiencia:</strong> 80%+ (Bronce, Oro, Platino, Titanio)</li>
+            <li>📦 <strong>Componentes:</strong> Japoneses de alta calidad</li>
+            <li>🔌 <strong>Conectores:</strong> Abundantes y modulares</li>
+            <li>🛡️ <strong>Protecciones:</strong> OCP, OVP, UVP, OPP, SCP, OTP</li>
+            <li>✅ <strong>Seguro:</strong> Protege todos los componentes</li>
+            <li>🔇 <strong>Ruido:</strong> Silenciosa (ventilador de alta calidad)</li>
+            <li>📊 <strong>Potencia real:</strong> Entrega lo que promete</li>
+          </ul>
+          <p style="margin-top:.8rem;text-align:center;"><span class="badge-success">✅ ALTAMENTE RECOMENDADA</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="certificaciones">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Certificación</span>
+        <h2 class="section-title">80 PLUS — Eficiencia Energética</h2>
+        <p class="section-sub" style="margin:0 auto;">La certificación 80 PLUS garantiza que la fuente convierte al menos el 80% de la energía de la pared en energía útil.</p>
+      </div>
+
+      <div class="cert-grid">
+        <div class="cert-card reveal"><div class="cert-level">80 PLUS</div><div class="cert-efficiency">80% a 20%,50%,100%</div><div class="cert-desc">Eficiencia básica. Fuente de entrada.</div></div>
+        <div class="cert-card reveal" style="animation-delay:.1s"><div class="cert-level">80 PLUS Bronze</div><div class="cert-efficiency">82-85%</div><div class="cert-desc">La más popular para PCs de gama media. Excelente relación calidad/precio.</div></div>
+        <div class="cert-card reveal" style="animation-delay:.2s"><div class="cert-level">80 PLUS Silver</div><div class="cert-efficiency">85-88%</div><div class="cert-desc">Poco común. Entre Bronze y Gold.</div></div>
+        <div class="cert-card reveal" style="animation-delay:.3s"><div class="cert-level">80 PLUS Gold</div><div class="cert-efficiency">87-90%</div><div class="cert-desc">Muy popular en gama alta. Ideal para gaming y trabajo profesional.</div></div>
+        <div class="cert-card reveal" style="animation-delay:.4s"><div class="cert-level">80 PLUS Platinum</div><div class="cert-efficiency">89-92%</div><div class="cert-desc">Alta eficiencia. Para equipos que funcionan muchas horas.</div></div>
+        <div class="cert-card reveal" style="animation-delay:.5s"><div class="cert-level">80 PLUS Titanium</div><div class="cert-efficiency">90-94%</div><div class="cert-desc">Lo máximo. Eficiencia casi perfecta. Muy cara.</div></div>
+      </div>
+
+      <div class="speed-comparison" style="margin-top:2rem;background:rgba(6,21,38,.7);border-radius:var(--radius);padding:1.5rem;">
+        <div class="fact-box-title">💡 ¿Por qué es importante la eficiencia?</div>
+        <p style="font-size:.8rem;margin-top:.5rem;">Una fuente 80 PLUS Gold (90% eficiencia) desperdicia menos energía como calor que una genérica (65% eficiencia).</p>
+        <div class="speed-bar" style="margin-top:1rem;"><span class="speed-label">Genérica 500W</span><div class="speed-bar-bg"><div class="speed-bar-fill fill-hdd" style="width:65%;background:#b91c1c;">65%</div></div><span class="speed-value">325W reales</span></div>
+        <div class="speed-bar"><span class="speed-label">80 PLUS Bronze 500W</span><div class="speed-bar-bg"><div class="speed-bar-fill fill-ssd" style="width:82%;background:#1e5fd4;">82%</div></div><span class="speed-value">410W reales</span></div>
+        <div class="speed-bar"><span class="speed-label">80 PLUS Gold 500W</span><div class="speed-bar-bg"><div class="speed-bar-fill fill-nvme" style="width:90%;background:#60a5fa;">90%</div></div><span class="speed-value">450W reales</span></div>
+        <p style="margin-top:1rem;font-size:.7rem;">⚠️ Una fuente genérica de 500W <strong>no entrega 500W reales</strong>. Solo entrega ~300-350W. ¡Engaño común!</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="vataje">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Potencia</span>
+        <h2 class="section-title">¿Cuántos Watts necesitas?</h2>
+        <p class="section-sub" style="margin:0 auto;">Calcula el vataje recomendado según los componentes de tu PC.</p>
+      </div>
+
+      <div class="watt-grid">
+        <div class="watt-card reveal"><div class="watt-value">300W - 400W</div><div class="watt-desc">PC de oficina / navegación. Sin tarjeta gráfica dedicada. Procesador integrado.</div></div>
+        <div class="watt-card reveal" style="animation-delay:.1s"><div class="watt-value">450W - 550W</div><div class="watt-desc">Gaming de entrada. GPU como GTX 1650, RTX 3050, RX 6600.</div></div>
+        <div class="watt-card reveal" style="animation-delay:.2s"><div class="watt-value">600W - 750W</div><div class="watt-desc">Gaming estándar. GPU como RTX 3060/3070, RX 6700/6800.</div></div>
+        <div class="watt-card reveal" style="animation-delay:.3s"><div class="watt-value">750W - 850W</div><div class="watt-desc">Gaming alto rendimiento. GPU como RTX 4070/4080, RX 7800/7900.</div></div>
+        <div class="watt-card reveal" style="animation-delay:.4s"><div class="watt-value">850W - 1000W</div><div class="watt-desc">Gama ultra. GPU como RTX 4090, RX 7900 XTX. Overclocking.</div></div>
+        <div class="watt-card reveal" style="animation-delay:.5s"><div class="watt-value">1000W - 1600W</div><div class="watt-desc">Multi-GPU, servidores, workstations extremas.</div></div>
+      </div>
+
+      <div class="fact-box" style="margin-top:1.5rem;">
+        <div class="fact-box-title">🔌 Fórmula rápida para calcular vataje</div>
+        <p style="font-size:.85rem;">(Consumo CPU + Consumo GPU) × 1.5 + 50W (resto de componentes) = Vataje recomendado</p>
+        <p style="font-size:.7rem;margin-top:.5rem;">Ejemplo: CPU 125W + GPU 200W = 325W × 1.5 = 487W + 50W = <strong style="color:var(--c300);">~550W recomendados</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="conectores">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Cableado</span>
+        <h2 class="section-title">Tipos de Conectores y Cableado</h2>
+        <p class="section-sub" style="margin:0 auto;">Conoce los conectores que necesita tu PC y las diferencias entre fuentes modulares y no modulares.</p>
+      </div>
+
+      <div class="comparison-grid" style="margin-bottom:1.5rem;">
+        <div class="psu-card reveal"><div class="psu-icon" style="background:linear-gradient(135deg,#0d2a5e,#1e5fd4);">🔌</div><h3>No Modular</h3><ul><li>Todos los cables fijos</li><li>✅ Más barata</li><li>❌ Muchos cables sin usar</li><li>❌ Mala gestión de cables</li></ul></div>
+        <div class="psu-card reveal" style="animation-delay:.1s"><div class="psu-icon" style="background:linear-gradient(135deg,#1e5fd4,#3b82f6);">✨</div><h3>Semi Modular</h3><ul><li>Cables esenciales fijos (24-pin, CPU)</li><li>El resto removible</li><li>✅ Buen equilibrio precio/calidad</li></ul></div>
+        <div class="psu-card reveal" style="animation-delay:.2s"><div class="psu-icon" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">⭐</div><h3>Full Modular</h3><ul><li>Todos los cables removibles</li><li>✅ Máxima limpieza</li><li>✅ Mejor flujo de aire</li><li>❌ Más cara</li></ul></div>
+      </div>
+
+      <div class="connector-table">
+        <table>
+          <thead><tr><th>Conector</th><th>Uso</th><th>Cantidad típica</th></tr></thead>
+          <tbody>
+            <tr><td><strong>24-pin ATX</strong></td><td>Alimentación principal de la tarjeta madre</td><td>1</td></tr>
+            <tr><td><strong>4+4-pin EPS/CPU</strong></td><td>Alimentación del procesador</td><td>1-2</td></tr>
+            <tr><td><strong>6+2-pin PCIe</strong></td><td>Alimentación de tarjetas gráficas</td><td>2-6</td></tr>
+            <tr><td><strong>SATA</strong></td><td>Discos duros, SSD, periféricos</td><td>4-8</td></tr>
+            <tr><td><strong>Molex (4-pin)</strong></td><td>Ventiladores viejos, adaptadores</td><td>2-4</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="protecciones">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Seguridad</span>
+        <h2 class="section-title">Protecciones de la Fuente</h2>
+        <p class="section-sub" style="margin:0 auto;">Una buena fuente debe tener múltiples protecciones para salvaguardar tus componentes.</p>
+      </div>
+      <div class="tips-grid" style="margin-top:1rem;">
+        <div class="tip-card reveal"><div class="tip-num">OCP</div><h3>Sobrecorriente</h3><p>Apaga la fuente si un conector extrae más corriente de la permitida. Evita que se quemen cables o conectores.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.08s"><div class="tip-num">OVP</div><h3>Sobretensión</h3><p>Protege contra voltajes excesivos en las líneas de salida. Crítica para salvaguardar CPU, GPU y RAM.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.16s"><div class="tip-num">UVP</div><h3>Subtensión</h3><p>Apaga la fuente si el voltaje cae por debajo de lo seguro. Previene daños por bajo voltaje.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.24s"><div class="tip-num">OPP</div><h3>Sobrepotencia</h3><p>Desconecta la fuente si la demanda supera su capacidad máxima. Protege contra picos repentinos.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.32s"><div class="tip-num">SCP</div><h3>Cortocircuito</h3><p>La protección más importante. Apaga la fuente inmediatamente si detecta un cortocircuito.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.40s"><div class="tip-num">OTP</div><h3>Sobretemperatura</h3><p>Apaga la fuente si la temperatura interna excede lo seguro. Previene incendios.</p></div>
+      </div>
+      <p style="text-align:center;margin-top:1.5rem;font-size:.75rem;">⚠️ <strong>Las fuentes genéricas NO tienen la mayoría de estas protecciones.</strong> Por eso son tan peligrosas.</p>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="evolucion">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Historia</span>
+        <h2 class="section-title">Evolución de las Fuentes de Poder</h2>
+        <p class="section-sub">Cómo han evolucionado las PSU para satisfacer las demandas modernas.</p>
+      </div>
+      <div class="timeline-v">
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>01</span></div><div class="tl-v-year">1980s-90s</div><h4>Fuentes AT</h4><p>Conector de 12V simple. No tenían interruptor de encendido (dependía del gabinete). Eficiencia muy baja (~50-60%).</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>02</span></div><div class="tl-v-year">1995-2000</div><h4>Fuentes ATX</h4><p>Intel introdujo ATX. Incluyen conector de 20/24 pines, control por software (apagado desde el SO) y mejor eficiencia.</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>03</span></div><div class="tl-v-year">2004</div><h4>Certificación 80 PLUS</h4><p>Nace el estándar 80 PLUS para garantizar al menos 80% de eficiencia. Comienza la era de fuentes eficientes.</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>04</span></div><div class="tl-v-year">2010s</div><h4>Modularidad y Gaming</h4><p>Aparecen las fuentes modulares y semi modulares. Las marcas de gaming (Corsair, EVGA) dominan el mercado.</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>05</span></div><div class="tl-v-year">2020-Actual</div><h4>ATX 3.0 y PCIe 5.0</h4><p>Nuevo estándar con conector 12VHPWR para GPUs modernas (RTX 40 series). Mayor eficiencia y protección contra picos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="marcas">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Fabricantes</span>
+        <h2 class="section-title">Marcas Recomendadas</h2>
+        <p class="section-sub" style="margin:0 auto;">Las marcas más confiables de fuentes de poder.</p>
+      </div>
+      <div class="brands-grid">
+        <div class="brand-card-psu reveal"><div class="brand-logo-psu">Corsair</div><h4>Corsair</h4><p>RMx, HX, AX, CX-F</p></div>
+        <div class="brand-card-psu reveal" style="animation-delay:.08s"><div class="brand-logo-psu">EVGA</div><h4>EVGA</h4><p>SuperNOVA G6/G7/P6/T2</p></div>
+        <div class="brand-card-psu reveal" style="animation-delay:.16s"><div class="brand-logo-psu">Seasonic</div><h4>Seasonic</h4><p>Focus, Prime, Core</p></div>
+        <div class="brand-card-psu reveal" style="animation-delay:.24s"><div class="brand-logo-psu">MSI</div><h4>MSI</h4><p>MPG, MAG, A-GF</p></div>
+        <div class="brand-card-psu reveal" style="animation-delay:.32s"><div class="brand-logo-psu">ASUS</div><h4>ASUS</h4><p>ROG Thor, ROG Strix, TUF</p></div>
+        <div class="brand-card-psu reveal" style="animation-delay:.40s"><div class="brand-logo-psu">Cooler Master</div><h4>Cooler Master</h4><p>V Gold, MWE, XG</p></div>
+        <div class="brand-card-psu reveal" style="animation-delay:.48s"><div class="brand-logo-psu">Thermaltake</div><h4>Thermaltake</h4><p>Toughpower, Smart</p></div>
+        <div class="brand-card-psu reveal" style="animation-delay:.56s"><div class="brand-logo-psu">Be Quiet!</div><h4>Be Quiet!</h4><p>Dark Power, Straight Power, Pure Power</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="consejos">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Guía de Compra</span>
+        <h2 class="section-title">¿Cómo elegir tu fuente de poder?</h2>
+        <p class="section-sub" style="margin:0 auto;">Recomendaciones para comprar la mejor PSU según tu presupuesto y necesidades.</p>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-card reveal"><div class="tip-num">01</div><h3>Margin de sobra (Headroom)</h3><p>Nunca compres una fuente "justa". Añade 100-200W de margen sobre el cálculo para picos de consumo, futuras actualizaciones y longevidad.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.08s"><div class="tip-num">02</div><h3>Certificación mínima</h3><p>Para PC de oficina: 80 PLUS White/Bronze. Para gaming: 80 PLUS Bronze mínimo, recomendado Gold. Para alta gama: Gold/Platinum.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.16s"><div class="tip-num">03</div><h3>NUNCA compres genéricas</h3><p>Una fuente genérica de $15 puede destruir tu PC entera (CPU, GPU, madre, discos). Invierte mínimo $40-50 en una fuente certificada.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.24s"><div class="tip-num">04</div><h3>Lee reviews profesionales</h3><p>No te fíes solo de la marca. Busca reviews en sitios como Tom's Hardware, TechPowerUp o Cybenetics que miden calidad real.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.32s"><div class="tip-num">05</div><h3>ATX 3.0 para GPUs nuevas</h3><p>Si compras RTX 40 series o RX 7000, considera fuentes con conector 12VHPWR (ATX 3.0) para evitar adaptadores.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.40s"><div class="tip-num">06</div><h3>Modular vs No modular</h3><p>Si tu presupuesto lo permite, compra semi o full modular. La gestión de cables es mucho más limpia y mejora el flujo de aire.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="faq">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Preguntas Frecuentes</span>
+        <h2 class="section-title">FAQ — Fuente de Poder</h2>
+        <p class="section-sub" style="margin:0 auto 0;">Las dudas más comunes sobre fuentes de poder.</p>
+      </div>
+      <div class="faq-grid-psu">
+        <div class="faq-item reveal"><div class="faq-q">¿Puedo usar una fuente de 1000W en una PC que solo consume 300W?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Sí, perfectamente. La fuente solo entrega la potencia que los componentes demandan. No va a "forzar" más energía. El problema es lo contrario: usar una fuente muy pequeña para componentes grandes.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.06s"><div class="faq-q">¿Qué pasa si mi fuente es genérica y falla?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Puede pasar de todo: que solo se apague, o que envíe un pico de voltaje a tus componentes y los queme (CPU, GPU, placa madre, discos). Es el componente más riesgoso de escatimar.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.12s"><div class="faq-q">¿Qué diferencia hay entre Single Rail y Multi Rail?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Single Rail: una sola línea de 12V con toda la potencia. Multi Rail: varias líneas de 12V con protección OCP individual. Multi Rail es más seguro (evita cortos), Single Rail es más tolerante a picos.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.18s"><div class="faq-q">¿Qué es el factor de potencia (PFC)?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">PFC (Power Factor Correction) mejora la eficiencia con la red eléctrica. Las fuentes buenas tienen PFC Activo (casi universal), las genéricas tienen PFC Pasivo o ninguno.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.24s"><div class="faq-q">¿Una fuente de menor wattage pero más certificada es mejor?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Sí, hasta cierto punto. Una fuente 80 PLUS Gold de 550W es mejor que una genérica de 700W, porque entrega más potencia real y es más segura/estable.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.30s"><div class="faq-q">¿Cada cuánto debo cambiar mi fuente?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Las fuentes buenas duran 5-10 años. Los condensadores se degradan con el tiempo. Si tu fuente tiene más de 7-8 años o notas ruidos extraños, considera cambiarla.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.36s"><div class="faq-q">¿Fuentes usadas? ¿Vale la pena?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Solo si es de una marca premium (Corsair, EVGA, Seasonic) y tiene menos de 3-4 años. Las fuentes genéricas usadas son una bomba de tiempo. Mejor comprar nueva certificada.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.42s"><div class="faq-q">¿Qué ruidos son normales en una fuente?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Un leve zumbido del ventilador es normal. Ruido de chisporroteo, clics metálicos o olor a quemado NO es normal. Apaga el PC inmediatamente.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-psu">
+    <div class="container">
+      <div class="cta-inner reveal">
+        <span class="section-label">Siguiente Paso</span>
+        <h2 class="section-title">¿Listo para seguir aprendiendo?</h2>
+        <p class="section-sub" style="margin:0 auto;">Ahora que conoces la fuente de poder, explora los demás componentes o pon a prueba lo que aprendiste.</p>
+        <div class="cta-btns">
+          <a href="gpu.html" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Ver Tarjeta Gráfica
+          </a>
+          <a href="../actividades/quiz.html" class="btn btn-outline">Hacer el Quiz</a>
+          <a href="../partes.html" class="btn btn-outline">Todos los Componentes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><div class="footer-brand-row"><div class="footer-logo"><img src="Img/logo.png" alt="BitZone"></div><div class="footer-brand-name">Bit<em>Zone</em></div></div><p class="footer-desc">Plataforma educativa dedicada al aprendizaje de hardware, partes de la computadora y ensamblaje de PC.</p><div class="footer-socials"><a href="#" class="social-btn"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a href="#" class="social-btn"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a><a href="#" class="social-btn"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a></div></div>
+      <div><h5 class="footer-col">Contenido</h5><nav class="footer-links-col"><a href="../partes.html" class="footer-link">Partes de la Computadora</a><a href="../ensamblaje.html" class="footer-link">Ensamblaje</a><a href="../videos.html" class="footer-link">Videos</a><a href="../actividades.html" class="footer-link">Actividades</a></nav></div>
+      <div><h5 class="footer-col">Componentes</h5><nav class="footer-links-col"><a href="cpu.html" class="footer-link">Procesador (CPU)</a><a href="tarjeta-madre.html" class="footer-link">Tarjeta Madre</a><a href="ram.html" class="footer-link">Memoria RAM</a><a href="disco.html" class="footer-link">Disco Duro / SSD</a><a href="gpu.html" class="footer-link">Tarjeta Gráfica</a></nav></div>
+      <div><h5 class="footer-col">Información</h5><nav class="footer-links-col"><a href="../index.html" class="footer-link">Inicio</a><a href="../index.html#faq-rapido" class="footer-link">FAQ General</a><a href="../index.html#footer" class="footer-link">Contacto</a></nav></div>
+    </div>
+    <div class="footer-bottom"><p class="footer-copy">&copy; 2026 BitZone. Todos los derechos reservados.</p><p class="footer-dev">Desarrollado por <a href="https://datafoxsv.ct.ws">DataFox</a></p></div>
+  </div>
+</footer>
+
+<script>
+  (function markActive() {
+    const file = window.location.pathname.split('/').pop() || 'index.html';
+    const page = file.replace('.html','') || 'index';
+    document.querySelectorAll('[data-page]').forEach(el => {
+      if (el.dataset.page === page) {
+        el.classList.add('active');
+        if (el.tagName === 'A') el.setAttribute('aria-current','page');
+      }
+    });
+  })();
+
+  document.querySelectorAll('[data-drop]').forEach(item => {
+    item.querySelector('.nav-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+  });
+
+  document.querySelectorAll('.dropdown').forEach(d => d.addEventListener('click', e => e.stopPropagation()));
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const drawerClose  = document.getElementById('drawerClose');
+  const drawer       = document.getElementById('drawer');
+  const overlay      = document.getElementById('overlay');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    hamburgerBtn.classList.add('open');
+    hamburgerBtn.setAttribute('aria-expanded','true');
+    overlay.removeAttribute('aria-hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded','false');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  drawer.querySelectorAll('a.d-link, .d-sub-link').forEach(l => l.addEventListener('click', closeDrawer));
+  window.addEventListener('resize', () => { if (window.innerWidth > 768) closeDrawer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open')); } });
+
+  document.querySelectorAll('[data-dgroup]').forEach(group => {
+    group.querySelector('.d-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = group.classList.contains('open');
+      document.querySelectorAll('[data-dgroup].open').forEach(g => g.classList.remove('open'));
+      if (!isOpen) group.classList.add('open');
+    });
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Procesador (CPU) — BitZone</title>
+  <meta name="description" content="Aprende todo sobre el procesador (CPU): qué es, cómo funciona, partes, marcas, generaciones y consejos para elegir el mejor." />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230d2a5e'/><rect x='8' y='8' width='16' height='16' rx='3' fill='none' stroke='%2360a5fa' stroke-width='2'/><rect x='12' y='12' width='8' height='8' rx='1' fill='%233b82f6'/><rect x='5' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='5' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='11' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='11' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --c950: #03080f;
+      --c900: #061526;
+      --c800: #0a1e3d;
+      --c700: #0d2a5e;
+      --c600: #1345a0;
+      --c500: #1e5fd4;
+      --c400: #3b82f6;
+      --c300: #60a5fa;
+      --c200: #93c5fd;
+      --c100: #bfdbfe;
+      --c50:  #eff6ff;
+      --white: #ffffff;
+
+      --h-grad:    linear-gradient(180deg,#061526 0%,#0d2a5e 100%);
+      --a-grad:    linear-gradient(90deg,#1e5fd4,#60a5fa);
+      --shimmer:   linear-gradient(90deg,transparent,#3b82f6,#93c5fd,#3b82f6,transparent);
+      --drop-bg:   #07192e;
+      --card-bg:   rgba(10,30,61,.7);
+
+      --sh-header: 0 2px 20px rgba(4,12,26,.75);
+      --sh-drop:   0 12px 32px rgba(4,12,26,.7);
+      --sh-card:   0 4px 24px rgba(4,12,26,.45);
+      --tr: .28s cubic-bezier(.4,0,.2,1);
+      --radius: 12px;
+    }
+
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Poppins',sans-serif;background:var(--c900);color:var(--c100);padding-top:68px;overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+    img{display:block;max-width:100%;}
+    ul{list-style:none;}
+
+    .container{max-width:1200px;margin:0 auto;padding:0 1.5rem;}
+    .section-label{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c300);background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .9rem;margin-bottom:1rem;}
+    .section-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:var(--white);line-height:1.2;margin-bottom:.75rem;}
+    .section-sub{font-size:.95rem;color:var(--c200);line-height:1.7;max-width:620px;}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:8px;font-size:.875rem;font-weight:600;letter-spacing:.03em;cursor:pointer;transition:all var(--tr);border:none;}
+    .btn-primary{background:var(--a-grad);color:var(--white);box-shadow:0 4px 20px rgba(30,95,212,.4);}
+    .btn-primary:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 8px 28px rgba(30,95,212,.55);}
+    .btn-outline{background:transparent;color:var(--c200);border:1.5px solid rgba(96,165,250,.4);}
+    .btn-outline:hover{background:rgba(59,130,246,.12);color:var(--white);border-color:var(--c300);}
+
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    .accent-line{position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--shimmer);background-size:300% 100%;animation:shimmer 4s linear infinite;pointer-events:none;}
+    @keyframes shimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}
+
+    .site-header{position:fixed;top:0;left:0;width:100%;z-index:900;background:var(--h-grad);box-shadow:var(--sh-header);}
+    .header-inner{max-width:1280px;margin:0 auto;padding:0 1.75rem;height:68px;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+    .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;flex-shrink:0;}
+    .brand-logo{width:38px;height:35px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .brand-logo img{width:100%;height:100%;object-fit:contain;}
+    .brand-name{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:.06em;color:var(--white);}
+    .brand-name em{font-style:normal;color:var(--c300);}
+    .main-nav{display:flex;align-items:center;}
+    .nav-list{list-style:none;display:flex;align-items:center;gap:.05rem;}
+    .nav-item{position:relative;}
+    .nav-link{display:flex;align-items:center;gap:.28rem;padding:.42rem .72rem;font-size:.8rem;font-weight:500;color:var(--c100);text-decoration:none;border-radius:6px;white-space:nowrap;cursor:pointer;transition:color var(--tr),background var(--tr);user-select:none;position:relative;}
+    .nav-link::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%) scaleX(0);width:calc(100% - 1.44rem);height:2px;background:var(--a-grad);border-radius:2px;transition:transform var(--tr);pointer-events:none;}
+    .nav-link:hover{color:var(--white);background:rgba(59,130,246,.15);}
+    .nav-link:hover::after,.nav-link.active::after{transform:translateX(-50%) scaleX(1);}
+    .nav-link.active{color:var(--white);background:rgba(30,95,212,.35);}
+    .chevron{width:10px;height:10px;display:inline-block;flex-shrink:0;transition:transform var(--tr);}
+    .nav-item.open>.nav-link .chevron{transform:rotate(180deg);}
+    .dropdown{position:absolute;top:calc(100% + 10px);left:0;min-width:220px;background:var(--drop-bg);border:1px solid rgba(59,130,246,.18);border-radius:10px;box-shadow:var(--sh-drop);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity var(--tr),transform var(--tr),visibility var(--tr);z-index:100;}
+    .dropdown::before{content:'';display:block;height:2px;background:var(--a-grad);}
+    .nav-item.open>.dropdown{opacity:1;visibility:visible;transform:translateY(0);}
+    .dropdown-list{padding:.45rem 0;}
+    .dropdown-link{display:block;padding:.55rem 1.1rem;font-size:.78rem;font-weight:400;color:var(--c200);text-decoration:none;transition:color var(--tr),background var(--tr),padding-left var(--tr);}
+    .dropdown-link:hover{color:var(--white);background:rgba(59,130,246,.14);padding-left:1.45rem;}
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:8px;cursor:pointer;flex-shrink:0;transition:background var(--tr);}
+    .hamburger:hover{background:rgba(59,130,246,.26);}
+    .hbar{display:block;width:20px;height:2px;background:var(--c200);border-radius:2px;transition:transform var(--tr),opacity var(--tr),background var(--tr);transform-origin:center;}
+    .hamburger.open .hbar:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--white);}
+    .hamburger.open .hbar:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open .hbar:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--white);}
+    .overlay{position:fixed;inset:0;background:rgba(4,12,26,.65);z-index:950;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity var(--tr);}
+    .overlay.open{opacity:1;pointer-events:all;}
+    .drawer{position:fixed;top:0;left:0;width:285px;height:100dvh;z-index:960;background:linear-gradient(180deg,#061526 0%,#0a1e3d 55%,#0d2a5e 100%);box-shadow:6px 0 40px rgba(4,12,26,.8);transform:translateX(-100%);transition:transform var(--tr);display:flex;flex-direction:column;overflow-y:auto;}
+    .drawer.open{transform:translateX(0);}
+    .drawer-header{display:flex;align-items:center;justify-content:space-between;padding:0 1.1rem;height:68px;border-bottom:1px solid rgba(96,165,250,.14);flex-shrink:0;}
+    .drawer-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+    .drawer-logo-slot{width:34px;height:34px;border-radius:7px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .drawer-logo-slot img{width:34px;height:34px;object-fit:contain;}
+    .drawer-brand-name{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--white);}
+    .drawer-brand-name em{font-style:normal;color:var(--c300);}
+    .drawer-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.2);border-radius:6px;cursor:pointer;color:var(--c200);font-size:1rem;transition:background var(--tr),color var(--tr);}
+    .drawer-close:hover{background:rgba(59,130,246,.3);color:var(--white);}
+    .drawer-nav{flex:1;padding:.6rem 0 1rem;}
+    .drawer-nav-list{list-style:none;}
+    .d-link{display:flex;align-items:center;justify-content:space-between;padding:.72rem 1.3rem;font-size:.875rem;font-weight:500;color:var(--c100);text-decoration:none;border-left:3px solid transparent;cursor:pointer;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-link:hover{color:var(--white);background:rgba(59,130,246,.13);border-left-color:var(--c400);padding-left:1.75rem;}
+    .d-link.active{color:var(--white);background:rgba(30,95,212,.22);border-left-color:var(--c400);}
+    .d-chevron{width:10px;height:10px;flex-shrink:0;transition:transform var(--tr);}
+    .d-group.open>.d-link .d-chevron{transform:rotate(180deg);}
+    .d-sub{list-style:none;max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.18);}
+    .d-group.open>.d-sub{max-height:500px;}
+    .d-sub-link{display:block;padding:.52rem 1rem .52rem 2.2rem;font-size:.8rem;font-weight:400;color:var(--c200);text-decoration:none;border-left:3px solid transparent;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-sub-link:hover{color:var(--white);background:rgba(59,130,246,.1);border-left-color:var(--c300);padding-left:2.6rem;}
+    .d-sep{height:1px;background:rgba(96,165,250,.1);margin:.35rem 1.1rem;}
+
+    @media(max-width:1024px){.nav-link{font-size:.75rem;padding:.38rem .55rem;}.dropdown{min-width:195px;}}
+    @media(max-width:768px){.main-nav{display:none;}.hamburger{display:flex;}.header-inner{height:60px;padding:0 1.1rem;}body{padding-top:60px;}.drawer-header{height:60px;}}
+
+    .page-hero{
+      position:relative;
+      background:linear-gradient(135deg,#03080f 0%,#061526 35%,#0d2a5e 70%,#1345a0 100%);
+      padding:7.5rem 0 7.5rem;
+      overflow:hidden;
+    }
+    .page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+    .page-hero::after{content:'';position:absolute;right:-80px;top:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(30,95,212,.22) 0%,transparent 70%);pointer-events:none;}
+    .page-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;align-items:center;gap:3rem;}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--c200);margin-bottom:1.25rem;flex-wrap:wrap;}
+    .breadcrumb a{color:var(--c300);transition:color var(--tr);}
+    .breadcrumb a:hover{color:var(--white);}
+    .breadcrumb-sep{opacity:.4;}
+    .page-hero-title{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--white);line-height:1.1;margin-bottom:1rem;}
+    .page-hero-title .hl{background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero-sub{font-size:1rem;color:var(--c200);line-height:1.75;max-width:540px;margin-bottom:1.75rem;}
+    .page-hero-tags{display:flex;flex-wrap:wrap;gap:.5rem;}
+    .hero-tag{background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .85rem;font-size:.7rem;font-weight:600;color:var(--c200);letter-spacing:.06em;}
+    .cpu-hero-visual{position:relative;z-index:5;}
+    .cpu-chip-diagram{width:420px;height:320px;position:relative;flex-shrink:0;}
+    .cpu-chip-diagram img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
+
+    .toc-bar{background:rgba(10,30,61,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(96,165,250,.12);position:sticky;top:68px;z-index:50;overflow-x:auto;}
+    .toc-inner{max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;gap:0;white-space:nowrap;}
+    .toc-link{display:inline-flex;align-items:center;padding:.75rem .85rem;font-size:.72rem;font-weight:600;color:var(--c200);text-decoration:none;border-bottom:2px solid transparent;transition:color var(--tr),border-color var(--tr);letter-spacing:.04em;text-transform:uppercase;}
+    .toc-link:hover{color:var(--white);border-bottom-color:var(--c400);}
+    .toc-link.active{color:var(--c300);border-bottom-color:var(--c300);}
+
+    @media(max-width:768px){.toc-bar{top:60px;}}
+
+    .sec-pad{padding:5rem 0;}
+    .sec-dark{background:var(--c900);}
+    .sec-mid{background:var(--c800);}
+
+    .what-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+    .what-text p{font-size:.9rem;color:var(--c200);line-height:1.8;margin-bottom:1rem;}
+    .what-text p:last-child{margin-bottom:0;}
+    .what-highlight{background:rgba(30,95,212,.12);border-left:3px solid var(--c400);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin:1.25rem 0;}
+    .what-highlight p{font-size:.88rem;color:var(--c100);font-style:italic;margin:0;}
+    .cpu-visual-box{background:linear-gradient(135deg,var(--c800),var(--c700));border-radius:16px;border:1px solid rgba(96,165,250,.18);padding:2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;min-height:320px;box-shadow:var(--sh-card);}
+    .cpu-visual-box img{width:100%;max-width:500px;border-radius:12px;}
+    .cpu-visual-box p{font-size:.78rem;color:var(--c200);text-align:center;line-height:1.6;}
+
+    .function-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .fn-card{background:var(--card-bg);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.75rem 1.4rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .fn-card:hover{transform:translateY(-5px);border-color:rgba(96,165,250,.35);box-shadow:0 10px 32px rgba(30,95,212,.28);}
+    .fn-icon{width:48px;height:48px;border-radius:11px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;box-shadow:0 4px 16px rgba(30,95,212,.35);}
+    .fn-icon svg{width:22px;height:22px;stroke:var(--white);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .fn-card h3{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .fn-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .timeline-v{position:relative;padding-left:2.5rem;margin-top:2.5rem;}
+    .timeline-v::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--c400),transparent);}
+    .tl-v-item{position:relative;margin-bottom:2rem;}
+    .tl-v-dot{position:absolute;left:-2.5rem;top:.2rem;width:22px;height:22px;border-radius:50%;background:var(--a-grad);border:3px solid var(--c800);box-shadow:0 0 12px rgba(59,130,246,.5);display:flex;align-items:center;justify-content:center;}
+    .tl-v-dot span{font-size:.55rem;font-weight:700;font-family:'Orbitron',sans-serif;color:var(--white);}
+    .tl-v-year{font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;color:var(--c300);letter-spacing:.1em;margin-bottom:.3rem;}
+    .tl-v-item h4{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.3rem;}
+    .tl-v-item p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .how-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
+    .cycle-diagram{display:flex;flex-direction:column;gap:.75rem;}
+    .cycle-step{display:flex;align-items:center;gap:1rem;background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:10px;padding:1rem 1.25rem;transition:border-color var(--tr);}
+    .cycle-step:hover{border-color:rgba(96,165,250,.35);}
+    .cycle-num{width:38px;height:38px;border-radius:8px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.78rem;font-weight:700;color:var(--white);flex-shrink:0;}
+    .cycle-info strong{display:block;font-size:.875rem;font-weight:700;color:var(--white);}
+    .cycle-info span{font-size:.75rem;color:var(--c200);}
+    .cycle-arrow{text-align:center;color:var(--c300);font-size:1.2rem;line-height:1;}
+    .how-extra{display:flex;flex-direction:column;gap:1rem;}
+    .fact-box{background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.15);border-radius:12px;padding:1.25rem 1.4rem;}
+    .fact-box-title{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c300);margin-bottom:.6rem;}
+    .fact-box p{font-size:.8rem;color:var(--c200);line-height:1.65;}
+
+    .parts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .part-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);overflow:hidden;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .part-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);box-shadow:0 10px 30px rgba(30,95,212,.28);}
+    .part-card-head{padding:1.25rem 1.4rem 0;display:flex;align-items:center;gap:.9rem;}
+    .part-badge{width:44px;height:44px;border-radius:10px;background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .part-badge svg{width:20px;height:20px;stroke:var(--c300);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .part-card-head h3{font-size:1rem;font-weight:700;color:var(--white);}
+    .part-card-head span{font-size:.7rem;color:var(--c300);font-weight:600;}
+    .part-card-body{padding:.9rem 1.4rem 1.4rem;}
+    .part-card-body p{font-size:.8rem;color:var(--c200);line-height:1.65;margin-bottom:.75rem;}
+    .part-detail{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--c100);background:rgba(30,95,212,.1);border-radius:6px;padding:.45rem .75rem;}
+    .part-detail svg{width:13px;height:13px;stroke:var(--c300);fill:none;stroke-width:2;flex-shrink:0;}
+
+    .brands-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2.5rem;}
+    .brand-card{border-radius:var(--radius);overflow:hidden;border:1px solid rgba(96,165,250,.18);transition:border-color var(--tr),box-shadow var(--tr);}
+    .brand-card:hover{border-color:rgba(96,165,250,.38);box-shadow:0 12px 36px rgba(30,95,212,.28);}
+    .brand-card-head{padding:2rem;display:flex;align-items:center;gap:1.25rem;}
+    .brand-logo-box{width:64px;height:64px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;color:var(--white);}
+    .brand-logo-box.intel{background:linear-gradient(135deg,#0068b5,#00a3e0);}
+    .brand-logo-box.amd{background:linear-gradient(135deg,#ed1c24,#ff6900);}
+    .brand-card-head h3{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:.25rem;}
+    .brand-card-head p{font-size:.78rem;color:var(--c200);}
+    .brand-card-body{padding:0 2rem 2rem;}
+    .brand-line{display:flex;align-items:center;gap:.75rem;padding:.65rem 0;border-bottom:1px solid rgba(96,165,250,.08);}
+    .brand-line:last-child{border-bottom:none;}
+    .brand-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+    .brand-dot.intel{background:#00a3e0;}
+    .brand-dot.amd{background:#ed1c24;}
+    .brand-line span{font-size:.8rem;color:var(--c200);}
+    .brand-line strong{font-size:.8rem;color:var(--white);margin-left:auto;}
+
+    .compare-table{margin-top:2.5rem;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(96,165,250,.15);}
+    .compare-row{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:0;}
+    .compare-row.head{background:rgba(13,42,94,.9);}
+    .compare-cell{padding:.9rem 1.2rem;font-size:.8rem;border-bottom:1px solid rgba(96,165,250,.08);}
+    .compare-row:last-child .compare-cell{border-bottom:none;}
+    .compare-cell.label{color:var(--c200);font-weight:500;}
+    .compare-cell.intel-col{color:#60c5f1;text-align:center;border-left:1px solid rgba(96,165,250,.08);}
+    .compare-cell.amd-col{color:#f97370;text-align:center;border-left:1px solid rgba(96,165,250,.08);}
+    .compare-cell.head-label{font-weight:700;color:var(--white);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;}
+    .compare-cell.intel-head{background:linear-gradient(135deg,rgba(0,104,181,.3),rgba(0,163,224,.15));color:#60c5f1;font-weight:700;font-size:.82rem;text-align:center;border-left:1px solid rgba(96,165,250,.08);}
+    .compare-cell.amd-head{background:linear-gradient(135deg,rgba(237,28,36,.25),rgba(255,105,0,.12));color:#f97370;font-weight:700;font-size:.82rem;text-align:center;border-left:1px solid rgba(96,165,250,.08);}
+
+    .gen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin-top:2.5rem;}
+    .gen-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.4rem 1.1rem;text-align:center;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .gen-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.32);box-shadow:0 8px 24px rgba(30,95,212,.22);}
+    .gen-num{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.4rem;}
+    .gen-card h4{font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.35rem;}
+    .gen-card p{font-size:.72rem;color:var(--c200);line-height:1.5;}
+    .gen-tag{display:inline-block;background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.2);border-radius:20px;padding:.2rem .65rem;font-size:.62rem;font-weight:600;color:var(--c300);margin-bottom:.65rem;}
+
+    .name-box{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.18);border-radius:var(--radius);padding:2rem;margin-top:2.5rem;}
+    .name-example{font-family:'Orbitron',sans-serif;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;color:var(--white);text-align:center;margin-bottom:2rem;letter-spacing:.04em;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.1rem;}
+    .name-part{position:relative;cursor:default;transition:color var(--tr);}
+    .name-part.brand-p{color:#60c5f1;}
+    .name-part.line-p{color:var(--c300);}
+    .name-part.gen-p{color:#a78bfa;}
+    .name-part.model-p{color:var(--white);}
+    .name-part.suffix-p{color:#34d399;}
+    .name-legend{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;}
+    .legend-item{text-align:center;}
+    .legend-color{height:3px;border-radius:2px;margin-bottom:.5rem;}
+    .legend-color.brand-c{background:#60c5f1;}
+    .legend-color.line-c{background:var(--c300);}
+    .legend-color.gen-c{background:#a78bfa;}
+    .legend-color.model-c{background:var(--white);}
+    .legend-color.suffix-c{background:#34d399;}
+    .legend-item span{font-size:.7rem;font-weight:700;color:var(--c200);text-transform:uppercase;letter-spacing:.08em;}
+    .legend-item p{font-size:.72rem;color:var(--c200);line-height:1.4;margin-top:.2rem;}
+
+    .socket-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2.5rem;align-items:start;}
+    .socket-explain p{font-size:.875rem;color:var(--c200);line-height:1.75;margin-bottom:1rem;}
+    .socket-list{display:flex;flex-direction:column;gap:.75rem;}
+    .socket-item{display:flex;align-items:center;gap:1rem;background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.13);border-radius:10px;padding:.9rem 1.1rem;transition:border-color var(--tr);}
+    .socket-item:hover{border-color:rgba(96,165,250,.3);}
+    .socket-chip{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.65rem;font-weight:700;color:var(--white);flex-shrink:0;}
+    .socket-chip.intel-s{background:linear-gradient(135deg,#0068b5,#00a3e0);}
+    .socket-chip.amd-s{background:linear-gradient(135deg,#ed1c24,#ff6900);}
+    .socket-item h4{font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.2rem;}
+    .socket-item span{font-size:.72rem;color:var(--c200);}
+
+    .letters-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.5rem;}
+    .letters-block{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.5rem;}
+    .letters-block-title{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;}
+    .letters-brand-badge{padding:.3rem .8rem;border-radius:20px;font-size:.72rem;font-weight:700;font-family:'Orbitron',sans-serif;color:var(--white);}
+    .letters-brand-badge.intel-b{background:linear-gradient(90deg,#0068b5,#00a3e0);}
+    .letters-brand-badge.amd-b{background:linear-gradient(90deg,#ed1c24,#ff6900);}
+    .letter-row{display:flex;align-items:center;gap:.85rem;padding:.55rem 0;border-bottom:1px solid rgba(96,165,250,.07);}
+    .letter-row:last-child{border-bottom:none;}
+    .letter-code{width:36px;height:36px;border-radius:7px;background:rgba(30,95,212,.15);border:1px solid rgba(96,165,250,.2);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:900;color:var(--c300);flex-shrink:0;}
+    .letter-row span{font-size:.78rem;color:var(--c200);}
+
+    .tips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .tip-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.6rem 1.3rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .tip-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);box-shadow:0 8px 28px rgba(30,95,212,.22);}
+    .tip-num{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.6rem;}
+    .tip-card h3{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .tip-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .faq-grid-cpu{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem;}
+    .faq-item{background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.13);border-radius:var(--radius);overflow:hidden;}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.3rem;cursor:pointer;font-size:.875rem;font-weight:600;color:var(--white);transition:background var(--tr);gap:1rem;}
+    .faq-q:hover{background:rgba(30,95,212,.1);}
+    .faq-q svg{width:16px;height:16px;stroke:var(--c300);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform var(--tr);}
+    .faq-item.open .faq-q svg{transform:rotate(180deg);}
+    .faq-a{max-height:0;overflow:hidden;font-size:.8rem;color:var(--c200);line-height:1.65;transition:max-height .3s ease,padding .3s ease;padding:0 1.3rem;}
+    .faq-item.open .faq-a{max-height:200px;padding:.2rem 1.3rem 1.1rem;}
+
+    .cta-cpu{padding:5rem 0;background:linear-gradient(135deg,var(--c900) 0%,var(--c700) 50%,var(--c600) 100%);text-align:center;position:relative;overflow:hidden;}
+    .cta-cpu::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.07) 1px,transparent 1px);background-size:40px 40px;}
+    .cta-inner{position:relative;z-index:2;}
+    .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem;}
+
+    .site-footer{background:var(--c950);border-top:1px solid rgba(96,165,250,.1);padding:3.5rem 0 0;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(96,165,250,.08);}
+    .footer-brand-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;}
+    .footer-logo{width:32px;height:32px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .footer-logo img{width:32px;height:32px;object-fit:contain;}
+    .footer-logo svg{width:18px;height:18px;stroke:var(--white);fill:none;stroke-width:1.8;}
+    .footer-brand-name{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
+    .footer-brand-name em{font-style:normal;color:var(--c300);}
+    .footer-desc{font-size:.8rem;color:var(--c200);line-height:1.7;max-width:280px;margin-bottom:1.25rem;}
+    .footer-socials{display:flex;gap:.7rem;}
+    .social-btn{width:36px;height:36px;border-radius:8px;background:rgba(30,95,212,.15);border:1px solid rgba(96,165,250,.18);display:flex;align-items:center;justify-content:center;color:var(--c300);transition:background var(--tr),color var(--tr),border-color var(--tr);}
+    .social-btn:hover{background:rgba(30,95,212,.35);color:var(--white);border-color:var(--c400);}
+    .social-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .footer-col h5{font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:1rem;}
+    .footer-links-col{display:flex;flex-direction:column;gap:.5rem;}
+    .footer-link{font-size:.8rem;color:var(--c200);text-decoration:none;transition:color var(--tr),padding-left var(--tr);}
+    .footer-link:hover{color:var(--c300);padding-left:.4rem;}
+    .footer-bottom{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 0;gap:1rem;flex-wrap:wrap;}
+    .footer-copy{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev a{color:var(--c300);text-decoration:none;font-weight:600;transition:color var(--tr);}
+    .footer-dev a:hover{color:var(--white);}
+
+    @media(max-width:1024px){
+      .gen-grid{grid-template-columns:repeat(2,1fr);}
+      .function-cards{grid-template-columns:repeat(2,1fr);}
+      .footer-grid{grid-template-columns:1fr 1fr;}
+      .page-hero-inner{grid-template-columns:1fr;}
+      .cpu-hero-visual{display:block;}
+      .what-grid{grid-template-columns:1fr;}
+      .how-grid{grid-template-columns:1fr;}
+      .name-legend{grid-template-columns:repeat(3,1fr);}
+      .socket-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:768px){
+      .function-cards{grid-template-columns:1fr;}
+      .brands-grid{grid-template-columns:1fr;}
+      .gen-grid{grid-template-columns:1fr 1fr;}
+      .letters-grid{grid-template-columns:1fr;}
+      .tips-grid{grid-template-columns:1fr;}
+      .faq-grid-cpu{grid-template-columns:1fr;}
+      .parts-grid{grid-template-columns:1fr;}
+      .compare-table{overflow-x:auto;}
+      .name-legend{grid-template-columns:repeat(2,1fr);}
+      .footer-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:480px){
+      .gen-grid{grid-template-columns:1fr;}
+      .name-example{font-size:1.2rem;}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="accent-line" aria-hidden="true"></div>
+
+  <div class="header-inner">
+
+    <!-- LOGO -->
+    <a href="index.html" class="brand" aria-label="BitZone inicio">
+      <img src="Img/logo.png"
+           width="38"
+           height="35"
+           alt="BitZone"
+           style="border-radius:6px;display:block;">
+
+      <div class="brand-name">
+        Bit<em>Zone</em>
+      </div>
+    </a>
+
+    <!-- MENU -->
+    <nav class="main-nav" aria-label="Navegacion principal">
+
+      <ul class="nav-list" role="list">
+
+        <!-- INICIO -->
+        <li class="nav-item">
+          <a href="index.html"
+             class="nav-link active"
+             data-page="index">
+            Inicio
+          </a>
+        </li>
+
+        <!-- PARTES -->
+        <li class="nav-item" data-drop>
+
+          <span class="nav-link" data-page="partes">
+            Partes
+
+            <svg class="chevron"
+                 viewBox="0 0 10 6"
+                 fill="none"
+                 aria-hidden="true">
+
+              <path d="M1 1l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+          </span>
+
+          <ul class="dropdown" role="menu">
+
+            <li class="dropdown-list">
+
+              <a href="procesaro.html" class="dropdown-link">
+                Procesador (CPU)
+              </a>
+
+              <a href="tarjeta_madre.html" class="dropdown-link">
+                Tarjeta Madre
+              </a>
+
+              <a href="ram.html" class="dropdown-link">
+                Memoria RAM
+              </a>
+
+              <a href="disco.html" class="dropdown-link">
+                Disco Duro / SSD
+              </a>
+
+              <a href="fuente.html" class="dropdown-link">
+                Fuente de Poder
+              </a>
+
+              <a href="gpu.html" class="dropdown-link">
+                Tarjeta Grafica
+              </a>
+
+              <a href="refrigeracion.html" class="dropdown-link">
+                Refrigeracion
+              </a>
+
+              <a href="puertos.html" class="dropdown-link">
+                Puertos y Conectores
+              </a>
+
+            </li>
+
+          </ul>
+        </li>
+
+        <!-- VIDEOS -->
+        <li class="nav-item">
+          <a href="index.html#videos-destacados"
+             class="nav-link"
+             data-page="videos">
+            Videos
+          </a>
+        </li>
+
+        <!-- FAQ -->
+        <li class="nav-item">
+          <a href="index.html#faq-rapido"
+             class="nav-link"
+             data-page="faq">
+            FAQ
+          </a>
+        </li>
+
+        <!-- CONTACTO -->
+        <li class="nav-item">
+          <a href="index.html#footer"
+             class="nav-link"
+             data-page="contacto">
+            Contacto
+          </a>
+        </li>
+
+      </ul>
+
+    </nav>
+
+    <!-- BOTON MENU -->
+    <button class="hamburger"
+            id="hamburgerBtn"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="drawer">
+
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+
+    </button>
+
+  </div>
+</header>
+
+<div class="overlay" id="overlay" aria-hidden="true"></div>
+
+<aside class="drawer" id="drawer" role="dialog" aria-label="Menú móvil" aria-modal="true">
+  <div class="drawer-header">
+    <a href="../index.html" class="drawer-brand" aria-label="BitZone inicio">
+      <div class="drawer-logo-slot">
+        <img src="Img/logo.png" alt="BitZone">
+      </div>
+      <div class="drawer-brand-name">Bit<em>Zone</em></div>
+    </a>
+    <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&#x2715;</button>
+  </div>
+  <nav class="drawer-nav" aria-label="Navegación móvil">
+    <ul class="drawer-nav-list">
+      <li><a href="../index.html" class="d-link" data-page="index">Inicio</a></li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link active" data-page="partes">Partes de la Computadora
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="cpu.html" class="d-sub-link">Procesador (CPU)</a></li>
+          <li><a href="tarjeta_madre.html" class="d-sub-link">Tarjeta Madre</a></li>
+          <li><a href="ram.html" class="d-sub-link">Memoria RAM</a></li>
+          <li><a href="disco.html" class="d-sub-link">Disco Duro / SSD</a></li>
+          <li><a href="fuente.html" class="d-sub-link">Fuente de Poder</a></li>
+          <li><a href="gpu.html" class="d-sub-link">Tarjeta Gráfica</a></li>
+          <li><a href="refrigeracion.html" class="d-sub-link">Refrigeración</a></li>
+          <li><a href="puertos.html" class="d-sub-link">Puertos y Conectores</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="ensamblaje">Ensamblaje
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../ensamblaje/herramientas.html" class="d-sub-link">Herramientas</a></li>
+          <li><a href="../ensamblaje/paso-a-paso.html" class="d-sub-link">Paso a Paso</a></li>
+          <li><a href="../ensamblaje/instalacion.html" class="d-sub-link">Instalación de Componentes</a></li>
+          <li><a href="../ensamblaje/cableado.html" class="d-sub-link">Cableado</a></li>
+          <li><a href="../ensamblaje/errores.html" class="d-sub-link">Errores Comunes</a></li>
+          <li><a href="../ensamblaje/consejos.html" class="d-sub-link">Consejos</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="actividades">Actividades
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../actividades/quiz.html" class="d-sub-link">Quiz</a></li>
+          <li><a href="../actividades/ejercicios.html" class="d-sub-link">Ejercicios</a></li>
+          <li><a href="../actividades/preguntas.html" class="d-sub-link">Preguntas</a></li>
+          <li><a href="../actividades/evaluacion.html" class="d-sub-link">Evaluación</a></li>
+          <li><a href="../actividades/juegos.html" class="d-sub-link">Juegos Educativos</a></li>
+        </ul>
+      </li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li><a href="../index.html#videos-destacados" class="d-link">Videos</a></li>
+      <li><a href="../index.html#faq-rapido" class="d-link">FAQ</a></li>
+      <li><a href="../index.html#footer" class="d-link">Contacto</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div>
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a>
+            <span class="breadcrumb-sep" aria-hidden="true">/</span>
+            <a href="../partes.html">Partes</a>
+            <span class="breadcrumb-sep" aria-hidden="true">/</span>
+            <span>Procesador (CPU)</span>
+          </nav>
+          <span class="section-label">Componente Principal</span>
+          <h1 class="page-hero-title">El Procesador <span class="hl">CPU</span></h1>
+          <p class="page-hero-sub">El cerebro de toda computadora. Aprende qué es, cómo funciona, sus partes, marcas y cómo elegir el mejor para tus necesidades.</p>
+          <div class="page-hero-tags">
+            <span class="hero-tag">Principiantes</span>
+            <span class="hero-tag">Hardware</span>
+            <span class="hero-tag">Intel & AMD</span>
+            <span class="hero-tag">Núcleos & GHz</span>
+          </div>
+        </div>
+        <div class="cpu-hero-visual">
+          <div class="cpu-chip-diagram">
+            <img src="Img/preoce.png" alt="CPU Banner">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="que-es">
+    <div class="container">
+      <div class="what-grid">
+        <div class="what-text reveal">
+          <span class="section-label">Definición</span>
+          <h2 class="section-title">¿Qué es un Procesador?</h2>
+          <p>Un <strong style="color:var(--white)">procesador</strong>, también llamado <strong style="color:var(--white)">CPU</strong> (Central Processing Unit o Unidad Central de Procesamiento), es el componente principal de una computadora. Es el encargado de ejecutar todas las instrucciones que recibe de los programas y del sistema operativo.</p>
+          <p>Imagina que la computadora es una persona: si el disco duro es la memoria a largo plazo y la RAM es la memoria de trabajo inmediata, el procesador sería el cerebro que piensa, toma decisiones y realiza cálculos.</p>
+          <div class="what-highlight">
+            <p>El CPU es el componente sin el cual ninguna computadora puede funcionar. Todo lo que ocurre en la pantalla, desde abrir un archivo hasta reproducir un video, pasa primero por el procesador.</p>
+          </div>
+          <p>El procesador es un chip de silicio extremadamente pequeño que contiene miles de millones de transistores microscópicos. Estos transistores son interruptores eléctricos que trabajan juntos para procesar información de manera increíblemente rápida.</p>
+        </div>
+        <div class="cpu-visual-box reveal">
+          <img src="Img/placa.webp" alt="Procesador CPU">
+          <p>El CPU se instala directamente en el <strong style="color:var(--c300)">socket</strong> de la tarjeta madre.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="funcion">
+    <div class="container">
+      <div class="reveal" style="text-align:center;margin-bottom:0;">
+        <span class="section-label">Función Principal</span>
+        <h2 class="section-title">¿Para qué sirve el CPU?</h2>
+        <p class="section-sub" style="margin:0 auto;">El procesador realiza tres tipos de operaciones esenciales que hacen funcionar todo el sistema.</p>
+      </div>
+      <div class="function-cards">
+        <div class="fn-card reveal">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg></div>
+          <h3>Procesar Instrucciones</h3>
+          <p>Ejecuta millones de instrucciones por segundo provenientes del sistema operativo y las aplicaciones. Cada vez que haces clic o escribes, el CPU interpreta y realiza la acción correspondiente.</p>
+        </div>
+        <div class="fn-card reveal" style="animation-delay:.1s">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <h3>Realizar Cálculos</h3>
+          <p>Efectúa operaciones matemáticas y lógicas a altísima velocidad. Desde sumar números hasta renderizar imágenes 3D, todo implica millones de cálculos realizados por el CPU cada segundo.</p>
+        </div>
+        <div class="fn-card reveal" style="animation-delay:.2s">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg></div>
+          <h3>Coordinar Componentes</h3>
+          <p>Actúa como director de orquesta, coordinando la RAM, el disco duro, la tarjeta gráfica y todos los demás componentes para que trabajen juntos de manera sincronizada y eficiente.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="historia">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Evolución</span>
+        <h2 class="section-title">Breve Historia del Procesador</h2>
+        <p class="section-sub">Desde un chip de 2,300 transistores hasta los modernos CPUs con miles de millones, la evolución ha sido extraordinaria.</p>
+      </div>
+      <div class="timeline-v">
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>01</span></div>
+          <div class="tl-v-year">1971</div>
+          <h4>Intel 4004 — El primer microprocesador</h4>
+          <p>Intel lanzó el primer microprocesador comercial con 2,300 transistores. Funcionaba a 740 kHz y era tan potente como las primeras computadoras del tamaño de una habitación.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>02</span></div>
+          <div class="tl-v-year">1978</div>
+          <h4>Intel 8086 — La arquitectura x86 nace</h4>
+          <p>El Intel 8086 estableció la arquitectura x86 que sigue siendo la base de los procesadores modernos para PC. Operaba a 5–10 MHz.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>03</span></div>
+          <div class="tl-v-year">1993</div>
+          <h4>Intel Pentium — La era del hogar</h4>
+          <p>El Pentium popularizó las PC en los hogares con velocidades de 60 a 300 MHz. Su nombre se convirtió en sinónimo de "computadora potente" para millones de personas.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>04</span></div>
+          <div class="tl-v-year">2003</div>
+          <h4>AMD Athlon 64 — La era de 64 bits</h4>
+          <p>AMD lanzó el primer procesador de 64 bits para el mercado doméstico, permitiendo usar más de 4 GB de RAM y procesando datos en bloques más grandes.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>05</span></div>
+          <div class="tl-v-year">2006</div>
+          <h4>Procesadores de múltiples núcleos</h4>
+          <p>Intel y AMD lanzaron sus primeros procesadores con 2 y 4 núcleos, permitiendo ejecutar varias tareas de forma simultánea y revolucionando el rendimiento general.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>06</span></div>
+          <div class="tl-v-year">Hoy</div>
+          <h4>Miles de millones de transistores a 3nm</h4>
+          <p>Los procesadores modernos integran hasta 100,000 millones de transistores en nódulos de 3 nanómetros, con hasta 24 núcleos en CPUs de consumo y frecuencias de más de 6 GHz.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="como-funciona">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Funcionamiento</span>
+        <h2 class="section-title">¿Cómo funciona el CPU?</h2>
+        <p class="section-sub">El procesador sigue un ciclo continuo de cuatro etapas para ejecutar cada instrucción.</p>
+      </div>
+      <div class="how-grid" style="margin-top:2.5rem;">
+        <div class="cycle-diagram">
+          <div class="cycle-step reveal">
+            <div class="cycle-num">01</div>
+            <div class="cycle-info">
+              <strong>Búsqueda (Fetch)</strong>
+              <span>El CPU busca la siguiente instrucción en la memoria RAM.</span>
+            </div>
+          </div>
+          <div class="cycle-arrow reveal">↓</div>
+          <div class="cycle-step reveal">
+            <div class="cycle-num">02</div>
+            <div class="cycle-info">
+              <strong>Decodificación (Decode)</strong>
+              <span>Traduce la instrucción a señales eléctricas que comprende el hardware.</span>
+            </div>
+          </div>
+          <div class="cycle-arrow reveal">↓</div>
+          <div class="cycle-step reveal">
+            <div class="cycle-num">03</div>
+            <div class="cycle-info">
+              <strong>Ejecución (Execute)</strong>
+              <span>Realiza el cálculo u operación indicada por la instrucción.</span>
+            </div>
+          </div>
+          <div class="cycle-arrow reveal">↓</div>
+          <div class="cycle-step reveal">
+            <div class="cycle-num">04</div>
+            <div class="cycle-info">
+              <strong>Escritura (Write Back)</strong>
+              <span>Guarda el resultado en la memoria o registro correspondiente.</span>
+            </div>
+          </div>
+        </div>
+        <div class="how-extra reveal">
+          <div class="fact-box">
+            <div class="fact-box-title">¿A qué velocidad ocurre esto?</div>
+            <p>Este ciclo ocurre miles de millones de veces por segundo. Un procesador a 4 GHz ejecuta este ciclo completo hasta <strong style="color:var(--c300)">4,000 millones de veces cada segundo</strong>. Cada núcleo puede procesar múltiples instrucciones simultáneamente gracias al pipeline.</p>
+          </div>
+          <div class="fact-box">
+            <div class="fact-box-title">¿Qué es el Pipeline?</div>
+            <p>El pipeline es una técnica que permite al CPU comenzar a buscar la siguiente instrucción antes de terminar la actual, similar a una línea de ensamblaje en una fábrica. Esto multiplica la eficiencia sin aumentar la velocidad del reloj.</p>
+          </div>
+          <div class="fact-box">
+            <div class="fact-box-title">Transistores: los bloques básicos</div>
+            <p>Todo el procesamiento ocurre gracias a transistores: interruptores microscópicos que representan 0s y 1s (apagado/encendido). Un CPU moderno puede tener más de <strong style="color:var(--c300)">50,000 millones de transistores</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="partes">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Anatomía</span>
+        <h2 class="section-title">Partes Básicas del Procesador</h2>
+        <p class="section-sub" style="margin:0 auto;">Conoce los elementos internos que determinan el rendimiento de un CPU.</p>
+      </div>
+      <div class="parts-grid">
+        <div class="part-card reveal">
+          <div class="part-card-head">
+            <div class="part-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/></svg></div>
+            <div>
+              <span>Elemento central</span>
+              <h3>Núcleos (Cores)</h3>
+            </div>
+          </div>
+          <div class="part-card-body">
+            <p>Los núcleos son unidades de procesamiento independientes dentro del mismo chip. Cada núcleo puede ejecutar tareas de forma autónoma. Más núcleos permiten realizar más tareas simultáneamente sin que el sistema se ralentice.</p>
+            <div class="part-detail">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Ejemplos: 4, 6, 8, 12, 16, 24 núcleos según el modelo
+            </div>
+          </div>
+        </div>
+        <div class="part-card reveal" style="animation-delay:.08s">
+          <div class="part-card-head">
+            <div class="part-badge"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+            <div>
+              <span>Procesamiento paralelo</span>
+              <h3>Hilos (Threads)</h3>
+            </div>
+          </div>
+          <div class="part-card-body">
+            <p>Los hilos son flujos de ejecución virtuales. Con la tecnología Hyper-Threading (Intel) o SMT (AMD), cada núcleo puede manejar dos hilos simultáneamente, haciendo que el sistema operativo lo vea como si hubiera el doble de núcleos.</p>
+            <div class="part-detail">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Un CPU de 8 núcleos con HT tiene 16 hilos disponibles
+            </div>
+          </div>
+        </div>
+        <div class="part-card reveal" style="animation-delay:.16s">
+          <div class="part-card-head">
+            <div class="part-badge"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></div>
+            <div>
+              <span>Memoria ultrarrápida</span>
+              <h3>Caché</h3>
+            </div>
+          </div>
+          <div class="part-card-body">
+            <p>La caché es una memoria ultrarrápida integrada dentro del propio CPU. Almacena datos que el procesador usa con frecuencia para no tener que acceder constantemente a la RAM (que es más lenta). Existen tres niveles: L1, L2 y L3.</p>
+            <div class="part-detail">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              L1 es la más rápida — L3 es la más grande (hasta 96 MB)
+            </div>
+          </div>
+        </div>
+        <div class="part-card reveal" style="animation-delay:.24s">
+          <div class="part-card-head">
+            <div class="part-badge"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <div>
+              <span>Velocidad del reloj</span>
+              <h3>Frecuencia (GHz)</h3>
+            </div>
+          </div>
+          <div class="part-card-body">
+            <p>Los GHz (gigahercios) indican cuántos ciclos por segundo puede ejecutar el procesador. 1 GHz = 1,000 millones de ciclos por segundo. A mayor frecuencia, más instrucciones puede procesar en el mismo tiempo, aunque el número de núcleos también importa.</p>
+            <div class="part-detail">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Los CPUs modernos alcanzan de 3.5 GHz a más de 6 GHz en Boost
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="marcas">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Fabricantes</span>
+        <h2 class="section-title">Marcas Principales</h2>
+        <p class="section-sub">Dos empresas dominan el mercado de procesadores para PC de escritorio y portátiles.</p>
+      </div>
+      <div class="brands-grid">
+        <div class="brand-card reveal">
+          <div class="brand-card-head">
+            <div class="brand-logo-box intel">Intel</div>
+            <div>
+              <h3>Intel Corporation</h3>
+              <p>Fundada en 1968 — Santa Clara, California</p>
+            </div>
+          </div>
+          <div class="brand-card-body">
+            <div class="brand-line"><div class="brand-dot intel"></div><span>Línea de entrada</span><strong>Core i3</strong></div>
+            <div class="brand-line"><div class="brand-dot intel"></div><span>Línea media</span><strong>Core i5</strong></div>
+            <div class="brand-line"><div class="brand-dot intel"></div><span>Línea alta</span><strong>Core i7</strong></div>
+            <div class="brand-line"><div class="brand-dot intel"></div><span>Línea premium</span><strong>Core i9 / Core Ultra</strong></div>
+            <div class="brand-line"><div class="brand-dot intel"></div><span>Línea empresarial</span><strong>Xeon</strong></div>
+            <div class="brand-line"><div class="brand-dot intel"></div><span>Última generación</span><strong>Core Ultra (Series 2)</strong></div>
+          </div>
+        </div>
+        <div class="brand-card reveal" style="animation-delay:.12s">
+          <div class="brand-card-head">
+            <div class="brand-logo-box amd">AMD</div>
+            <div>
+              <h3>Advanced Micro Devices</h3>
+              <p>Fundada en 1969 — Santa Clara, California</p>
+            </div>
+          </div>
+          <div class="brand-card-body">
+            <div class="brand-line"><div class="brand-dot amd"></div><span>Línea de entrada</span><strong>Ryzen 3</strong></div>
+            <div class="brand-line"><div class="brand-dot amd"></div><span>Línea media</span><strong>Ryzen 5</strong></div>
+            <div class="brand-line"><div class="brand-dot amd"></div><span>Línea alta</span><strong>Ryzen 7</strong></div>
+            <div class="brand-line"><div class="brand-dot amd"></div><span>Línea premium</span><strong>Ryzen 9</strong></div>
+            <div class="brand-line"><div class="brand-dot amd"></div><span>Línea extrema</span><strong>Ryzen Threadripper</strong></div>
+            <div class="brand-line"><div class="brand-dot amd"></div><span>Última generación</span><strong>Ryzen 9000 (Zen 5)</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="comparativa">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Diferencias</span>
+        <h2 class="section-title">AMD vs Intel — Comparativa Básica</h2>
+        <p class="section-sub" style="margin:0 auto;">Ambas marcas son excelentes. Las diferencias están en el uso, precio y ecosistema.</p>
+      </div>
+      <div class="compare-table reveal">
+        <div class="compare-row head">
+          <div class="compare-cell head-label">Característica</div>
+          <div class="compare-cell intel-head">Intel</div>
+          <div class="compare-cell amd-head">AMD</div>
+        </div>
+        <div class="compare-row"><div class="compare-cell label">Rendimiento monohilo</div><div class="compare-cell intel-col">Muy alto en gamas altas</div><div class="compare-cell amd-col">Competitivo y mejorando</div></div>
+        <div class="compare-row"><div class="compare-cell label">Rendimiento multihilo</div><div class="compare-cell intel-col">Bueno con núcleos híbridos</div><div class="compare-cell amd-col">Excelente en Ryzen 9</div></div>
+        <div class="compare-row"><div class="compare-cell label">Eficiencia energética</div><div class="compare-cell intel-col">Mejorado en últimas gen.</div><div class="compare-cell amd-col">Líderes en eficiencia</div></div>
+        <div class="compare-row"><div class="compare-cell label">Precio por rendimiento</div><div class="compare-cell intel-col">Competitivo en i5/i7</div><div class="compare-cell amd-col">Generalmente superior</div></div>
+        <div class="compare-row"><div class="compare-cell label">Compatibilidad de socket</div><div class="compare-cell intel-col">Cambia frecuentemente</div><div class="compare-cell amd-col">Mayor compatibilidad AM5</div></div>
+        <div class="compare-row"><div class="compare-cell label">Gaming (1080p)</div><div class="compare-cell intel-col">Ligeramente superior</div><div class="compare-cell amd-col">Muy similar</div></div>
+        <div class="compare-row"><div class="compare-cell label">Edición y creación</div><div class="compare-cell intel-col">Muy bueno</div><div class="compare-cell amd-col">Excelente por núcleos</div></div>
+        <div class="compare-row"><div class="compare-cell label">Gráficos integrados</div><div class="compare-cell intel-col">Muy buenos (Intel Arc)</div><div class="compare-cell amd-col">Muy buenos (RDNA)</div></div>
+      </div>
+    </div>
+  </section>
+
+<section class="sec-pad sec-mid" id="generaciones">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <span class="section-label">Generaciones</span>
+      <h2 class="section-title">Generaciones de Procesadores</h2>
+      <p class="section-sub" style="margin:0 auto;">
+        Las generaciones ayudan a identificar la evolución de los procesadores y las mejoras en rendimiento, eficiencia y tecnología.
+      </p>
+    </div>
+
+    <div class="gen-grid">
+
+      <div class="gen-card reveal">
+        <div class="gen-tag">Intel</div>
+        <div class="gen-num">Core i3</div>
+        <h4>Gama Básica</h4>
+        <p>Procesadores pensados para tareas sencillas como navegar por internet, usar programas de oficina y estudiar.</p>
+      </div>
+
+      <div class="gen-card reveal" style="animation-delay:.08s">
+        <div class="gen-tag">Intel</div>
+        <div class="gen-num">Core i5</div>
+        <h4>Gama Media</h4>
+        <p>Ofrecen buen equilibrio entre rendimiento y precio. Ideales para multitarea, diseño básico y gaming.</p>
+      </div>
+
+      <div class="gen-card reveal" style="animation-delay:.16s">
+        <div class="gen-tag">Intel</div>
+        <div class="gen-num">Core i7</div>
+        <h4>Alto Rendimiento</h4>
+        <p>Diseñados para usuarios exigentes, edición de video, programación avanzada y videojuegos pesados.</p>
+      </div>
+
+      <div class="gen-card reveal" style="animation-delay:.24s">
+        <div class="gen-tag">Intel</div>
+        <div class="gen-num">Core i9</div>
+        <h4>Gama Profesional</h4>
+        <p>Procesadores muy potentes usados en tareas profesionales, modelado 3D, streaming y edición avanzada.</p>
+      </div>
+
+      <div class="gen-card reveal" style="animation-delay:.32s">
+        <div class="gen-tag">AMD</div>
+        <div class="gen-num">Ryzen 3</div>
+        <h4>Uso Básico</h4>
+        <p>Procesadores económicos para tareas diarias, estudios y navegación.</p>
+      </div>
+
+      <div class="gen-card reveal" style="animation-delay:.40s">
+        <div class="gen-tag">AMD</div>
+        <div class="gen-num">Ryzen 5</div>
+        <h4>Gama Equilibrada</h4>
+        <p>Muy populares por ofrecer buen rendimiento para gaming, trabajo y multitarea.</p>
+      </div>
+
+      <div class="gen-card reveal" style="animation-delay:.48s">
+        <div class="gen-tag">AMD</div>
+        <div class="gen-num">Ryzen 7</div>
+        <h4>Rendimiento Alto</h4>
+        <p>Orientados a usuarios avanzados, creadores de contenido y juegos exigentes.</p>
+      </div>
+
+      <div class="gen-card reveal" style="animation-delay:.56s">
+        <div class="gen-tag">AMD</div>
+        <div class="gen-num">Ryzen 9</div>
+        <h4>Uso Profesional</h4>
+        <p>Procesadores de máxima potencia para edición, renderizado, programación y trabajo intensivo.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+  <section class="sec-pad sec-dark" id="nombre">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Nomenclatura</span>
+        <h2 class="section-title">Cómo Leer el Nombre de un Procesador</h2>
+        <p class="section-sub">Cada parte del nombre de un CPU te da información importante. Aprender a leerlo te ayuda a elegir mejor.</p>
+      </div>
+      <div class="name-box reveal">
+        <div class="name-example">
+          <span class="name-part brand-p">Intel&nbsp;</span>
+          <span class="name-part line-p">Core i7</span>
+          <span class="name-part gen-p">-14</span>
+          <span class="name-part model-p">700</span>
+          <span class="name-part suffix-p">K</span>
+        </div>
+        <div class="name-legend">
+          <div class="legend-item">
+            <div class="legend-color brand-c"></div>
+            <span>Marca</span>
+            <p>Intel o AMD. Identifica al fabricante del procesador.</p>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color line-c"></div>
+            <span>Línea</span>
+            <p>Core i7 / Ryzen 7 — indica el nivel de gama del producto.</p>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color gen-c"></div>
+            <span>Generación</span>
+            <p>14 = 14ª generación Intel. En AMD sería el primer número (ej: 7800).</p>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color model-c"></div>
+            <span>Modelo</span>
+            <p>700 — número específico del modelo dentro de la generación.</p>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color suffix-c"></div>
+            <span>Sufijo</span>
+            <p>K = desbloqueado para overclocking. Determina características especiales.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="socket">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Conectividad Física</span>
+        <h2 class="section-title">¿Qué es un Socket?</h2>
+        <p class="section-sub">El socket es el conector físico de la tarjeta madre donde se instala el procesador. Es fundamental elegir CPU y placa base con sockets compatibles.</p>
+      </div>
+      <div class="socket-grid">
+        <div class="socket-explain reveal">
+          <p>El socket es como una "cuna" en la tarjeta madre diseñada específicamente para un tipo de procesador. Tiene contactos eléctricos que conectan el CPU con el resto de los componentes.</p>
+          <p><strong style="color:var(--white)">Importante:</strong> No todos los sockets son compatibles con todos los procesadores. Antes de comprar una CPU, verifica que el socket de tu tarjeta madre sea el correcto.</p>
+          <p>Cada generación de procesadores puede traer un socket diferente. Intel ha cambiado de socket más frecuentemente que AMD, lo que puede encarecer las actualizaciones futuras.</p>
+        </div>
+        <div class="socket-list reveal">
+          <div class="socket-item">
+            <div class="socket-chip intel-s">LGA<br>1700</div>
+            <div>
+              <h4>LGA 1700</h4>
+              <span>Intel 12ª, 13ª y 14ª generación (2021–2024)</span>
+            </div>
+          </div>
+          <div class="socket-item">
+            <div class="socket-chip intel-s">LGA<br>1851</div>
+            <div>
+              <h4>LGA 1851</h4>
+              <span>Intel Core Ultra — Meteor Lake / Arrow Lake (2024+)</span>
+            </div>
+          </div>
+          <div class="socket-item">
+            <div class="socket-chip amd-s">AM4</div>
+            <div>
+              <h4>AM4</h4>
+              <span>AMD Ryzen 1000 hasta 5000 (2017–2023). Muy popular.</span>
+            </div>
+          </div>
+          <div class="socket-item">
+            <div class="socket-chip amd-s">AM5</div>
+            <div>
+              <h4>AM5</h4>
+              <span>AMD Ryzen 7000, 8000 y 9000 (2022+). Soporte a largo plazo.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="letras">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Nomenclatura</span>
+        <h2 class="section-title">Significado de las Letras</h2>
+        <p class="section-sub" style="margin:0 auto;">Las letras al final del nombre de un procesador revelan características clave. Aprende a interpretarlas.</p>
+      </div>
+      <div class="letters-grid">
+        <div class="letters-block reveal">
+          <div class="letters-block-title">
+            <div class="letters-brand-badge intel-b">Intel</div>
+          </div>
+          <div class="letter-row"><div class="letter-code">K</div><span><strong style="color:var(--white)">Desbloqueado</strong> — Permite overclocking (aumentar la frecuencia manualmente). Ideal para entusiastas.</span></div>
+          <div class="letter-row"><div class="letter-code">F</div><span><strong style="color:var(--white)">Sin gráficos</strong> — No incluye gráficos integrados. Requiere tarjeta gráfica dedicada.</span></div>
+          <div class="letter-row"><div class="letter-code">KF</div><span><strong style="color:var(--white)">Desbloqueado sin iGPU</strong> — Combina K y F. Suele ser más barato que el modelo K.</span></div>
+          <div class="letter-row"><div class="letter-code">T</div><span><strong style="color:var(--white)">Bajo consumo</strong> — Versión de menor TDP. Ideal para sistemas compactos o silenciosos.</span></div>
+          <div class="letter-row"><div class="letter-code">E</div><span><strong style="color:var(--white)">Embebido</strong> — Diseñado para sistemas industriales, no para PCs de consumo general.</span></div>
+        </div>
+        <div class="letters-block reveal" style="animation-delay:.12s">
+          <div class="letters-block-title">
+            <div class="letters-brand-badge amd-b">AMD</div>
+          </div>
+          <div class="letter-row"><div class="letter-code">X</div><span><strong style="color:var(--white)">Mayor rendimiento</strong> — Versión de alta frecuencia con boost más agresivo. El mejor de su línea.</span></div>
+          <div class="letter-row"><div class="letter-code">X3D</div><span><strong style="color:var(--white)">3D V-Cache</strong> — Tiene caché L3 adicional apilada en 3D. Extremadamente potente en gaming.</span></div>
+          <div class="letter-row"><div class="letter-code">G</div><span><strong style="color:var(--white)">Gráficos integrados</strong> — Incluye gráficos integrados Radeon. Ideal si no tienes GPU dedicada.</span></div>
+          <div class="letter-row"><div class="letter-code">GE</div><span><strong style="color:var(--white)">Bajo consumo + iGPU</strong> — Versión G con TDP reducido para sistemas compactos.</span></div>
+          <div class="letter-row"><div class="letter-code">Pro</div><span><strong style="color:var(--white)">Empresarial</strong> — Funciones adicionales de seguridad y gestión para entornos corporativos.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="consejos">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Guía de Compra</span>
+        <h2 class="section-title">Consejos para Elegir un CPU</h2>
+        <p class="section-sub" style="margin:0 auto;">Antes de comprar un procesador, considera estos factores para tomar la mejor decisión.</p>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-card reveal">
+          <div class="tip-num">01</div>
+          <h3>Define tu uso principal</h3>
+          <p>¿Jugarás videojuegos? ¿Editarás video? ¿Solo navegarás? El uso determina cuántos núcleos y qué frecuencia necesitas realmente. Para gaming prioriza GHz; para edición, más núcleos.</p>
+        </div>
+        <div class="tip-card reveal" style="animation-delay:.08s">
+          <div class="tip-num">02</div>
+          <h3>Verifica la compatibilidad</h3>
+          <p>Asegúrate de que el procesador sea compatible con el socket de tu tarjeta madre. Un CPU Intel no funcionará en una placa AMD y viceversa. Consulta siempre las listas de compatibilidad.</p>
+        </div>
+        <div class="tip-card reveal" style="animation-delay:.16s">
+          <div class="tip-num">03</div>
+          <h3>Considera el presupuesto total</h3>
+          <p>El procesador es solo una parte. Si gastas todo en el CPU, te quedará poco para RAM, almacenamiento o GPU. Un CPU de gama media con buena GPU suele dar mejor experiencia gaming.</p>
+        </div>
+        <div class="tip-card reveal" style="animation-delay:.24s">
+          <div class="tip-num">04</div>
+          <h3>No solo mires los GHz</h3>
+          <p>Un procesador a 5 GHz puede ser más lento que uno a 4 GHz si el segundo tiene mejor arquitectura (IPC) y más núcleos. Busca benchmarks actualizados antes de decidir.</p>
+        </div>
+        <div class="tip-card reveal" style="animation-delay:.32s">
+          <div class="tip-num">05</div>
+          <h3>Piensa en el futuro</h3>
+          <p>Elige un socket con buen soporte futuro (como AM5 de AMD). Así podrás cambiar el CPU en el futuro sin cambiar la placa madre completa, ahorrando dinero en actualizaciones.</p>
+        </div>
+        <div class="tip-card reveal" style="animation-delay:.40s">
+          <div class="tip-num">06</div>
+          <h3>Incluye el refrigerador</h3>
+          <p>Algunos CPUs incluyen refrigerador "stock", pero si compras versiones K o de alto rendimiento, deberás comprar un disipador aftermarket para mantener temperaturas seguras bajo carga.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="faq">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Preguntas Frecuentes</span>
+        <h2 class="section-title">FAQ — Procesador</h2>
+        <p class="section-sub" style="margin:0 auto 0;">Las dudas más comunes sobre CPUs resueltas de forma clara y sencilla.</p>
+      </div>
+      <div class="faq-grid-cpu">
+        <div class="faq-item reveal">
+          <div class="faq-q">¿Más núcleos siempre significa más rápido?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">No necesariamente. Más núcleos ayudan en tareas que pueden ejecutarse en paralelo (edición de video, renderizado). Para gaming, la velocidad por núcleo (GHz + IPC) suele importar más que el número total de núcleos.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.06s">
+          <div class="faq-q">¿Puedo usar cualquier CPU en mi tarjeta madre?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">No. El CPU debe ser compatible con el socket de la tarjeta madre. Además, la placa base debe soportar esa generación de CPU mediante BIOS actualizada. Verifica siempre la lista de compatibilidad del fabricante.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.12s">
+          <div class="faq-q">¿Qué es el overclocking?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Es el proceso de aumentar la frecuencia del CPU más allá de sus especificaciones de fábrica para obtener más rendimiento. Requiere un CPU desbloqueado (K en Intel, X en AMD), placa base compatible y mejor refrigeración.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.18s">
+          <div class="faq-q">¿La caché L3 importa para gaming?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Sí, especialmente en juegos. El éxito del AMD Ryzen 7 5800X3D y 7800X3D demostró que una caché L3 grande mejora significativamente el rendimiento en videojuegos al reducir la latencia de acceso a datos.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.24s">
+          <div class="faq-q">¿Es mejor Intel o AMD en 2025?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Depende del uso y presupuesto. AMD Ryzen lidera en eficiencia energética y relación precio-rendimiento. Intel ofrece alternativas muy competitivas en gaming de alta frecuencia. Ambas marcas son excelentes opciones.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.30s">
+          <div class="faq-q">¿Cuánto tiempo dura un procesador?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Un procesador bien cuidado puede durar más de 10 años. Los CPUs no se "desgastan" con el uso normal. Lo que los vuelve obsoletos es el avance de software que requiere más poder de cómputo o nuevas instrucciones.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.36s">
+          <div class="faq-q">¿Necesito pasta térmica al instalar el CPU?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Sí. La pasta térmica se aplica entre el procesador y el disipador para mejorar la transferencia de calor. Algunos disipadores ya vienen con pasta preaplantada, pero si no es así, deberás aplicarla antes de instalar el refrigerador.</div>
+        </div>
+        <div class="faq-item reveal" style="animation-delay:.42s">
+          <div class="faq-q">¿Qué significa "arquitectura híbrida"?
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Es una tecnología de Intel (desde 12ª gen) que combina núcleos de rendimiento (P-Cores) rápidos para tareas exigentes, con núcleos de eficiencia (E-Cores) más lentos pero de bajo consumo para tareas en segundo plano.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-cpu">
+    <div class="container">
+      <div class="cta-inner reveal">
+        <span class="section-label">Siguiente Paso</span>
+        <h2 class="section-title">¿Listo para seguir aprendiendo?</h2>
+        <p class="section-sub" style="margin:0 auto;">Ahora que conoces el procesador, explora los demás componentes o pon a prueba lo que aprendiste con nuestras actividades.</p>
+        <div class="cta-btns">
+          <a href="../partes/tarjeta-madre.html" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Ver Tarjeta Madre
+          </a>
+          <a href="../actividades/quiz.html" class="btn btn-outline">Hacer el Quiz</a>
+          <a href="../partes.html" class="btn btn-outline">Todos los Componentes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-row">
+          <div class="footer-logo">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="4"/><line x1="15" y1="2" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="22"/><line x1="15" y1="20" x2="15" y2="22"/><line x1="20" y1="9" x2="22" y2="9"/><line x1="20" y1="14" x2="22" y2="14"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="2" y1="14" x2="4" y2="14"/></svg>
+          </div>
+          <div class="footer-brand-name">Bit<em>Zone</em></div>
+        </div>
+        <p class="footer-desc">Plataforma educativa dedicada al aprendizaje de hardware, partes de la computadora y ensamblaje de PC de forma clara y accesible.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Facebook">
+            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="YouTube">
+            <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="Instagram">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h5 class="footer-col">Contenido</h5>
+        <nav class="footer-links-col" aria-label="Links de contenido">
+          <a href="../partes.html" class="footer-link">Partes de la Computadora</a>
+          <a href="../ensamblaje.html" class="footer-link">Ensamblaje</a>
+          <a href="../videos.html" class="footer-link">Videos</a>
+          <a href="../actividades.html" class="footer-link">Actividades</a>
+          <a href="../recursos.html" class="footer-link">Recursos</a>
+        </nav>
+      </div>
+      <div>
+        <h5 class="footer-col">Componentes</h5>
+        <nav class="footer-links-col" aria-label="Links de componentes">
+          <a href="cpu.html" class="footer-link">Procesador (CPU)</a>
+          <a href="tarjeta-madre.html" class="footer-link">Tarjeta Madre</a>
+          <a href="ram.html" class="footer-link">Memoria RAM</a>
+          <a href="disco.html" class="footer-link">Disco Duro / SSD</a>
+          <a href="gpu.html" class="footer-link">Tarjeta Gráfica</a>
+        </nav>
+      </div>
+      <div>
+        <h5 class="footer-col">Información</h5>
+        <nav class="footer-links-col" aria-label="Links de información">
+          <a href="../index.html" class="footer-link">Inicio</a>
+          <a href="../index.html#faq-rapido" class="footer-link">FAQ General</a>
+          <a href="../index.html#footer" class="footer-link">Contacto</a>
+          <a href="../recursos.html" class="footer-link">Recursos</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 BitZone. Todos los derechos reservados.</p>
+      <p class="footer-dev">Desarrollado por <a href="https://datafoxsv.ct.ws" title="Ir al sitio de DataFox">DataFox</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function markActive() {
+    const file = window.location.pathname.split('/').pop() || 'index.html';
+    const page = file.replace('.html','') || 'index';
+    document.querySelectorAll('[data-page]').forEach(el => {
+      if (el.dataset.page === page) {
+        el.classList.add('active');
+        if (el.tagName === 'A') el.setAttribute('aria-current','page');
+      }
+    });
+  })();
+
+  document.querySelectorAll('[data-drop]').forEach(item => {
+    item.querySelector('.nav-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+  });
+
+  document.querySelectorAll('.dropdown').forEach(d => d.addEventListener('click', e => e.stopPropagation()));
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const drawerClose  = document.getElementById('drawerClose');
+  const drawer       = document.getElementById('drawer');
+  const overlay      = document.getElementById('overlay');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    hamburgerBtn.classList.add('open');
+    hamburgerBtn.setAttribute('aria-expanded','true');
+    overlay.removeAttribute('aria-hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded','false');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  drawer.querySelectorAll('a.d-link, .d-sub-link').forEach(l => l.addEventListener('click', closeDrawer));
+  window.addEventListener('resize', () => { if (window.innerWidth > 768) closeDrawer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open')); } });
+
+  document.querySelectorAll('[data-dgroup]').forEach(group => {
+    group.querySelector('.d-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = group.classList.contains('open');
+      document.querySelectorAll('[data-dgroup].open').forEach(g => g.classList.remove('open'));
+      if (!isOpen) group.classList.add('open');
+    });
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  const tocLinks = document.querySelectorAll('.toc-link');
+  const sections = document.querySelectorAll('section[id]');
+
+  const tocObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(link => link.classList.remove('active'));
+        const activeLink = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+        if (activeLink) {
+          activeLink.classList.add('active');
+          activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      }
+    });
+  }, { threshold: 0.35 });
+
+  sections.forEach(sec => tocObserver.observe(sec));
+</script>
+</body>
+</html>

@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memoria RAM — BitZone</title>
+  <meta name="description" content="Aprende todo sobre la Memoria RAM: qué es, cómo funciona, tipos DDR1 a DDR5, frecuencias, latencias, canales duales y consejos para elegir la mejor." />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230d2a5e'/><rect x='8' y='8' width='16' height='16' rx='3' fill='none' stroke='%2360a5fa' stroke-width='2'/><rect x='12' y='12' width='8' height='8' rx='1' fill='%233b82f6'/><rect x='5' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='5' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='11' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='11' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --c950: #03080f;
+      --c900: #061526;
+      --c800: #0a1e3d;
+      --c700: #0d2a5e;
+      --c600: #1345a0;
+      --c500: #1e5fd4;
+      --c400: #3b82f6;
+      --c300: #60a5fa;
+      --c200: #93c5fd;
+      --c100: #bfdbfe;
+      --c50:  #eff6ff;
+      --white: #ffffff;
+
+      --h-grad:    linear-gradient(180deg,#061526 0%,#0d2a5e 100%);
+      --a-grad:    linear-gradient(90deg,#1e5fd4,#60a5fa);
+      --shimmer:   linear-gradient(90deg,transparent,#3b82f6,#93c5fd,#3b82f6,transparent);
+      --drop-bg:   #07192e;
+      --card-bg:   rgba(10,30,61,.7);
+
+      --sh-header: 0 2px 20px rgba(4,12,26,.75);
+      --sh-drop:   0 12px 32px rgba(4,12,26,.7);
+      --sh-card:   0 4px 24px rgba(4,12,26,.45);
+      --tr: .28s cubic-bezier(.4,0,.2,1);
+      --radius: 12px;
+    }
+
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Poppins',sans-serif;background:var(--c900);color:var(--c100);padding-top:68px;overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+    img{display:block;max-width:100%;}
+    ul{list-style:none;}
+
+    .container{max-width:1200px;margin:0 auto;padding:0 1.5rem;}
+    .section-label{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c300);background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .9rem;margin-bottom:1rem;}
+    .section-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:var(--white);line-height:1.2;margin-bottom:.75rem;}
+    .section-sub{font-size:.95rem;color:var(--c200);line-height:1.7;max-width:620px;}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:8px;font-size:.875rem;font-weight:600;letter-spacing:.03em;cursor:pointer;transition:all var(--tr);border:none;}
+    .btn-primary{background:var(--a-grad);color:var(--white);box-shadow:0 4px 20px rgba(30,95,212,.4);}
+    .btn-primary:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 8px 28px rgba(30,95,212,.55);}
+    .btn-outline{background:transparent;color:var(--c200);border:1.5px solid rgba(96,165,250,.4);}
+    .btn-outline:hover{background:rgba(59,130,246,.12);color:var(--white);border-color:var(--c300);}
+
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    .accent-line{position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--shimmer);background-size:300% 100%;animation:shimmer 4s linear infinite;pointer-events:none;}
+    @keyframes shimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}
+
+    .site-header{position:fixed;top:0;left:0;width:100%;z-index:900;background:var(--h-grad);box-shadow:var(--sh-header);}
+    .header-inner{max-width:1280px;margin:0 auto;padding:0 1.75rem;height:68px;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+    .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;flex-shrink:0;}
+    .brand-logo{width:38px;height:35px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .brand-logo img{width:100%;height:100%;object-fit:contain;}
+    .brand-name{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:.06em;color:var(--white);}
+    .brand-name em{font-style:normal;color:var(--c300);}
+    .main-nav{display:flex;align-items:center;}
+    .nav-list{list-style:none;display:flex;align-items:center;gap:.05rem;}
+    .nav-item{position:relative;}
+    .nav-link{display:flex;align-items:center;gap:.28rem;padding:.42rem .72rem;font-size:.8rem;font-weight:500;color:var(--c100);text-decoration:none;border-radius:6px;white-space:nowrap;cursor:pointer;transition:color var(--tr),background var(--tr);user-select:none;position:relative;}
+    .nav-link::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%) scaleX(0);width:calc(100% - 1.44rem);height:2px;background:var(--a-grad);border-radius:2px;transition:transform var(--tr);pointer-events:none;}
+    .nav-link:hover{color:var(--white);background:rgba(59,130,246,.15);}
+    .nav-link:hover::after,.nav-link.active::after{transform:translateX(-50%) scaleX(1);}
+    .nav-link.active{color:var(--white);background:rgba(30,95,212,.35);}
+    .chevron{width:10px;height:10px;display:inline-block;flex-shrink:0;transition:transform var(--tr);}
+    .nav-item.open>.nav-link .chevron{transform:rotate(180deg);}
+    .dropdown{position:absolute;top:calc(100% + 10px);left:0;min-width:220px;background:var(--drop-bg);border:1px solid rgba(59,130,246,.18);border-radius:10px;box-shadow:var(--sh-drop);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity var(--tr),transform var(--tr),visibility var(--tr);z-index:100;}
+    .dropdown::before{content:'';display:block;height:2px;background:var(--a-grad);}
+    .nav-item.open>.dropdown{opacity:1;visibility:visible;transform:translateY(0);}
+    .dropdown-list{padding:.45rem 0;}
+    .dropdown-link{display:block;padding:.55rem 1.1rem;font-size:.78rem;font-weight:400;color:var(--c200);text-decoration:none;transition:color var(--tr),background var(--tr),padding-left var(--tr);}
+    .dropdown-link:hover{color:var(--white);background:rgba(59,130,246,.14);padding-left:1.45rem;}
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:8px;cursor:pointer;flex-shrink:0;transition:background var(--tr);}
+    .hamburger:hover{background:rgba(59,130,246,.26);}
+    .hbar{display:block;width:20px;height:2px;background:var(--c200);border-radius:2px;transition:transform var(--tr),opacity var(--tr),background var(--tr);transform-origin:center;}
+    .hamburger.open .hbar:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--white);}
+    .hamburger.open .hbar:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open .hbar:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--white);}
+    .overlay{position:fixed;inset:0;background:rgba(4,12,26,.65);z-index:950;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity var(--tr);}
+    .overlay.open{opacity:1;pointer-events:all;}
+    .drawer{position:fixed;top:0;left:0;width:285px;height:100dvh;z-index:960;background:linear-gradient(180deg,#061526 0%,#0a1e3d 55%,#0d2a5e 100%);box-shadow:6px 0 40px rgba(4,12,26,.8);transform:translateX(-100%);transition:transform var(--tr);display:flex;flex-direction:column;overflow-y:auto;}
+    .drawer.open{transform:translateX(0);}
+    .drawer-header{display:flex;align-items:center;justify-content:space-between;padding:0 1.1rem;height:68px;border-bottom:1px solid rgba(96,165,250,.14);flex-shrink:0;}
+    .drawer-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+    .drawer-logo-slot{width:34px;height:34px;border-radius:7px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .drawer-logo-slot img{width:34px;height:34px;object-fit:contain;}
+    .drawer-brand-name{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--white);}
+    .drawer-brand-name em{font-style:normal;color:var(--c300);}
+    .drawer-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.2);border-radius:6px;cursor:pointer;color:var(--c200);font-size:1rem;transition:background var(--tr),color var(--tr);}
+    .drawer-close:hover{background:rgba(59,130,246,.3);color:var(--white);}
+    .drawer-nav{flex:1;padding:.6rem 0 1rem;}
+    .drawer-nav-list{list-style:none;}
+    .d-link{display:flex;align-items:center;justify-content:space-between;padding:.72rem 1.3rem;font-size:.875rem;font-weight:500;color:var(--c100);text-decoration:none;border-left:3px solid transparent;cursor:pointer;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-link:hover{color:var(--white);background:rgba(59,130,246,.13);border-left-color:var(--c400);padding-left:1.75rem;}
+    .d-link.active{color:var(--white);background:rgba(30,95,212,.22);border-left-color:var(--c400);}
+    .d-chevron{width:10px;height:10px;flex-shrink:0;transition:transform var(--tr);}
+    .d-group.open>.d-link .d-chevron{transform:rotate(180deg);}
+    .d-sub{list-style:none;max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.18);}
+    .d-group.open>.d-sub{max-height:500px;}
+    .d-sub-link{display:block;padding:.52rem 1rem .52rem 2.2rem;font-size:.8rem;font-weight:400;color:var(--c200);text-decoration:none;border-left:3px solid transparent;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-sub-link:hover{color:var(--white);background:rgba(59,130,246,.1);border-left-color:var(--c300);padding-left:2.6rem;}
+    .d-sep{height:1px;background:rgba(96,165,250,.1);margin:.35rem 1.1rem;}
+
+    @media(max-width:1024px){.nav-link{font-size:.75rem;padding:.38rem .55rem;}.dropdown{min-width:195px;}}
+    @media(max-width:768px){.main-nav{display:none;}.hamburger{display:flex;}.header-inner{height:60px;padding:0 1.1rem;}body{padding-top:60px;}.drawer-header{height:60px;}}
+
+    .page-hero{
+      position:relative;
+      background:linear-gradient(135deg,#03080f 0%,#061526 35%,#0d2a5e 70%,#1345a0 100%);
+      padding:7.5rem 0 7.5rem;
+      overflow:hidden;
+    }
+    .page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+    .page-hero::after{content:'';position:absolute;right:-80px;top:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(30,95,212,.22) 0%,transparent 70%);pointer-events:none;}
+    .page-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;align-items:center;gap:3rem;}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--c200);margin-bottom:1.25rem;flex-wrap:wrap;}
+    .breadcrumb a{color:var(--c300);transition:color var(--tr);}
+    .breadcrumb a:hover{color:var(--white);}
+    .breadcrumb-sep{opacity:.4;}
+    .page-hero-title{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--white);line-height:1.1;margin-bottom:1rem;}
+    .page-hero-title .hl{background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero-sub{font-size:1rem;color:var(--c200);line-height:1.75;max-width:540px;margin-bottom:1.75rem;}
+    .page-hero-tags{display:flex;flex-wrap:wrap;gap:.5rem;}
+    .hero-tag{background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .85rem;font-size:.7rem;font-weight:600;color:var(--c200);letter-spacing:.06em;}
+    .ram-hero-visual{position:relative;z-index:5;}
+    .ram-chip-diagram{width:420px;height:320px;position:relative;flex-shrink:0;}
+    .ram-chip-diagram img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
+
+    .toc-bar{background:rgba(10,30,61,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(96,165,250,.12);position:sticky;top:68px;z-index:50;overflow-x:auto;}
+    .toc-inner{max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;gap:0;white-space:nowrap;}
+    .toc-link{display:inline-flex;align-items:center;padding:.75rem .85rem;font-size:.72rem;font-weight:600;color:var(--c200);text-decoration:none;border-bottom:2px solid transparent;transition:color var(--tr),border-color var(--tr);letter-spacing:.04em;text-transform:uppercase;}
+    .toc-link:hover{color:var(--white);border-bottom-color:var(--c400);}
+    .toc-link.active{color:var(--c300);border-bottom-color:var(--c300);}
+
+    @media(max-width:768px){.toc-bar{top:60px;}}
+
+    .sec-pad{padding:5rem 0;}
+    .sec-dark{background:var(--c900);}
+    .sec-mid{background:var(--c800);}
+
+    .what-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+    .what-text p{font-size:.9rem;color:var(--c200);line-height:1.8;margin-bottom:1rem;}
+    .what-text p:last-child{margin-bottom:0;}
+    .what-highlight{background:rgba(30,95,212,.12);border-left:3px solid var(--c400);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin:1.25rem 0;}
+    .what-highlight p{font-size:.88rem;color:var(--c100);font-style:italic;margin:0;}
+    .ram-visual-box{background:linear-gradient(135deg,var(--c800),var(--c700));border-radius:16px;border:1px solid rgba(96,165,250,.18);padding:2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;min-height:320px;box-shadow:var(--sh-card);}
+    .ram-visual-box img{width:100%;max-width:500px;border-radius:12px;}
+    .ram-visual-box p{font-size:.78rem;color:var(--c200);text-align:center;line-height:1.6;}
+
+    .function-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .fn-card{background:var(--card-bg);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.75rem 1.4rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .fn-card:hover{transform:translateY(-5px);border-color:rgba(96,165,250,.35);box-shadow:0 10px 32px rgba(30,95,212,.28);}
+    .fn-icon{width:48px;height:48px;border-radius:11px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;box-shadow:0 4px 16px rgba(30,95,212,.35);}
+    .fn-icon svg{width:22px;height:22px;stroke:var(--white);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .fn-card h3{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .fn-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .timeline-v{position:relative;padding-left:2.5rem;margin-top:2.5rem;}
+    .timeline-v::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--c400),transparent);}
+    .tl-v-item{position:relative;margin-bottom:2rem;}
+    .tl-v-dot{position:absolute;left:-2.5rem;top:.2rem;width:22px;height:22px;border-radius:50%;background:var(--a-grad);border:3px solid var(--c800);box-shadow:0 0 12px rgba(59,130,246,.5);display:flex;align-items:center;justify-content:center;}
+    .tl-v-dot span{font-size:.55rem;font-weight:700;font-family:'Orbitron',sans-serif;color:var(--white);}
+    .tl-v-year{font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;color:var(--c300);letter-spacing:.1em;margin-bottom:.3rem;}
+    .tl-v-item h4{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.3rem;}
+    .tl-v-item p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .how-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
+    .cycle-diagram{display:flex;flex-direction:column;gap:.75rem;}
+    .cycle-step{display:flex;align-items:center;gap:1rem;background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:10px;padding:1rem 1.25rem;transition:border-color var(--tr);}
+    .cycle-step:hover{border-color:rgba(96,165,250,.35);}
+    .cycle-num{width:38px;height:38px;border-radius:8px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.78rem;font-weight:700;color:var(--white);flex-shrink:0;}
+    .cycle-info strong{display:block;font-size:.875rem;font-weight:700;color:var(--white);}
+    .cycle-info span{font-size:.75rem;color:var(--c200);}
+    .cycle-arrow{text-align:center;color:var(--c300);font-size:1.2rem;line-height:1;}
+    .how-extra{display:flex;flex-direction:column;gap:1rem;}
+    .fact-box{background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.15);border-radius:12px;padding:1.25rem 1.4rem;}
+    .fact-box-title{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c300);margin-bottom:.6rem;}
+    .fact-box p{font-size:.8rem;color:var(--c200);line-height:1.65;}
+
+    .parts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .part-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);overflow:hidden;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .part-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);box-shadow:0 10px 30px rgba(30,95,212,.28);}
+    .part-card-head{padding:1.25rem 1.4rem 0;display:flex;align-items:center;gap:.9rem;}
+    .part-badge{width:44px;height:44px;border-radius:10px;background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .part-badge svg{width:20px;height:20px;stroke:var(--c300);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .part-card-head h3{font-size:1rem;font-weight:700;color:var(--white);}
+    .part-card-head span{font-size:.7rem;color:var(--c300);font-weight:600;}
+    .part-card-body{padding:.9rem 1.4rem 1.4rem;}
+    .part-card-body p{font-size:.8rem;color:var(--c200);line-height:1.65;margin-bottom:.75rem;}
+    .part-detail{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--c100);background:rgba(30,95,212,.1);border-radius:6px;padding:.45rem .75rem;}
+    .part-detail svg{width:13px;height:13px;stroke:var(--c300);fill:none;stroke-width:2;flex-shrink:0;}
+
+    .ddr-table{margin-top:2.5rem;border-radius:var(--radius);overflow-x:auto;border:1px solid rgba(96,165,250,.15);}
+    .ddr-table table{width:100%;border-collapse:collapse;font-size:.75rem;}
+    .ddr-table th,.ddr-table td{padding:.8rem .6rem;text-align:center;border-bottom:1px solid rgba(96,165,250,.08);}
+    .ddr-table th{background:rgba(13,42,94,.9);color:var(--white);font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;}
+    .ddr-table td{color:var(--c200);}
+    .ddr-table tr:hover td{background:rgba(30,95,212,.1);}
+    .ddr-badge{display:inline-block;padding:.2rem .6rem;border-radius:20px;font-size:.65rem;font-weight:700;}
+    .ddr-badge.ddr1{background:rgba(96,165,250,.2);color:#93c5fd;}
+    .ddr-badge.ddr2{background:rgba(59,130,246,.2);color:#60a5fa;}
+    .ddr-badge.ddr3{background:rgba(30,95,212,.2);color:#3b82f6;}
+    .ddr-badge.ddr4{background:rgba(19,69,160,.3);color:#60a5fa;}
+    .ddr-badge.ddr5{background:linear-gradient(135deg,rgba(30,95,212,.3),rgba(96,165,250,.2));color:#93c5fd;}
+
+    .speed-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-top:2.5rem;}
+    .speed-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.2rem;text-align:center;transition:transform var(--tr),border-color var(--tr);}
+    .speed-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);}
+    .speed-gen{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .speed-value{font-size:.9rem;font-weight:700;color:var(--white);margin:.5rem 0 .2rem;}
+    .speed-volt{font-size:.65rem;color:var(--c300);}
+    .speed-year{font-size:.6rem;color:var(--c200);margin-top:.3rem;}
+
+    .brands-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-top:2.5rem;}
+    .brand-card-ram{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.2rem;text-align:center;transition:transform var(--tr),border-color var(--tr);}
+    .brand-card-ram:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);}
+    .brand-logo-ram{width:50px;height:50px;background:var(--a-grad);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto .8rem;font-family:'Orbitron',sans-serif;font-weight:900;font-size:.8rem;color:var(--white);}
+    .brand-card-ram h4{font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.2rem;}
+    .brand-card-ram p{font-size:.68rem;color:var(--c200);}
+
+    .dual-channel{background:linear-gradient(135deg,var(--c800),var(--c700));border-radius:var(--radius);padding:1.5rem;margin-top:2.5rem;border:1px solid rgba(96,165,250,.2);}
+    .dual-channel h3{color:var(--white);font-size:1rem;margin-bottom:.8rem;}
+    .dual-channel p{font-size:.8rem;color:var(--c200);line-height:1.7;}
+    .channel-example{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1rem;flex-wrap:wrap;}
+    .ram-slot{width:60px;background:rgba(13,42,94,.8);border:1px solid rgba(96,165,250,.3);border-radius:8px;padding:.6rem .3rem;text-align:center;}
+    .ram-slot span{font-size:.7rem;color:var(--c300);}
+    .ram-slot.highlight{background:rgba(30,95,212,.3);border-color:var(--c400);}
+    .channel-arrow{color:var(--c300);font-size:1.2rem;}
+
+    .timing-box{background:rgba(6,21,38,.7);border-radius:var(--radius);padding:1.2rem;margin-top:1rem;}
+    .timing-example{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--c300);text-align:center;margin:.5rem 0;}
+
+    .tips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .tip-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.6rem 1.3rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .tip-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);box-shadow:0 8px 28px rgba(30,95,212,.22);}
+    .tip-num{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.6rem;}
+    .tip-card h3{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .tip-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .faq-grid-ram{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem;}
+    .faq-item{background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.13);border-radius:var(--radius);overflow:hidden;}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.3rem;cursor:pointer;font-size:.875rem;font-weight:600;color:var(--white);transition:background var(--tr);gap:1rem;}
+    .faq-q:hover{background:rgba(30,95,212,.1);}
+    .faq-q svg{width:16px;height:16px;stroke:var(--c300);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform var(--tr);}
+    .faq-item.open .faq-q svg{transform:rotate(180deg);}
+    .faq-a{max-height:0;overflow:hidden;font-size:.8rem;color:var(--c200);line-height:1.65;transition:max-height .3s ease,padding .3s ease;padding:0 1.3rem;}
+    .faq-item.open .faq-a{max-height:200px;padding:.2rem 1.3rem 1.1rem;}
+
+    .cta-ram{padding:5rem 0;background:linear-gradient(135deg,var(--c900) 0%,var(--c700) 50%,var(--c600) 100%);text-align:center;position:relative;overflow:hidden;}
+    .cta-ram::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.07) 1px,transparent 1px);background-size:40px 40px;}
+    .cta-inner{position:relative;z-index:2;}
+    .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem;}
+
+    .site-footer{background:var(--c950);border-top:1px solid rgba(96,165,250,.1);padding:3.5rem 0 0;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(96,165,250,.08);}
+    .footer-brand-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;}
+    .footer-logo{width:32px;height:32px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .footer-logo img{width:32px;height:32px;object-fit:contain;}
+    .footer-logo svg{width:18px;height:18px;stroke:var(--white);fill:none;stroke-width:1.8;}
+    .footer-brand-name{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
+    .footer-brand-name em{font-style:normal;color:var(--c300);}
+    .footer-desc{font-size:.8rem;color:var(--c200);line-height:1.7;max-width:280px;margin-bottom:1.25rem;}
+    .footer-socials{display:flex;gap:.7rem;}
+    .social-btn{width:36px;height:36px;border-radius:8px;background:rgba(30,95,212,.15);border:1px solid rgba(96,165,250,.18);display:flex;align-items:center;justify-content:center;color:var(--c300);transition:background var(--tr),color var(--tr),border-color var(--tr);}
+    .social-btn:hover{background:rgba(30,95,212,.35);color:var(--white);border-color:var(--c400);}
+    .social-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .footer-col h5{font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:1rem;}
+    .footer-links-col{display:flex;flex-direction:column;gap:.5rem;}
+    .footer-link{font-size:.8rem;color:var(--c200);text-decoration:none;transition:color var(--tr),padding-left var(--tr);}
+    .footer-link:hover{color:var(--c300);padding-left:.4rem;}
+    .footer-bottom{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 0;gap:1rem;flex-wrap:wrap;}
+    .footer-copy{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev a{color:var(--c300);text-decoration:none;font-weight:600;transition:color var(--tr);}
+    .footer-dev a:hover{color:var(--white);}
+
+    @media(max-width:1024px){
+      .speed-grid{grid-template-columns:repeat(3,1fr);}
+      .brands-grid{grid-template-columns:repeat(2,1fr);}
+      .footer-grid{grid-template-columns:1fr 1fr;}
+      .page-hero-inner{grid-template-columns:1fr;}
+      .ram-hero-visual{display:block;}
+      .what-grid{grid-template-columns:1fr;}
+      .how-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:768px){
+      .function-cards{grid-template-columns:1fr;}
+      .brands-grid{grid-template-columns:1fr;}
+      .speed-grid{grid-template-columns:repeat(2,1fr);}
+      .tips-grid{grid-template-columns:1fr;}
+      .faq-grid-ram{grid-template-columns:1fr;}
+      .parts-grid{grid-template-columns:1fr;}
+      .footer-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:480px){
+      .speed-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="accent-line" aria-hidden="true"></div>
+
+  <div class="header-inner">
+
+    <!-- LOGO -->
+    <a href="index.html" class="brand" aria-label="BitZone inicio">
+      <img src="Img/logo.png"
+           width="38"
+           height="35"
+           alt="BitZone"
+           style="border-radius:6px;display:block;">
+
+      <div class="brand-name">
+        Bit<em>Zone</em>
+      </div>
+    </a>
+
+    <!-- MENU -->
+    <nav class="main-nav" aria-label="Navegacion principal">
+
+      <ul class="nav-list" role="list">
+
+        <!-- INICIO -->
+        <li class="nav-item">
+          <a href="index.html"
+             class="nav-link active"
+             data-page="index">
+            Inicio
+          </a>
+        </li>
+
+        <!-- PARTES -->
+        <li class="nav-item" data-drop>
+
+          <span class="nav-link" data-page="partes">
+            Partes
+
+            <svg class="chevron"
+                 viewBox="0 0 10 6"
+                 fill="none"
+                 aria-hidden="true">
+
+              <path d="M1 1l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+          </span>
+
+          <ul class="dropdown" role="menu">
+
+            <li class="dropdown-list">
+
+              <a href="procesaro.html" class="dropdown-link">
+                Procesador (CPU)
+              </a>
+
+              <a href="tarjeta_madre.html" class="dropdown-link">
+                Tarjeta Madre
+              </a>
+
+              <a href="ram.html" class="dropdown-link">
+                Memoria RAM
+              </a>
+
+              <a href="disco.html" class="dropdown-link">
+                Disco Duro / SSD
+              </a>
+
+              <a href="fuente.html" class="dropdown-link">
+                Fuente de Poder
+              </a>
+
+              <a href="gpu.html" class="dropdown-link">
+                Tarjeta Grafica
+              </a>
+
+              <a href="refrigeracion.html" class="dropdown-link">
+                Refrigeracion
+              </a>
+
+              <a href="puertos.html" class="dropdown-link">
+                Puertos y Conectores
+              </a>
+
+            </li>
+
+          </ul>
+        </li>
+
+        <!-- VIDEOS -->
+        <li class="nav-item">
+          <a href="index.html#videos-destacados"
+             class="nav-link"
+             data-page="videos">
+            Videos
+          </a>
+        </li>
+
+        <!-- FAQ -->
+        <li class="nav-item">
+          <a href="index.html#faq-rapido"
+             class="nav-link"
+             data-page="faq">
+            FAQ
+          </a>
+        </li>
+
+        <!-- CONTACTO -->
+        <li class="nav-item">
+          <a href="index.html#footer"
+             class="nav-link"
+             data-page="contacto">
+            Contacto
+          </a>
+        </li>
+
+      </ul>
+
+    </nav>
+
+    <!-- BOTON MENU -->
+    <button class="hamburger"
+            id="hamburgerBtn"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="drawer">
+
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+
+    </button>
+
+  </div>
+</header>
+
+<div class="overlay" id="overlay" aria-hidden="true"></div>
+
+<aside class="drawer" id="drawer" role="dialog" aria-label="Menú móvil" aria-modal="true">
+  <div class="drawer-header">
+    <a href="../index.html" class="drawer-brand" aria-label="BitZone inicio">
+      <div class="drawer-logo-slot">
+        <img src="Img/logo.png" alt="BitZone">
+      </div>
+      <div class="drawer-brand-name">Bit<em>Zone</em></div>
+    </a>
+    <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&#x2715;</button>
+  </div>
+  <nav class="drawer-nav" aria-label="Navegación móvil">
+    <ul class="drawer-nav-list">
+      <li><a href="../index.html" class="d-link" data-page="index">Inicio</a></li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link active" data-page="partes">Partes de la Computadora
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="cpu.html" class="d-sub-link">Procesador (CPU)</a></li>
+          <li><a href="tarjeta_madre.html" class="d-sub-link">Tarjeta Madre</a></li>
+          <li><a href="ram.html" class="d-sub-link">Memoria RAM</a></li>
+          <li><a href="disco.html" class="d-sub-link">Disco Duro / SSD</a></li>
+          <li><a href="fuente.html" class="d-sub-link">Fuente de Poder</a></li>
+          <li><a href="gpu.html" class="d-sub-link">Tarjeta Gráfica</a></li>
+          <li><a href="refrigeracion.html" class="d-sub-link">Refrigeración</a></li>
+          <li><a href="puertos.html" class="d-sub-link">Puertos y Conectores</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="ensamblaje">Ensamblaje
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../ensamblaje/herramientas.html" class="d-sub-link">Herramientas</a></li>
+          <li><a href="../ensamblaje/paso-a-paso.html" class="d-sub-link">Paso a Paso</a></li>
+          <li><a href="../ensamblaje/instalacion.html" class="d-sub-link">Instalación de Componentes</a></li>
+          <li><a href="../ensamblaje/cableado.html" class="d-sub-link">Cableado</a></li>
+          <li><a href="../ensamblaje/errores.html" class="d-sub-link">Errores Comunes</a></li>
+          <li><a href="../ensamblaje/consejos.html" class="d-sub-link">Consejos</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="actividades">Actividades
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../actividades/quiz.html" class="d-sub-link">Quiz</a></li>
+          <li><a href="../actividades/ejercicios.html" class="d-sub-link">Ejercicios</a></li>
+          <li><a href="../actividades/preguntas.html" class="d-sub-link">Preguntas</a></li>
+          <li><a href="../actividades/evaluacion.html" class="d-sub-link">Evaluación</a></li>
+          <li><a href="../actividades/juegos.html" class="d-sub-link">Juegos Educativos</a></li>
+        </ul>
+      </li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li><a href="../index.html#videos-destacados" class="d-link">Videos</a></li>
+      <li><a href="../index.html#faq-rapido" class="d-link">FAQ</a></li>
+      <li><a href="../index.html#footer" class="d-link">Contacto</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div>
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a>
+            <span class="breadcrumb-sep" aria-hidden="true">/</span>
+            <a href="../partes.html">Partes</a>
+            <span class="breadcrumb-sep" aria-hidden="true">/</span>
+            <span>Memoria RAM</span>
+          </nav>
+          <span class="section-label">Memoria Volátil</span>
+          <h1 class="page-hero-title">Memoria <span class="hl">RAM</span></h1>
+          <p class="page-hero-sub">La memoria de trabajo de tu computadora. Aprende qué es, cómo funciona, los tipos DDR1 a DDR5, frecuencias, latencias y cómo elegir la mejor para tu PC.</p>
+          <div class="page-hero-tags">
+            <span class="hero-tag">Principiantes</span>
+            <span class="hero-tag">DDR4 / DDR5</span>
+            <span class="hero-tag">Frecuencias</span>
+            <span class="hero-tag">Dual Channel</span>
+          </div>
+        </div>
+        <div class="ram-hero-visual">
+          <div class="ram-chip-diagram">
+            <img src="Img/Memorias.avif" alt="Memoria RAM">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="que-es">
+    <div class="container">
+      <div class="what-grid">
+        <div class="what-text reveal">
+          <span class="section-label">Definición</span>
+          <h2 class="section-title">¿Qué es la Memoria RAM?</h2>
+          <p>La <strong style="color:var(--white)">memoria RAM</strong> (Random Access Memory o Memoria de Acceso Aleatorio) es el componente donde el procesador almacena temporalmente los datos y programas que está usando en ese momento. Es la <strong style="color:var(--white)">memoria de trabajo</strong> de la computadora.</p>
+          <p>Imagina que tu computadora es un escritorio: el disco duro sería los cajones donde guardas archivos (almacenamiento a largo plazo), mientras que la RAM sería la superficie del escritorio donde pones los papeles que estás usando ahora mismo. Cuanto más grande sea el escritorio (más RAM), más papeles (programas) puedes tener abiertos simultáneamente.</p>
+          <div class="what-highlight">
+            <p>La RAM es <strong style="color:var(--c300)">volátil</strong>: cuando apagas la computadora, toda la información que contenía se pierde. Por eso necesitas guardar tus trabajos en el disco duro antes de apagar.</p>
+          </div>
+          <p>A diferencia del almacenamiento (SSD o HDD), la RAM es extremadamente rápida, pero no guarda información cuando se apaga el equipo. Su velocidad se mide en MHz (megahercios) y su capacidad en GB (gigabytes).</p>
+        </div>
+        <div class="ram-visual-box reveal">
+          <img src="Img/modulos.jpg" alt="Módulo de memoria RAM">
+          <p>Los módulos RAM se insertan en las <strong style="color:var(--c300)">ranuras DIMM</strong> de la tarjeta madre.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="funcion">
+    <div class="container">
+      <div class="reveal" style="text-align:center;margin-bottom:0;">
+        <span class="section-label">Función Principal</span>
+        <h2 class="section-title">¿Para qué sirve la RAM?</h2>
+        <p class="section-sub" style="margin:0 auto;">La memoria RAM realiza tres funciones esenciales para el rendimiento del sistema.</p>
+      </div>
+      <div class="function-cards">
+        <div class="fn-card reveal">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><polyline points="8 4 8 8 12 8"/></svg></div>
+          <h3>Cargar Programas</h3>
+          <p>Cuando abres un programa, este se copia desde el disco duro a la RAM. Al estar en RAM, el procesador puede acceder a sus instrucciones mucho más rápido que si estuviera en el disco.</p>
+        </div>
+        <div class="fn-card reveal" style="animation-delay:.1s">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/></svg></div>
+          <h3>Almacenar Datos Activos</h3>
+          <p>La RAM guarda los datos que el procesador está usando en ese momento, como el texto de un documento, los valores de una hoja de cálculo o los assets de un juego.</p>
+        </div>
+        <div class="fn-card reveal" style="animation-delay:.2s">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><polyline points="12 6 12 12 16 14"/><circle cx="12" cy="12" r="10"/></svg></div>
+          <h3>Multitarea</h3>
+          <p>Con más RAM, puedes tener más programas abiertos al mismo tiempo sin que el sistema se ralentice. Cada programa ocupa un espacio en la memoria RAM.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="evolucion">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Evolución</span>
+        <h2 class="section-title">Historia de la Memoria RAM</h2>
+        <p class="section-sub">Desde los primeros módulos hasta las velocidades actuales, la RAM ha evolucionado enormemente.</p>
+      </div>
+      <div class="timeline-v">
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>01</span></div>
+          <div class="tl-v-year">1998-2000</div>
+          <h4>DDR1 (DDR-200 a DDR-400)</h4>
+          <p>La primera generación de DDR (Double Data Rate) duplicaba la velocidad de transferencia respecto a SDRAM. Frecuencias de 100 a 200 MHz (200-400 MT/s). Voltaje: 2.5V-2.6V.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>02</span></div>
+          <div class="tl-v-year">2003-2008</div>
+          <h4>DDR2 (DDR2-400 a DDR2-1066)</h4>
+          <p>DDR2 mejoró el ancho de banda y redujo el voltaje a 1.8V. Frecuencias de 200 a 533 MHz (400-1066 MT/s). Popular en la era de Intel Core 2 Duo.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>03</span></div>
+          <div class="tl-v-year">2007-2015</div>
+          <h4>DDR3 (DDR3-800 a DDR3-2133)</h4>
+          <p>DDR3 bajó el voltaje a 1.35V-1.5V. Alcanzó frecuencias de 400-1066 MHz (800-2133 MT/s). Fue el estándar durante la era de Intel Sandy Bridge hasta Haswell.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>04</span></div>
+          <div class="tl-v-year">2014-2022</div>
+          <h4>DDR4 (DDR4-2133 a DDR4-5333)</h4>
+          <p>DDR4 redujo el voltaje a 1.2V. Alcanzó frecuencias de 1066-2666 MHz nativas (2133-5333 MT/s en OC). Fue el estándar para Intel 6ª-13ª gen y Ryzen 1000-5000.</p>
+        </div>
+        <div class="tl-v-item reveal">
+          <div class="tl-v-dot"><span>05</span></div>
+          <div class="tl-v-year">2021-Actualidad</div>
+          <h4>DDR5 (DDR5-4800 a DDR5-8200+)</h4>
+          <p>DDR5 bajó aún más el voltaje a 1.1V. Alcanza frecuencias de 2400-4100 MHz nativas (4800-8200+ MT/s). Incluye ECC integrado y mayor capacidad por módulo (hasta 128GB).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="como-funciona">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Funcionamiento</span>
+        <h2 class="section-title">¿Cómo funciona la RAM?</h2>
+        <p class="section-sub">La memoria RAM se organiza en celdas que guardan bits de información y el procesador accede a ellas mediante direcciones.</p>
+      </div>
+      <div class="how-grid" style="margin-top:2.5rem;">
+        <div class="cycle-diagram">
+          <div class="cycle-step reveal">
+            <div class="cycle-num">1</div>
+            <div class="cycle-info">
+              <strong>Direccionamiento</strong>
+              <span>El procesador especifica qué ubicación (dirección) de memoria necesita leer o escribir.</span>
+            </div>
+          </div>
+          <div class="cycle-arrow reveal">↓</div>
+          <div class="cycle-step reveal">
+            <div class="cycle-num">2</div>
+            <div class="cycle-info">
+              <strong>Latencia (CAS Latency)</strong>
+              <span>El tiempo que tarda la RAM en responder. Se mide en ciclos (CL). Menor CL = más rápida.</span>
+            </div>
+          </div>
+          <div class="cycle-arrow reveal">↓</div>
+          <div class="cycle-step reveal">
+            <div class="cycle-num">3</div>
+            <div class="cycle-info">
+              <strong>Transferencia</strong>
+              <span>Los datos se transfieren entre el controlador de memoria (en el CPU) y los módulos RAM.</span>
+            </div>
+          </div>
+          <div class="cycle-arrow reveal">↓</div>
+          <div class="cycle-step reveal">
+            <div class="cycle-num">4</div>
+            <div class="cycle-info">
+              <strong>Refresco</strong>
+              <span>Como la RAM es dinámica (DRAM), necesita refrescar sus celdas constantemente para no perder la información.</span>
+            </div>
+          </div>
+        </div>
+        <div class="how-extra reveal">
+          <div class="fact-box">
+            <div class="fact-box-title">¿Qué es la frecuencia?</div>
+            <p>La frecuencia (MHz) indica cuántas operaciones por segundo puede realizar la memoria. Una RAM a 3600 MHz realiza 3,600 millones de ciclos por segundo. DDR significa "Double Data Rate", transfiere datos dos veces por ciclo.</p>
+          </div>
+          <div class="fact-box">
+            <div class="fact-box-title">¿Qué es la latencia (CL)?</div>
+            <p>La latencia es el retraso entre que el controlador pide un dato y la RAM lo entrega. Se expresa como CL16, CL18, CL30, etc. Números más bajos son mejores. Por ejemplo, CL16 es más rápido que CL18 a la misma frecuencia.</p>
+          </div>
+          <div class="fact-box">
+            <div class="fact-box-title">Frecuencia vs Latencia</div>
+            <p>Una RAM más rápida (mayor MHz) puede tener latencia mayor (CL más alto). El rendimiento real es una combinación de ambos. Como referencia: DDR4-3200 CL16 ≈ DDR5-6000 CL30 en latencia absoluta.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="tipos">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Evolución</span>
+        <h2 class="section-title">Tipos de Memoria RAM (DDR1 a DDR5)</h2>
+        <p class="section-sub" style="margin:0 auto;">Conoce las características de cada generación de memoria RAM DDR.</p>
+      </div>
+
+      <div class="speed-grid">
+        <div class="speed-card reveal"><div class="speed-gen">DDR1</div><div class="speed-value">200-400 MHz</div><div class="speed-volt">2.5V - 2.6V</div><div class="speed-year">1998-2005</div></div>
+        <div class="speed-card reveal" style="animation-delay:.1s"><div class="speed-gen">DDR2</div><div class="speed-value">400-1066 MHz</div><div class="speed-volt">1.8V</div><div class="speed-year">2003-2008</div></div>
+        <div class="speed-card reveal" style="animation-delay:.2s"><div class="speed-gen">DDR3</div><div class="speed-value">800-2133 MHz</div><div class="speed-volt">1.35V-1.5V</div><div class="speed-year">2007-2015</div></div>
+        <div class="speed-card reveal" style="animation-delay:.3s"><div class="speed-gen">DDR4</div><div class="speed-value">2133-5333 MHz</div><div class="speed-volt">1.2V</div><div class="speed-year">2014-2022</div></div>
+        <div class="speed-card reveal" style="animation-delay:.4s"><div class="speed-gen">DDR5</div><div class="speed-value">4800-8200+ MHz</div><div class="speed-volt">1.1V</div><div class="speed-year">2021-Actual</div></div>
+      </div>
+
+      <div class="ddr-table reveal">
+        <table>
+          <thead>
+            <tr><th>Generación</th><th>Frecuencia (MHz)</th><th>Velocidad (MT/s)</th><th>Voltaje</th><th>Picos de Ancho</th><th>Año</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="ddr-badge ddr1">DDR1</span></td><td>100 - 200</td><td>200 - 400</td><td>2.5V - 2.6V</td><td>1.6 - 3.2 GB/s</td><td>1998-2005</td></tr>
+            <tr><td><span class="ddr-badge ddr2">DDR2</span></td><td>200 - 533</td><td>400 - 1066</td><td>1.8V</td><td>3.2 - 8.5 GB/s</td><td>2003-2008</td></tr>
+            <tr><td><span class="ddr-badge ddr3">DDR3</span></td><td>400 - 1066</td><td>800 - 2133</td><td>1.35V-1.5V</td><td>6.4 - 17 GB/s</td><td>2007-2015</td></tr>
+            <tr><td><span class="ddr-badge ddr4">DDR4</span></td><td>1066 - 2666</td><td>2133 - 5333</td><td>1.2V</td><td>17 - 25.6 GB/s</td><td>2014-2022</td></tr>
+            <tr><td><span class="ddr-badge ddr5">DDR5</span></td><td>2400 - 4100</td><td>4800 - 8200+</td><td>1.1V</td><td>38.4 - 65.6+ GB/s</td><td>2021-Actual</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="dual-channel reveal">
+        <h3>⚡ Canal Dual (Dual Channel)</h3>
+        <p>Para obtener el máximo rendimiento, debes instalar la RAM en <strong style="color:var(--c300)">pares idénticos</strong> en los slots del mismo color. Esto duplica el ancho de banda de la memoria.</p>
+        <div class="channel-example">
+          <div class="ram-slot highlight"><span>Slot A1</span><br><span style="font-size:.6rem;">8GB</span></div>
+          <div class="ram-slot"><span>Slot A2</span><br><span style="font-size:.6rem;"></span></div>
+          <div class="channel-arrow">→ CANAL A →</div>
+          <div class="ram-slot highlight"><span>Slot B1</span><br><span style="font-size:.6rem;">8GB</span></div>
+          <div class="ram-slot"><span>Slot B2</span><br><span style="font-size:.6rem;"></span></div>
+        </div>
+        <p style="margin-top:1rem;font-size:.75rem;">✅ Correcto: Usar los slots A1 y B1 (mismo color) = Dual Channel activado.<br>
+        ❌ Incorrecto: Usar A1 y A2 = Single Channel (mitad del ancho de banda).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="marcas">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Fabricantes</span>
+        <h2 class="section-title">Principales Marcas de RAM</h2>
+        <p class="section-sub" style="margin:0 auto;">Las marcas más confiables y populares del mercado.</p>
+      </div>
+      <div class="brands-grid">
+        <div class="brand-card-ram reveal"><div class="brand-logo-ram">CORSAIR</div><h4>Corsair</h4><p>Vengeance, Dominator, RGB Pro</p></div>
+        <div class="brand-card-ram reveal" style="animation-delay:.08s"><div class="brand-logo-ram">KINGSTON</div><h4>Kingston</h4><p>FURY, Beast, Renegade</p></div>
+        <div class="brand-card-ram reveal" style="animation-delay:.16s"><div class="brand-logo-ram">G.SKILL</div><h4>G.Skill</h4><p>Trident Z, Ripjaws, Flare X</p></div>
+        <div class="brand-card-ram reveal" style="animation-delay:.24s"><div class="brand-logo-ram">ADATA</div><h4>ADATA</h4><p>XPG Spectrix, Gammix</p></div>
+        <div class="brand-card-ram reveal" style="animation-delay:.32s"><div class="brand-logo-ram">CRUCIAL</div><h4>Crucial</h4><p>Ballistix, Pro, SODIMM</p></div>
+        <div class="brand-card-ram reveal" style="animation-delay:.40s"><div class="brand-logo-ram">TEAMGROUP</div><h4>Team Group</h4><p>T-Force Delta, Vulcan</p></div>
+        <div class="brand-card-ram reveal" style="animation-delay:.48s"><div class="brand-logo-ram">PATRIOT</div><h4>Patriot</h4><p>Viper, Signature Line</p></div>
+        <div class="brand-card-ram reveal" style="animation-delay:.56s"><div class="brand-logo-ram">PNY</div><h4>PNY</h4><p>XLR8, Performance</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="timings">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Rendimiento</span>
+        <h2 class="section-title">Frecuencia vs Latencia (CL)</h2>
+        <p class="section-sub" style="margin:0 auto;">Cómo comparar correctamente la velocidad de la memoria RAM.</p>
+      </div>
+      <div class="parts-grid">
+        <div class="part-card reveal">
+          <div class="part-card-head"><div class="part-badge"><svg viewBox="0 0 24 24"><polyline points="20 12 4 12"/><polyline points="12 4 12 20"/></svg></div><div><span>Velocidad</span><h3>Más MHz = Más rápido</h3></div></div>
+          <div class="part-card-body"><p>La frecuencia (medida en MHz) determina cuántas transferencias por segundo puede hacer la RAM. Mayor frecuencia = más datos por segundo.</p><div class="part-detail"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>DDR5-6000 > DDR4-3200 en ancho de banda</div></div>
+        </div>
+        <div class="part-card reveal" style="animation-delay:.08s">
+          <div class="part-card-head"><div class="part-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><span>Latencia</span><h3>Menor CL = Más rápido</h3></div></div>
+          <div class="part-card-body"><p>CL (CAS Latency) es el número de ciclos que tarda la RAM en responder. Un CL16 a 3200MHz es más rápido que un CL18 a 3200MHz.</p><div class="part-detail"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>CL16 < CL18 → Mejor</div></div>
+        </div>
+      </div>
+      <div class="timing-box reveal">
+        <div class="fact-box-title">Fórmula de latencia real (nanosegundos)</div>
+        <div class="timing-example">
+          Latencia real (ns) = (CL / Frecuencia) × 2000
+        </div>
+        <div style="display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin-top:1rem;">
+          <div><span style="color:var(--c300)">DDR4-3200 CL16:</span> (16/3200)×2000 = 10.0 ns</div>
+          <div><span style="color:var(--c300)">DDR5-6000 CL30:</span> (30/6000)×2000 = 10.0 ns</div>
+          <div><span style="color:var(--c300)">DDR4-3600 CL18:</span> (18/3600)×2000 = 10.0 ns</div>
+        </div>
+        <p style="text-align:center;margin-top:1rem;font-size:.75rem;">¡Misma latencia real! Por eso DDR5-6000 CL30 es el equivalente "rápido" de DDR4-3200 CL16.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="consejos">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Guía de Compra</span>
+        <h2 class="section-title">Consejos para Elegir tu RAM</h2>
+        <p class="section-sub" style="margin:0 auto;">Factores clave para comprar la mejor memoria RAM según tu uso.</p>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-card reveal"><div class="tip-num">01</div><h3>Capacidad según uso</h3><p>8GB mínimo para ofimática. 16GB ideal para gaming. 32GB para edición de video y multitarea pesada. 64GB+ para estaciones de trabajo y servidores.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.08s"><div class="tip-num">02</div><h3>Compatibilidad con placa</h3><p>Verifica que tu tarjeta madre soporte el tipo de RAM (DDR4 o DDR5) y la frecuencia máxima. No puedes mezclar DDR4 con DDR5.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.16s"><div class="tip-num">03</div><h3>Kit completo</h3><p>Compra kits de 2 o 4 módulos idénticos. Los kits de 2x8GB, 2x16GB o 4x8GB garantizan compatibilidad y activan Dual Channel.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.24s"><div class="tip-num">04</div><h3>Perfil XMP / EXPO</h3><p>Para alcanzar la frecuencia anunciada (ej. 3600MHz), debes activar el perfil XMP (Intel) o EXPO (AMD) en la BIOS. Sin esto, la RAM funcionará a velocidad base.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.32s"><div class="tip-num">05</div><h3>Altura del disipador</h3><p>Si usas un disipador de aire grande para el CPU, asegúrate de que la RAM no sea demasiado alta (busca Low Profile o verifica compatibilidad).</p></div>
+        <div class="tip-card reveal" style="animation-delay:.40s"><div class="tip-num">06</div><h3>RGB o sin RGB</h3><p>La RAM con RGB es más cara y puede generar más calor, pero es estéticamente atractiva. Decide si vale la pena el costo extra para tu build.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="faq">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Preguntas Frecuentes</span>
+        <h2 class="section-title">FAQ — Memoria RAM</h2>
+        <p class="section-sub" style="margin:0 auto 0;">Las dudas más comunes sobre la memoria RAM resueltas claramente.</p>
+      </div>
+      <div class="faq-grid-ram">
+        <div class="faq-item reveal"><div class="faq-q">¿Puedo mezclar RAM de diferentes marcas o frecuencias?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Puedes, pero no es recomendable. El sistema funcionará a la velocidad del módulo más lento. Puede causar inestabilidad. Es mejor usar kits idénticos.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.06s"><div class="faq-q">¿Cuánta RAM necesito para jugar en 2025?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">16GB es el estándar para gaming actual. Juegos AAA como Call of Duty o Cyberpunk recomiendan 16GB. Para juegos con mods pesados, 32GB es ideal.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.12s"><div class="faq-q">¿Qué es mejor, más frecuencia o menor latencia?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Depende. Para gaming, la combinación ideal es una frecuencia alta con latencia moderada. Ejemplo: DDR5-6000 CL30 o DDR4-3600 CL16 son excelentes opciones equilibradas.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.18s"><div class="faq-q">¿Puedo usar RAM de portátil (SODIMM) en un PC de escritorio?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">No. Los módulos SODIMM son más pequeños (67.6mm) y usan diferente conector. Los PCs de escritorio usan DIMM (133mm). No son compatibles físicamente.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.24s"><div class="faq-q">¿El RGB de la RAM afecta al rendimiento?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">No, el RGB no afecta al rendimiento. Solo consume unos pocos vatios adicionales. Es puramente estético. Si no te interesa, ahorra dinero comprando RAM sin RGB.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.30s"><div class="faq-q">¿Qué significa ECC RAM?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">ECC (Error Correcting Code) detecta y corrige errores de memoria automáticamente. Se usa en servidores y estaciones de trabajo críticas. Para uso doméstico/gaming no es necesario.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.36s"><div class="faq-q">¿Puedo instalar 4 módulos de RAM diferentes?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Puedes, pero el sistema podría ser inestable. Idealmente usa 2 o 4 módulos idénticos (mismo fabricante, modelo, capacidad y frecuencia) para evitar problemas.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.42s"><div class="faq-q">¿Cómo activo el perfil XMP o EXPO?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Entra a la BIOS/UEFI (DEL o F2 al encender), busca la opción de memoria y activa XMP (Intel) o EXPO (AMD). Guarda cambios y reinicia. Así tu RAM alcanzará su frecuencia máxima.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-ram">
+    <div class="container">
+      <div class="cta-inner reveal">
+        <span class="section-label">Siguiente Paso</span>
+        <h2 class="section-title">¿Listo para seguir aprendiendo?</h2>
+        <p class="section-sub" style="margin:0 auto;">Ahora que conoces la memoria RAM, explora los demás componentes o pon a prueba lo que aprendiste.</p>
+        <div class="cta-btns">
+          <a href="disco.html" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Ver Discos SSD/HDD
+          </a>
+          <a href="../actividades/quiz.html" class="btn btn-outline">Hacer el Quiz</a>
+          <a href="../partes.html" class="btn btn-outline">Todos los Componentes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-row"><div class="footer-logo"><img src="Img/logo.png" alt="BitZone"></div><div class="footer-brand-name">Bit<em>Zone</em></div></div>
+        <p class="footer-desc">Plataforma educativa dedicada al aprendizaje de hardware, partes de la computadora y ensamblaje de PC de forma clara y accesible.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#" class="social-btn" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" class="social-btn" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+        </div>
+      </div>
+      <div><h5 class="footer-col">Contenido</h5><nav class="footer-links-col"><a href="../partes.html" class="footer-link">Partes de la Computadora</a><a href="../ensamblaje.html" class="footer-link">Ensamblaje</a><a href="../videos.html" class="footer-link">Videos</a><a href="../actividades.html" class="footer-link">Actividades</a></nav></div>
+      <div><h5 class="footer-col">Componentes</h5><nav class="footer-links-col"><a href="cpu.html" class="footer-link">Procesador (CPU)</a><a href="tarjeta-madre.html" class="footer-link">Tarjeta Madre</a><a href="ram.html" class="footer-link">Memoria RAM</a><a href="disco.html" class="footer-link">Disco Duro / SSD</a><a href="gpu.html" class="footer-link">Tarjeta Gráfica</a></nav></div>
+      <div><h5 class="footer-col">Información</h5><nav class="footer-links-col"><a href="../index.html" class="footer-link">Inicio</a><a href="../index.html#faq-rapido" class="footer-link">FAQ General</a><a href="../index.html#footer" class="footer-link">Contacto</a></nav></div>
+    </div>
+    <div class="footer-bottom"><p class="footer-copy">&copy; 2026 BitZone. Todos los derechos reservados.</p><p class="footer-dev">Desarrollado por <a href="https://datafoxsv.ct.ws">DataFox</a></p></div>
+  </div>
+</footer>
+
+<script>
+  (function markActive() {
+    const file = window.location.pathname.split('/').pop() || 'index.html';
+    const page = file.replace('.html','') || 'index';
+    document.querySelectorAll('[data-page]').forEach(el => {
+      if (el.dataset.page === page) {
+        el.classList.add('active');
+        if (el.tagName === 'A') el.setAttribute('aria-current','page');
+      }
+    });
+  })();
+
+  document.querySelectorAll('[data-drop]').forEach(item => {
+    item.querySelector('.nav-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+  });
+
+  document.querySelectorAll('.dropdown').forEach(d => d.addEventListener('click', e => e.stopPropagation()));
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const drawerClose  = document.getElementById('drawerClose');
+  const drawer       = document.getElementById('drawer');
+  const overlay      = document.getElementById('overlay');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    hamburgerBtn.classList.add('open');
+    hamburgerBtn.setAttribute('aria-expanded','true');
+    overlay.removeAttribute('aria-hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded','false');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  drawer.querySelectorAll('a.d-link, .d-sub-link').forEach(l => l.addEventListener('click', closeDrawer));
+  window.addEventListener('resize', () => { if (window.innerWidth > 768) closeDrawer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open')); } });
+
+  document.querySelectorAll('[data-dgroup]').forEach(group => {
+    group.querySelector('.d-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = group.classList.contains('open');
+      document.querySelectorAll('[data-dgroup].open').forEach(g => g.classList.remove('open'));
+      if (!isOpen) group.classList.add('open');
+    });
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>

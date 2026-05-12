@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarjeta Gráfica (GPU) — BitZone</title>
+  <meta name="description" content="Aprende todo sobre la tarjeta gráfica (GPU): qué es, cómo funciona, arquitecturas NVIDIA y AMD, memoria VRAM, ray tracing, DLSS, FSR y cómo elegir la mejor para gaming y trabajo." />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230d2a5e'/><rect x='8' y='8' width='16' height='16' rx='3' fill='none' stroke='%2360a5fa' stroke-width='2'/><rect x='12' y='12' width='8' height='8' rx='1' fill='%233b82f6'/><rect x='5' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='5' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='11' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='25' y='18' width='2' height='3' rx='1' fill='%2393c5fd'/><rect x='11' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='5' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='11' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/><rect x='18' y='25' width='3' height='2' rx='1' fill='%2393c5fd'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --c950: #03080f;
+      --c900: #061526;
+      --c800: #0a1e3d;
+      --c700: #0d2a5e;
+      --c600: #1345a0;
+      --c500: #1e5fd4;
+      --c400: #3b82f6;
+      --c300: #60a5fa;
+      --c200: #93c5fd;
+      --c100: #bfdbfe;
+      --c50:  #eff6ff;
+      --white: #ffffff;
+      --nvidia-green: #76B900;
+      --amd-red: #ED1C24;
+
+      --h-grad:    linear-gradient(180deg,#061526 0%,#0d2a5e 100%);
+      --a-grad:    linear-gradient(90deg,#1e5fd4,#60a5fa);
+      --shimmer:   linear-gradient(90deg,transparent,#3b82f6,#93c5fd,#3b82f6,transparent);
+      --drop-bg:   #07192e;
+      --card-bg:   rgba(10,30,61,.7);
+
+      --sh-header: 0 2px 20px rgba(4,12,26,.75);
+      --sh-drop:   0 12px 32px rgba(4,12,26,.7);
+      --sh-card:   0 4px 24px rgba(4,12,26,.45);
+      --tr: .28s cubic-bezier(.4,0,.2,1);
+      --radius: 12px;
+    }
+
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Poppins',sans-serif;background:var(--c900);color:var(--c100);padding-top:68px;overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+    img{display:block;max-width:100%;}
+    ul{list-style:none;}
+
+    .container{max-width:1200px;margin:0 auto;padding:0 1.5rem;}
+    .section-label{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c300);background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .9rem;margin-bottom:1rem;}
+    .section-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:var(--white);line-height:1.2;margin-bottom:.75rem;}
+    .section-sub{font-size:.95rem;color:var(--c200);line-height:1.7;max-width:620px;}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:8px;font-size:.875rem;font-weight:600;letter-spacing:.03em;cursor:pointer;transition:all var(--tr);border:none;}
+    .btn-primary{background:var(--a-grad);color:var(--white);box-shadow:0 4px 20px rgba(30,95,212,.4);}
+    .btn-primary:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 8px 28px rgba(30,95,212,.55);}
+    .btn-outline{background:transparent;color:var(--c200);border:1.5px solid rgba(96,165,250,.4);}
+    .btn-outline:hover{background:rgba(59,130,246,.12);color:var(--white);border-color:var(--c300);}
+
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    .accent-line{position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--shimmer);background-size:300% 100%;animation:shimmer 4s linear infinite;pointer-events:none;}
+    @keyframes shimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}
+
+    .site-header{position:fixed;top:0;left:0;width:100%;z-index:900;background:var(--h-grad);box-shadow:var(--sh-header);}
+    .header-inner{max-width:1280px;margin:0 auto;padding:0 1.75rem;height:68px;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+    .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;flex-shrink:0;}
+    .brand-logo{width:38px;height:35px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .brand-logo img{width:100%;height:100%;object-fit:contain;}
+    .brand-name{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:.06em;color:var(--white);}
+    .brand-name em{font-style:normal;color:var(--c300);}
+    .main-nav{display:flex;align-items:center;}
+    .nav-list{list-style:none;display:flex;align-items:center;gap:.05rem;}
+    .nav-item{position:relative;}
+    .nav-link{display:flex;align-items:center;gap:.28rem;padding:.42rem .72rem;font-size:.8rem;font-weight:500;color:var(--c100);text-decoration:none;border-radius:6px;white-space:nowrap;cursor:pointer;transition:color var(--tr),background var(--tr);user-select:none;position:relative;}
+    .nav-link::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%) scaleX(0);width:calc(100% - 1.44rem);height:2px;background:var(--a-grad);border-radius:2px;transition:transform var(--tr);pointer-events:none;}
+    .nav-link:hover{color:var(--white);background:rgba(59,130,246,.15);}
+    .nav-link:hover::after,.nav-link.active::after{transform:translateX(-50%) scaleX(1);}
+    .nav-link.active{color:var(--white);background:rgba(30,95,212,.35);}
+    .chevron{width:10px;height:10px;display:inline-block;flex-shrink:0;transition:transform var(--tr);}
+    .nav-item.open>.nav-link .chevron{transform:rotate(180deg);}
+    .dropdown{position:absolute;top:calc(100% + 10px);left:0;min-width:220px;background:var(--drop-bg);border:1px solid rgba(59,130,246,.18);border-radius:10px;box-shadow:var(--sh-drop);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity var(--tr),transform var(--tr),visibility var(--tr);z-index:100;}
+    .dropdown::before{content:'';display:block;height:2px;background:var(--a-grad);}
+    .nav-item.open>.dropdown{opacity:1;visibility:visible;transform:translateY(0);}
+    .dropdown-list{padding:.45rem 0;}
+    .dropdown-link{display:block;padding:.55rem 1.1rem;font-size:.78rem;font-weight:400;color:var(--c200);text-decoration:none;transition:color var(--tr),background var(--tr),padding-left var(--tr);}
+    .dropdown-link:hover{color:var(--white);background:rgba(59,130,246,.14);padding-left:1.45rem;}
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.25);border-radius:8px;cursor:pointer;flex-shrink:0;transition:background var(--tr);}
+    .hamburger:hover{background:rgba(59,130,246,.26);}
+    .hbar{display:block;width:20px;height:2px;background:var(--c200);border-radius:2px;transition:transform var(--tr),opacity var(--tr),background var(--tr);transform-origin:center;}
+    .hamburger.open .hbar:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--white);}
+    .hamburger.open .hbar:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open .hbar:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--white);}
+    .overlay{position:fixed;inset:0;background:rgba(4,12,26,.65);z-index:950;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity var(--tr);}
+    .overlay.open{opacity:1;pointer-events:all;}
+    .drawer{position:fixed;top:0;left:0;width:285px;height:100dvh;z-index:960;background:linear-gradient(180deg,#061526 0%,#0a1e3d 55%,#0d2a5e 100%);box-shadow:6px 0 40px rgba(4,12,26,.8);transform:translateX(-100%);transition:transform var(--tr);display:flex;flex-direction:column;overflow-y:auto;}
+    .drawer.open{transform:translateX(0);}
+    .drawer-header{display:flex;align-items:center;justify-content:space-between;padding:0 1.1rem;height:68px;border-bottom:1px solid rgba(96,165,250,.14);flex-shrink:0;}
+    .drawer-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+    .drawer-logo-slot{width:34px;height:34px;border-radius:7px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .drawer-logo-slot img{width:34px;height:34px;object-fit:contain;}
+    .drawer-brand-name{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--white);}
+    .drawer-brand-name em{font-style:normal;color:var(--c300);}
+    .drawer-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.2);border-radius:6px;cursor:pointer;color:var(--c200);font-size:1rem;transition:background var(--tr),color var(--tr);}
+    .drawer-close:hover{background:rgba(59,130,246,.3);color:var(--white);}
+    .drawer-nav{flex:1;padding:.6rem 0 1rem;}
+    .drawer-nav-list{list-style:none;}
+    .d-link{display:flex;align-items:center;justify-content:space-between;padding:.72rem 1.3rem;font-size:.875rem;font-weight:500;color:var(--c100);text-decoration:none;border-left:3px solid transparent;cursor:pointer;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-link:hover{color:var(--white);background:rgba(59,130,246,.13);border-left-color:var(--c400);padding-left:1.75rem;}
+    .d-link.active{color:var(--white);background:rgba(30,95,212,.22);border-left-color:var(--c400);}
+    .d-chevron{width:10px;height:10px;flex-shrink:0;transition:transform var(--tr);}
+    .d-group.open>.d-link .d-chevron{transform:rotate(180deg);}
+    .d-sub{list-style:none;max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.18);}
+    .d-group.open>.d-sub{max-height:500px;}
+    .d-sub-link{display:block;padding:.52rem 1rem .52rem 2.2rem;font-size:.8rem;font-weight:400;color:var(--c200);text-decoration:none;border-left:3px solid transparent;transition:color var(--tr),background var(--tr),border-color var(--tr),padding-left var(--tr);}
+    .d-sub-link:hover{color:var(--white);background:rgba(59,130,246,.1);border-left-color:var(--c300);padding-left:2.6rem;}
+    .d-sep{height:1px;background:rgba(96,165,250,.1);margin:.35rem 1.1rem;}
+
+    @media(max-width:1024px){.nav-link{font-size:.75rem;padding:.38rem .55rem;}.dropdown{min-width:195px;}}
+    @media(max-width:768px){.main-nav{display:none;}.hamburger{display:flex;}.header-inner{height:60px;padding:0 1.1rem;}body{padding-top:60px;}.drawer-header{height:60px;}}
+
+    .page-hero{
+      position:relative;
+      background:linear-gradient(135deg,#03080f 0%,#061526 35%,#0d2a5e 70%,#1345a0 100%);
+      padding:7.5rem 0 7.5rem;
+      overflow:hidden;
+    }
+    .page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+    .page-hero::after{content:'';position:absolute;right:-80px;top:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(30,95,212,.22) 0%,transparent 70%);pointer-events:none;}
+    .page-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;align-items:center;gap:3rem;}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--c200);margin-bottom:1.25rem;flex-wrap:wrap;}
+    .breadcrumb a{color:var(--c300);transition:color var(--tr);}
+    .breadcrumb a:hover{color:var(--white);}
+    .breadcrumb-sep{opacity:.4;}
+    .page-hero-title{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--white);line-height:1.1;margin-bottom:1rem;}
+    .page-hero-title .hl{background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero-sub{font-size:1rem;color:var(--c200);line-height:1.75;max-width:540px;margin-bottom:1.75rem;}
+    .page-hero-tags{display:flex;flex-wrap:wrap;gap:.5rem;}
+    .hero-tag{background:rgba(30,95,212,.2);border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:.3rem .85rem;font-size:.7rem;font-weight:600;color:var(--c200);letter-spacing:.06em;}
+    .gpu-hero-visual{position:relative;z-index:5;}
+    .gpu-diagram{width:420px;height:320px;position:relative;flex-shrink:0;}
+    .gpu-diagram img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
+
+    .sec-pad{padding:5rem 0;}
+    .sec-dark{background:var(--c900);}
+    .sec-mid{background:var(--c800);}
+
+    .what-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+    .what-text p{font-size:.9rem;color:var(--c200);line-height:1.8;margin-bottom:1rem;}
+    .what-text p:last-child{margin-bottom:0;}
+    .what-highlight{background:rgba(30,95,212,.12);border-left:3px solid var(--c400);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin:1.25rem 0;}
+    .what-highlight p{font-size:.88rem;color:var(--c100);font-style:italic;margin:0;}
+    .gpu-visual-box{background:linear-gradient(135deg,var(--c800),var(--c700));border-radius:16px;border:1px solid rgba(96,165,250,.18);padding:2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;min-height:320px;box-shadow:var(--sh-card);}
+    .gpu-visual-box img{width:100%;max-width:500px;border-radius:12px;}
+    .gpu-visual-box p{font-size:.78rem;color:var(--c200);text-align:center;line-height:1.6;}
+
+    .function-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .fn-card{background:var(--card-bg);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.75rem 1.4rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .fn-card:hover{transform:translateY(-5px);border-color:rgba(96,165,250,.35);box-shadow:0 10px 32px rgba(30,95,212,.28);}
+    .fn-icon{width:48px;height:48px;border-radius:11px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;box-shadow:0 4px 16px rgba(30,95,212,.35);}
+    .fn-icon svg{width:22px;height:22px;stroke:var(--white);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .fn-card h3{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .fn-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .brand-comparison{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin:2.5rem 0;}
+    .brand-gpu-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.5rem;transition:transform var(--tr),border-color var(--tr);}
+    .brand-gpu-card:hover{transform:translateY(-5px);border-color:rgba(96,165,250,.4);}
+    .brand-header{text-align:center;margin-bottom:1rem;}
+    .brand-logo-gpu{font-size:1.8rem;font-weight:900;font-family:'Orbitron',sans-serif;}
+    .brand-logo-gpu.nvidia{color:var(--nvidia-green);}
+    .brand-logo-gpu.amd{color:var(--amd-red);}
+    .gpu-table{width:100%;border-collapse:collapse;margin-top:1rem;}
+    .gpu-table th,.gpu-table td{padding:.5rem .3rem;text-align:left;font-size:.7rem;border-bottom:1px solid rgba(96,165,250,.1);}
+    .gpu-table th{color:var(--c300);font-weight:700;}
+
+    .series-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;}
+    .series-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1rem;text-align:center;transition:transform var(--tr),border-color var(--tr);}
+    .series-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);}
+    .series-name{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .series-desc{font-size:.65rem;color:var(--c200);margin-top:.3rem;}
+
+    .vram-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1.5rem;}
+    .vram-card{background:rgba(6,21,38,.7);border-radius:var(--radius);padding:.8rem;text-align:center;border-left:2px solid var(--c400);}
+    .vram-value{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;color:var(--white);}
+    .vram-desc{font-size:.6rem;color:var(--c200);margin-top:.2rem;}
+
+    .tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2rem;}
+    .tech-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.2rem;text-align:center;transition:transform var(--tr),border-color var(--tr);}
+    .tech-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);}
+    .tech-name{font-family:'Orbitron',sans-serif;font-size:.9rem;font-weight:700;color:var(--c300);margin-bottom:.3rem;}
+
+    .timeline-v{position:relative;padding-left:2.5rem;margin-top:2.5rem;}
+    .timeline-v::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--c400),transparent);}
+    .tl-v-item{position:relative;margin-bottom:2rem;}
+    .tl-v-dot{position:absolute;left:-2.5rem;top:.2rem;width:22px;height:22px;border-radius:50%;background:var(--a-grad);border:3px solid var(--c800);box-shadow:0 0 12px rgba(59,130,246,.5);display:flex;align-items:center;justify-content:center;}
+    .tl-v-dot span{font-size:.55rem;font-weight:700;font-family:'Orbitron',sans-serif;color:var(--white);}
+    .tl-v-year{font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;color:var(--c300);letter-spacing:.1em;margin-bottom:.3rem;}
+    .tl-v-item h4{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.3rem;}
+    .tl-v-item p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .brands-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;}
+    .brand-card-gpu{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1rem;text-align:center;transition:transform var(--tr),border-color var(--tr);}
+    .brand-card-gpu:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);}
+    .brand-logo-gpu-icon{width:50px;height:50px;background:var(--a-grad);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto .8rem;font-family:'Orbitron',sans-serif;font-weight:900;font-size:.7rem;color:var(--white);}
+    .brand-card-gpu h4{font-size:.8rem;font-weight:700;color:var(--white);margin-bottom:.2rem;}
+    .brand-card-gpu p{font-size:.6rem;color:var(--c200);}
+
+    .tips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+    .tip-card{background:rgba(6,21,38,.8);border:1px solid rgba(96,165,250,.14);border-radius:var(--radius);padding:1.6rem 1.3rem;transition:transform var(--tr),border-color var(--tr),box-shadow var(--tr);}
+    .tip-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.35);box-shadow:0 8px 28px rgba(30,95,212,.22);}
+    .tip-num{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;background:var(--a-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.6rem;}
+    .tip-card h3{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+    .tip-card p{font-size:.78rem;color:var(--c200);line-height:1.6;}
+
+    .faq-grid-gpu{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem;}
+    .faq-item{background:rgba(6,21,38,.7);border:1px solid rgba(96,165,250,.13);border-radius:var(--radius);overflow:hidden;}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.3rem;cursor:pointer;font-size:.875rem;font-weight:600;color:var(--white);transition:background var(--tr);gap:1rem;}
+    .faq-q:hover{background:rgba(30,95,212,.1);}
+    .faq-q svg{width:16px;height:16px;stroke:var(--c300);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform var(--tr);}
+    .faq-item.open .faq-q svg{transform:rotate(180deg);}
+    .faq-a{max-height:0;overflow:hidden;font-size:.8rem;color:var(--c200);line-height:1.65;transition:max-height .3s ease,padding .3s ease;padding:0 1.3rem;}
+    .faq-item.open .faq-a{max-height:200px;padding:.2rem 1.3rem 1.1rem;}
+
+    .cta-gpu{padding:5rem 0;background:linear-gradient(135deg,var(--c900) 0%,var(--c700) 50%,var(--c600) 100%);text-align:center;position:relative;overflow:hidden;}
+    .cta-gpu::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.07) 1px,transparent 1px);background-size:40px 40px;}
+    .cta-inner{position:relative;z-index:2;}
+    .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem;}
+
+    .site-footer{background:var(--c950);border-top:1px solid rgba(96,165,250,.1);padding:3.5rem 0 0;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(96,165,250,.08);}
+    .footer-brand-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;}
+    .footer-logo{width:32px;height:32px;border-radius:6px;background:var(--a-grad);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .footer-logo img{width:32px;height:32px;object-fit:contain;}
+    .footer-brand-name{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
+    .footer-brand-name em{font-style:normal;color:var(--c300);}
+    .footer-desc{font-size:.8rem;color:var(--c200);line-height:1.7;max-width:280px;margin-bottom:1.25rem;}
+    .footer-socials{display:flex;gap:.7rem;}
+    .social-btn{width:36px;height:36px;border-radius:8px;background:rgba(30,95,212,.15);border:1px solid rgba(96,165,250,.18);display:flex;align-items:center;justify-content:center;color:var(--c300);transition:background var(--tr),color var(--tr),border-color var(--tr);}
+    .social-btn:hover{background:rgba(30,95,212,.35);color:var(--white);border-color:var(--c400);}
+    .social-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .footer-col h5{font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:1rem;}
+    .footer-links-col{display:flex;flex-direction:column;gap:.5rem;}
+    .footer-link{font-size:.8rem;color:var(--c200);text-decoration:none;transition:color var(--tr),padding-left var(--tr);}
+    .footer-link:hover{color:var(--c300);padding-left:.4rem;}
+    .footer-bottom{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 0;gap:1rem;flex-wrap:wrap;}
+    .footer-copy{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev{font-size:.75rem;color:rgba(147,197,253,.5);}
+    .footer-dev a{color:var(--c300);text-decoration:none;font-weight:600;transition:color var(--tr);}
+    .footer-dev a:hover{color:var(--white);}
+
+    @media(max-width:1024px){
+      .brand-comparison{grid-template-columns:1fr;}
+      .series-grid{grid-template-columns:repeat(2,1fr);}
+      .vram-grid{grid-template-columns:repeat(2,1fr);}
+      .tech-grid{grid-template-columns:repeat(2,1fr);}
+      .brands-grid{grid-template-columns:repeat(2,1fr);}
+      .footer-grid{grid-template-columns:1fr 1fr;}
+      .page-hero-inner{grid-template-columns:1fr;}
+      .gpu-hero-visual{display:block;}
+      .what-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:768px){
+      .function-cards{grid-template-columns:1fr;}
+      .series-grid{grid-template-columns:1fr;}
+      .vram-grid{grid-template-columns:1fr;}
+      .tech-grid{grid-template-columns:1fr;}
+      .brands-grid{grid-template-columns:1fr;}
+      .tips-grid{grid-template-columns:1fr;}
+      .faq-grid-gpu{grid-template-columns:1fr;}
+      .footer-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="accent-line" aria-hidden="true"></div>
+
+  <div class="header-inner">
+
+    <!-- LOGO -->
+    <a href="index.html" class="brand" aria-label="BitZone inicio">
+      <img src="Img/logo.png"
+           width="38"
+           height="35"
+           alt="BitZone"
+           style="border-radius:6px;display:block;">
+
+      <div class="brand-name">
+        Bit<em>Zone</em>
+      </div>
+    </a>
+
+    <!-- MENU -->
+    <nav class="main-nav" aria-label="Navegacion principal">
+
+      <ul class="nav-list" role="list">
+
+        <!-- INICIO -->
+        <li class="nav-item">
+          <a href="index.html"
+             class="nav-link active"
+             data-page="index">
+            Inicio
+          </a>
+        </li>
+
+        <!-- PARTES -->
+        <li class="nav-item" data-drop>
+
+          <span class="nav-link" data-page="partes">
+            Partes
+
+            <svg class="chevron"
+                 viewBox="0 0 10 6"
+                 fill="none"
+                 aria-hidden="true">
+
+              <path d="M1 1l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+          </span>
+
+          <ul class="dropdown" role="menu">
+
+            <li class="dropdown-list">
+
+              <a href="procesaro.html" class="dropdown-link">
+                Procesador (CPU)
+              </a>
+
+              <a href="tarjeta_madre.html" class="dropdown-link">
+                Tarjeta Madre
+              </a>
+
+              <a href="ram.html" class="dropdown-link">
+                Memoria RAM
+              </a>
+
+              <a href="disco.html" class="dropdown-link">
+                Disco Duro / SSD
+              </a>
+
+              <a href="fuente.html" class="dropdown-link">
+                Fuente de Poder
+              </a>
+
+              <a href="gpu.html" class="dropdown-link">
+                Tarjeta Grafica
+              </a>
+
+              <a href="refrigeracion.html" class="dropdown-link">
+                Refrigeracion
+              </a>
+
+              <a href="puertos.html" class="dropdown-link">
+                Puertos y Conectores
+              </a>
+
+            </li>
+
+          </ul>
+        </li>
+
+        <!-- VIDEOS -->
+        <li class="nav-item">
+          <a href="index.html#videos-destacados"
+             class="nav-link"
+             data-page="videos">
+            Videos
+          </a>
+        </li>
+
+        <!-- FAQ -->
+        <li class="nav-item">
+          <a href="index.html#faq-rapido"
+             class="nav-link"
+             data-page="faq">
+            FAQ
+          </a>
+        </li>
+
+        <!-- CONTACTO -->
+        <li class="nav-item">
+          <a href="index.html#footer"
+             class="nav-link"
+             data-page="contacto">
+            Contacto
+          </a>
+        </li>
+
+      </ul>
+
+    </nav>
+
+    <!-- BOTON MENU -->
+    <button class="hamburger"
+            id="hamburgerBtn"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="drawer">
+
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+      <span class="hbar"></span>
+
+    </button>
+
+  </div>
+</header>
+
+<div class="overlay" id="overlay" aria-hidden="true"></div>
+
+<aside class="drawer" id="drawer" role="dialog" aria-label="Menú móvil" aria-modal="true">
+  <div class="drawer-header">
+    <a href="../index.html" class="drawer-brand" aria-label="BitZone inicio">
+      <div class="drawer-logo-slot"><img src="Img/logo.png" alt="BitZone"></div>
+      <div class="drawer-brand-name">Bit<em>Zone</em></div>
+    </a>
+    <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&#x2715;</button>
+  </div>
+  <nav class="drawer-nav" aria-label="Navegación móvil">
+    <ul class="drawer-nav-list">
+      <li><a href="../index.html" class="d-link" data-page="index">Inicio</a></li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link active" data-page="partes">Partes de la Computadora
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="cpu.html" class="d-sub-link">Procesador (CPU)</a></li>
+          <li><a href="tarjeta_madre.html" class="d-sub-link">Tarjeta Madre</a></li>
+          <li><a href="ram.html" class="d-sub-link">Memoria RAM</a></li>
+          <li><a href="disco.html" class="d-sub-link">Disco Duro / SSD</a></li>
+          <li><a href="fuente.html" class="d-sub-link">Fuente de Poder</a></li>
+          <li><a href="gpu.html" class="d-sub-link">Tarjeta Gráfica</a></li>
+          <li><a href="refrigeracion.html" class="d-sub-link">Refrigeración</a></li>
+          <li><a href="puertos.html" class="d-sub-link">Puertos y Conectores</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="ensamblaje">Ensamblaje
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../ensamblaje/herramientas.html" class="d-sub-link">Herramientas</a></li>
+          <li><a href="../ensamblaje/paso-a-paso.html" class="d-sub-link">Paso a Paso</a></li>
+          <li><a href="../ensamblaje/instalacion.html" class="d-sub-link">Instalación de Componentes</a></li>
+          <li><a href="../ensamblaje/cableado.html" class="d-sub-link">Cableado</a></li>
+          <li><a href="../ensamblaje/errores.html" class="d-sub-link">Errores Comunes</a></li>
+          <li><a href="../ensamblaje/consejos.html" class="d-sub-link">Consejos</a></li>
+        </ul>
+      </li>
+      <li class="d-group" data-dgroup>
+        <span class="d-link" data-page="actividades">Actividades
+          <svg class="d-chevron" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <ul class="d-sub">
+          <li><a href="../actividades/quiz.html" class="d-sub-link">Quiz</a></li>
+          <li><a href="../actividades/ejercicios.html" class="d-sub-link">Ejercicios</a></li>
+          <li><a href="../actividades/preguntas.html" class="d-sub-link">Preguntas</a></li>
+          <li><a href="../actividades/evaluacion.html" class="d-sub-link">Evaluación</a></li>
+          <li><a href="../actividades/juegos.html" class="d-sub-link">Juegos Educativos</a></li>
+        </ul>
+      </li>
+      <li><div class="d-sep" aria-hidden="true"></div></li>
+      <li><a href="../index.html#videos-destacados" class="d-link">Videos</a></li>
+      <li><a href="../index.html#faq-rapido" class="d-link">FAQ</a></li>
+      <li><a href="../index.html#footer" class="d-link">Contacto</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div>
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a><span class="breadcrumb-sep">/</span>
+            <a href="../partes.html">Partes</a><span class="breadcrumb-sep">/</span>
+            <span>Tarjeta Gráfica (GPU)</span>
+          </nav>
+          <span class="section-label">Corazón Visual</span>
+          <h1 class="page-hero-title">Tarjeta <span class="hl">Gráfica (GPU)</span></h1>
+          <p class="page-hero-sub">El componente que da vida a tus juegos y contenido visual. Aprende sobre NVIDIA, AMD, memoria VRAM, ray tracing, DLSS, FSR y cómo elegir la mejor para ti.</p>
+          <div class="page-hero-tags">
+            <span class="hero-tag">NVIDIA GeForce</span><span class="hero-tag">AMD Radeon</span>
+            <span class="hero-tag">Ray Tracing</span><span class="hero-tag">VRAM</span>
+          </div>
+        </div>
+        <div class="gpu-hero-visual">
+          <div class="gpu-diagram"><img src="Img/graficaa.png" alt="Tarjeta Gráfica"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="que-es">
+    <div class="container">
+      <div class="what-grid">
+        <div class="what-text reveal">
+          <span class="section-label">Definición</span>
+          <h2 class="section-title">¿Qué es una Tarjeta Gráfica?</h2>
+          <p>La <strong style="color:var(--white)">tarjeta gráfica (GPU)</strong> (Graphics Processing Unit) es el componente encargado de <strong style="color:var(--c300)">procesar y renderizar imágenes, videos y gráficos 3D</strong> en tu computadora. Es esencial para gaming, edición de video, diseño 3D y cualquier tarea visual exigente.</p>
+          <p>Mientras el CPU es un "todoterreno" para cálculos generales, la GPU es un <strong style="color:var(--white)">especialista en procesamiento paralelo</strong>, con miles de núcleos pequeños diseñados para calcular millones de píxeles simultáneamente.</p>
+          <div class="what-highlight">
+            <p>Para gaming, la tarjeta gráfica es <strong>el componente más importante</strong>. Una GPU potente puede significar la diferencia entre jugar a 30 FPS o 144+ FPS con gráficos ultra.</p>
+          </div>
+          <p>Las dos principales marcas son <strong style="color:var(--nvidia-green)">NVIDIA (GeForce)</strong> y <strong style="color:var(--amd-red)">AMD (Radeon)</strong>. Intel también está entrando al mercado con sus tarjetas Arc.</p>
+        </div>
+        <div class="gpu-visual-box reveal">
+          <img src="Img/gpu.webp" alt="GPU Die">
+          <p>El <strong style="color:var(--c300)">chip GPU (die)</strong> — miles de millones de transistores para procesar gráficos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="funcion">
+    <div class="container">
+      <div class="reveal" style="text-align:center;margin-bottom:0;">
+        <span class="section-label">Procesamiento</span>
+        <h2 class="section-title">¿Para qué sirve la GPU?</h2>
+        <p class="section-sub" style="margin:0 auto;">La tarjeta gráfica realiza tres funciones esenciales para el rendimiento visual.</p>
+      </div>
+      <div class="function-cards">
+        <div class="fn-card reveal">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <h3>Renderizado 3D</h3>
+          <p>Calcula la posición, iluminación, texturas y sombras de objetos 3D en tiempo real. Esencial para videojuegos y modelado 3D.</p>
+        </div>
+        <div class="fn-card reveal" style="animation-delay:.1s">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><polygon points="2 4 22 4 18 20 6 20 2 4"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div>
+          <h3>Post-procesamiento</h3>
+          <p>Aplica efectos como anti-aliasing, desenfoque de movimiento, depth of field y corrección de color para mejorar la calidad visual.</p>
+        </div>
+        <div class="fn-card reveal" style="animation-delay:.2s">
+          <div class="fn-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><polyline points="4 14 9 9 14 14 20 8"/></svg></div>
+          <h3>Ac一点都不e aceleración IA</h3>
+          <p>Núcleos Tensor (NVIDIA) y AI Accelerators (AMD) para DLSS, FSR y tareas de inteligencia artificial como upscaling y generación de cuadros.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="marcas">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Fabricantes</span>
+        <h2 class="section-title">NVIDIA vs AMD vs Intel</h2>
+        <p class="section-sub" style="margin:0 auto;">Las dos grandes marcas dominan el mercado de tarjetas gráficas.</p>
+      </div>
+
+      <div class="brand-comparison">
+        <div class="brand-gpu-card reveal">
+          <div class="brand-header"><div class="brand-logo-gpu nvidia">NVIDIA</div><p style="font-size:.7rem;color:var(--c200);">GeForce RTX</p></div>
+          <table class="gpu-table">
+            <tr><th>Serie</th><th>Arquitectura</th><th>Modelos</th></tr>
+            <tr><td>RTX 50 Series</td><td>Blackwell</td><td>5090, 5080, 5070 Ti, 5070</td></tr>
+            <tr><td>RTX 40 Series</td><td>Ada Lovelace</td><td>4090, 4080, 4070 Ti, 4070, 4060 Ti, 4060</td></tr>
+            <tr><td>RTX 30 Series</td><td>Ampere</td><td>3090 Ti, 3090, 3080 Ti, 3080, 3070 Ti, 3070, 3060 Ti, 3060, 3050</td></tr>
+            <tr><td>GTX 16 Series</td><td>Turing</td><td>1660 Ti, 1660 Super, 1660, 1650 Super, 1650</td></tr>
+          </table>
+          <div style="margin-top:1rem;"><span class="badge-success" style="background:#76B900;">✅ DLSS 3/3.5, Ray Tracing, Reflex, Studio Drivers</span></div>
+        </div>
+        <div class="brand-gpu-card reveal" style="animation-delay:.1s">
+          <div class="brand-header"><div class="brand-logo-gpu amd">AMD</div><p style="font-size:.7rem;color:var(--c200);">Radeon RX</p></div>
+          <table class="gpu-table">
+            <tr><th>Serie</th><th>Arquitectura</th><th>Modelos</th></tr>
+            <tr><td>RX 9000 Series</td><td>RDNA 4</td><td>9070 XT, 9070 (próximamente)</td></tr>
+            <tr><td>RX 7000 Series</td><td>RDNA 3</td><td>7900 XTX, 7900 XT, 7800 XT, 7700 XT, 7600 XT, 7600</td></tr>
+            <tr><td>RX 6000 Series</td><td>RDNA 2</td><td>6950 XT, 6900 XT, 6800 XT, 6800, 6750 XT, 6700 XT, 6650 XT, 6600</td></tr>
+            <tr><td>RX 5000 Series</td><td>RDNA 1</td><td>5700 XT, 5700, 5600 XT, 5500 XT</td></tr>
+          </table>
+          <div style="margin-top:1rem;"><span class="badge-success" style="background:#ED1C24;">✅ FSR 3, Fluid Motion Frames, Smart Access Memory</span></div>
+        </div>
+      </div>
+
+      <div class="series-grid">
+        <div class="series-card reveal"><div class="series-name">Gama de Entrada</div><div class="series-desc">NVIDIA RTX 3050 / AMD RX 6600<br>1080p gaming, eSports, ofimática avanzada</div></div>
+        <div class="series-card reveal" style="animation-delay:.1s"><div class="series-name">Gama Media</div><div class="series-desc">NVIDIA RTX 4060/4070 / AMD RX 7700/7800<br>1440p gaming, calidad alta/ultra</div></div>
+        <div class="series-card reveal" style="animation-delay:.2s"><div class="series-name">Gama Alta</div><div class="series-desc">NVIDIA RTX 4070 Ti/4080 / AMD RX 7900 XT/X<br>4K gaming, streaming, edición profesional</div></div>
+        <div class="series-card reveal" style="animation-delay:.3s"><div class="series-name">Gama Ultra</div><div class="series-desc">NVIDIA RTX 4090 / RTX 5090<br>8K, VR, IA, renderizado profesional</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="vram">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Memoria</span>
+        <h2 class="section-title">Memoria VRAM</h2>
+        <p class="section-sub" style="margin:0 auto;">La memoria dedicada de la tarjeta gráfica donde se almacenan texturas, buffers de cuadros y datos visuales.</p>
+      </div>
+
+      <div class="vram-grid">
+        <div class="vram-card reveal"><div class="vram-value">4GB - 6GB</div><div class="vram-desc">1080p gaming bajo/medio. Juegos esports OK. AAA actuales se quedan cortos.</div></div>
+        <div class="vram-card reveal" style="animation-delay:.1s"><div class="vram-value">8GB</div><div class="vram-desc">1080p/1440p gaming. Estándar actual. Suficiente para la mayoría de juegos.</div></div>
+        <div class="vram-card reveal" style="animation-delay:.2s"><div class="vram-value">10GB - 12GB</div><div class="vram-desc">1440p gaming ultra. Futuro-proof. Texturas 4K sin problemas.</div></div>
+        <div class="vram-card reveal" style="animation-delay:.3s"><div class="vram-value">16GB - 24GB+</div><div class="vram-desc">4K gaming, edición 8K, IA, renderizado profesional. Máxima calidad.</div></div>
+      </div>
+
+      <div class="fact-box" style="margin-top:1.5rem;">
+        <div class="fact-box-title">💡 ¿Por qué es importante la VRAM?</div>
+        <p style="font-size:.8rem;">Los juegos modernos (ej. Hogwarts Legacy, The Last of Us, Alan Wake 2) requieren 8-12GB VRAM para configuraciones altas a 1440p. Con menos VRAM, tu GPU se queda sin memoria y el rendimiento colapsa (stuttering, texturas de baja calidad).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="tecnologias">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Tecnologías</span>
+        <h2 class="section-title">Ray Tracing, DLSS y FSR</h2>
+        <p class="section-sub" style="margin:0 auto;">Las tecnologías que definen las GPUs modernas.</p>
+      </div>
+
+      <div class="tech-grid">
+        <div class="tech-card reveal"><div class="tech-name">🎯 Ray Tracing</div><div class="tech-desc" style="font-size:.7rem;color:var(--c200);">Simula el comportamiento real de la luz: reflejos, sombras e iluminación global. NVIDIA RTX y AMD Radeon con núcleos dedicados.</div></div>
+        <div class="tech-card reveal" style="animation-delay:.1s"><div class="tech-name">📈 DLSS (NVIDIA)</div><div class="tech-desc" style="font-size:.7rem;color:var(--c200);">Deep Learning Super Sampling. Usa IA para renderizar a menor resolución y upscalear a mayor calidad. DLSS 3 genera cuadros completos con IA.</div></div>
+        <div class="tech-card reveal" style="animation-delay:.2s"><div class="tech-name">✨ FSR (AMD)</div><div class="tech-desc" style="font-size:.7rem;color:var(--c200);">FidelityFX Super Resolution. Tecnología open source que mejora rendimiento con upscaling. FSR 3 incluye Fluid Motion Frames (generación de cuadros).</div></div>
+        <div class="tech-card reveal" style="animation-delay:.3s"><div class="tech-name">⚡ Reflex / Anti-Lag</div><div class="tech-desc" style="font-size:.7rem;color:var(--c200);">Reduce la latencia de entrada en juegos competitivos. Esencial para esports y gaming rápido.</div></div>
+        <div class="tech-card reveal" style="animation-delay:.4s"><div class="tech-name">🎨 Frame Generation</div><div class="tech-desc" style="font-size:.7rem;color:var(--c200);">Genera cuadros intermedios con IA para duplicar (o más) los FPS. DLSS 3 (NVIDIA) y FSR 3 (AMD).</div></div>
+        <div class="tech-card reveal" style="animation-delay:.5s"><div class="tech-name">📹 NVENC / AMF</div><div class="tech-desc" style="font-size:.7rem;color:var(--c200);">Codificadores de video dedicados para streaming y grabación sin afectar rendimiento gaming.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="evolucion">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Historia</span>
+        <h2 class="section-title">Evolución de las GPUs</h2>
+        <p class="section-sub">De simples aceleradores 2D a procesadores masivamente paralelos con IA.</p>
+      </div>
+      <div class="timeline-v">
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>01</span></div><div class="tl-v-year">1999</div><h4>NVIDIA GeForce 256 — La primera GPU</h4><p>NVIDIA acuñó el término "GPU". Primera tarjeta con transformación e iluminación (T&L) por hardware.</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>02</span></div><div class="tl-v-year">2006</div><h4>Primera GPU con CUDA</h4><p>NVIDIA GeForce 8800 GTX introduce CUDA, permitiendo usar la GPU para cómputo general (no solo gráficos).</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>03</span></div><div class="tl-v-year">2018</div><h4>NVIDIA RTX — Ray Tracing en tiempo real</h4><p>Serie RTX 20 con núcleos RT (Ray Tracing) y Tensor (IA). Revolución gráfica.</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>04</span></div><div class="tl-v-year">2020</div><h4>AMD RDNA 2 y Smart Access Memory</h4><p>AMD iguala a NVIDIA en rendimiento con RX 6000. Introducen SAM para mejorar rendimiento CPU-GPU.</p></div>
+        <div class="tl-v-item reveal"><div class="tl-v-dot"><span>05</span></div><div class="tl-v-year">2022</div><h4>DLSS 3 y FSR 3 — Generación de cuadros</h4><p>Las GPUs modernas no solo renderizan, sino que generan cuadros completos con IA. Nuevo paradigma de rendimiento.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="ensambladores">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Ensambladores</span>
+        <h2 class="section-title">Marca del chip vs Marca de la tarjeta</h2>
+        <p class="section-sub" style="margin:0 auto;">NVIDIA y AMD diseñan los chips, pero otras empresas fabrican las tarjetas con diferentes refrigeraciones y características.</p>
+      </div>
+      <div class="brands-grid">
+        <div class="brand-card-gpu reveal"><div class="brand-logo-gpu-icon">ASUS</div><h4>ASUS</h4><p>ROG Strix, TUF Gaming, Dual</p></div>
+        <div class="brand-card-gpu reveal" style="animation-delay:.08s"><div class="brand-logo-gpu-icon">MSI</div><h4>MSI</h4><p>Suprim, Gaming X Trio, Ventus, Mech</p></div>
+        <div class="brand-card-gpu reveal" style="animation-delay:.16s"><div class="brand-logo-gpu-icon">GIGABYTE</div><h4>Gigabyte</h4><p>AORUS, Gaming OC, Eagle, Windforce</p></div>
+        <div class="brand-card-gpu reveal" style="animation-delay:.24s"><div class="brand-logo-gpu-icon">EVGA</div><h4>EVGA</h4><p>FTW3, XC3, Kingpin (ya no fabrica)</p></div>
+        <div class="brand-card-gpu reveal" style="animation-delay:.32s"><div class="brand-logo-gpu-icon">ZOTAC</div><h4>ZOTAC</h4><p>AMP Extreme, Trinity, Twin Edge</p></div>
+        <div class="brand-card-gpu reveal" style="animation-delay:.40s"><div class="brand-logo-gpu-icon">SAPPHIRE</div><h4>Sapphire</h4><p>NITRO+, Pulse, Toxic (solo AMD)</p></div>
+        <div class="brand-card-gpu reveal" style="animation-delay:.48s"><div class="brand-logo-gpu-icon">PowerColor</div><h4>PowerColor</h4><p>Red Devil, Hellhound, Fighter (solo AMD)</p></div>
+        <div class="brand-card-gpu reveal" style="animation-delay:.56s"><div class="brand-logo-gpu-icon">PNY</div><h4>PNY</h4><p>XLR8, Verto (NVIDIA)</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-mid" id="consejos">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Guía de Compra</span>
+        <h2 class="section-title">¿Cómo elegir tu tarjeta gráfica?</h2>
+        <p class="section-sub" style="margin:0 auto;">Recomendaciones según resolución, presupuesto y uso.</p>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-card reveal"><div class="tip-num">01</div><h3>Define tu resolución objetivo</h3><p>1080p: RTX 3060/4060 o RX 6600/7600. 1440p: RTX 4070/4070 Ti o RX 7700/7800 XT. 4K: RTX 4080/4090 o RX 7900 XT/X.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.08s"><div class="tip-num">02</div><h3>VRAM: más es mejor futuro</h3><p>Para 1080p: mínimo 8GB. Para 1440p: 12GB recomendado. Para 4K: 16GB+. No compres GPUs con 8GB en 2025 para alta gama.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.16s"><div class="tip-num">03</div><h3>Ray Tracing: ¿lo necesitas?</h3><p>Si te importa el ray tracing, NVIDIA tiene ventaja. Si priorizas rendimiento bruto por precio, AMD suele ofrecer mejor rasterización por dólar.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.24s"><div class="tip-num">04</div><h3>DLSS vs FSR</h3><p>DLSS es superior en calidad de imagen, pero solo NVIDIA. FSR funciona en todas las GPUs, incluido NVIDIA. DLSS 3 es exclusivo RTX 40.</p></div>
+        <div class="tip-card reveal" style="animation-delay:.32s"><div class="tip-num">05</div><h3>Consumo y fuente</h3><p>RTX 4090 recomendada fuente 850W-1000W, RTX 4070 con 650W-750W, RTX 4060 con 550W-650W. Verifica conectores (12VHPWR en RTX 40).</p></div>
+        <div class="tip-card reveal" style="animation-delay:.40s"><div class="tip-num">06</div><h3>Modelo del ensamblador</h3><p>No solo importa el chip (4060, 4070, etc.). La refrigeración, ruido y calidad varían entre ASUS, MSI, Gigabyte. Investiga reviews.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad sec-dark" id="faq">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <span class="section-label">Preguntas Frecuentes</span>
+        <h2 class="section-title">FAQ — Tarjeta Gráfica</h2>
+        <p class="section-sub" style="margin:0 auto 0;">Las dudas más comunes sobre GPUs.</p>
+      </div>
+      <div class="faq-grid-gpu">
+        <div class="faq-item reveal"><div class="faq-q">¿Qué es más importante para gaming, CPU o GPU?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Para la mayoría de juegos, la GPU es más importante. Un CPU mediocre con GPU potente dará buen rendimiento. Pero una GPU débil con CPU potente dará mal rendimiento en juegos.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.06s"><div class="faq-q">¿Cuál es la diferencia entre una tarjeta de AMD y NVIDIA?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">NVIDIA ofrece mejor ray tracing, DLSS (superior en upscaling), NVENC para streaming. AMD ofrece mejor precio por rendimiento en rasterización, más VRAM por precio, y FSR funciona en todas las GPUs.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.12s"><div class="faq-q">¿Qué significa "bottleneck" o cuello de botella?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Cuando un componente limita al otro. Por ejemplo, un CPU viejo con una RTX 4090 hará que la GPU no rinda al máximo. Busca equilibrio.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.18s"><div class="faq-q">¿Vale la pena comprar una GPU usada?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Puede valer la pena si es de fuente confiable y sabes que no se usó para minería intensiva. Pide prueba de funcionamiento. Las GPUs de minería pueden tener degradación de memoria.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.24s"><div class="faq-q">¿Necesito una GPU para editar video o diseñar?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Sí. Para edición de video (Premiere, DaVinci), 3D (Blender, Maya) o diseño (CAD), una GPU acelera dramáticamente renderizado y playback. Busca NVIDIA Studio drivers o AMD Radeon Pro.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.30s"><div class="faq-q">¿Qué es el overclocking de GPU y es seguro?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Overclocking aumenta la frecuencia de la GPU para más rendimiento. Es relativamente seguro si usas programas como MSI Afterburner. El riesgo principal es inestabilidad, no daño permanente (a menos que subas mucho el voltaje).</div></div>
+        <div class="faq-item reveal" style="animation-delay:.36s"><div class="faq-q">¿Qué temperatura es normal en una GPU?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">45-55°C en reposo, 65-85°C en gaming. Hasta 90-95°C en modelos de gama alta es "aceptable" pero no ideal. Si pasa de 95°C, revisa flujo de aire y pasta térmica.</div></div>
+        <div class="faq-item reveal" style="animation-delay:.42s"><div class="faq-q">¿PCIe 3.0 vs 4.0 vs 5.0? ¿Importa para GPU?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Para gaming, PCIe 3.0 vs 4.0 da <3-5% diferencia con GPUs actuales. PCIe 5.0 es futuro. IMPORTANTE: Algunas GPUs de entrada como RX 6400/6500 XT sufren en PCIe 3.0 (hasta 20% pérdida).</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-gpu">
+    <div class="container">
+      <div class="cta-inner reveal">
+        <span class="section-label">Siguiente Paso</span>
+        <h2 class="section-title">¿Listo para seguir aprendiendo?</h2>
+        <p class="section-sub" style="margin:0 auto;">Ahora que conoces la tarjeta gráfica, explora los demás componentes o pon a prueba lo que aprendiste.</p>
+        <div class="cta-btns">
+          <a href="refrigeracion.html" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Ver Refrigeración
+          </a>
+          <a href="../actividades/quiz.html" class="btn btn-outline">Hacer el Quiz</a>
+          <a href="../partes.html" class="btn btn-outline">Todos los Componentes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><div class="footer-brand-row"><div class="footer-logo"><img src="Img/logo.png" alt="BitZone"></div><div class="footer-brand-name">Bit<em>Zone</em></div></div><p class="footer-desc">Plataforma educativa dedicada al aprendizaje de hardware, partes de la computadora y ensamblaje de PC.</p><div class="footer-socials"><a href="#" class="social-btn"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a href="#" class="social-btn"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a><a href="#" class="social-btn"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a></div></div>
+      <div><h5 class="footer-col">Contenido</h5><nav class="footer-links-col"><a href="../partes.html" class="footer-link">Partes de la Computadora</a><a href="../ensamblaje.html" class="footer-link">Ensamblaje</a><a href="../videos.html" class="footer-link">Videos</a><a href="../actividades.html" class="footer-link">Actividades</a></nav></div>
+      <div><h5 class="footer-col">Componentes</h5><nav class="footer-links-col"><a href="cpu.html" class="footer-link">Procesador (CPU)</a><a href="tarjeta-madre.html" class="footer-link">Tarjeta Madre</a><a href="ram.html" class="footer-link">Memoria RAM</a><a href="disco.html" class="footer-link">Disco Duro / SSD</a><a href="gpu.html" class="footer-link">Tarjeta Gráfica</a></nav></div>
+      <div><h5 class="footer-col">Información</h5><nav class="footer-links-col"><a href="../index.html" class="footer-link">Inicio</a><a href="../index.html#faq-rapido" class="footer-link">FAQ General</a><a href="../index.html#footer" class="footer-link">Contacto</a></nav></div>
+    </div>
+    <div class="footer-bottom"><p class="footer-copy">&copy; 2026 BitZone. Todos los derechos reservados.</p><p class="footer-dev">Desarrollado por <a href="https://datafoxsv.ct.ws">DataFox</a></p></div>
+  </div>
+</footer>
+
+<script>
+  (function markActive() {
+    const file = window.location.pathname.split('/').pop() || 'index.html';
+    const page = file.replace('.html','') || 'index';
+    document.querySelectorAll('[data-page]').forEach(el => {
+      if (el.dataset.page === page) {
+        el.classList.add('active');
+        if (el.tagName === 'A') el.setAttribute('aria-current','page');
+      }
+    });
+  })();
+
+  document.querySelectorAll('[data-drop]').forEach(item => {
+    item.querySelector('.nav-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open'));
+  });
+
+  document.querySelectorAll('.dropdown').forEach(d => d.addEventListener('click', e => e.stopPropagation()));
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const drawerClose  = document.getElementById('drawerClose');
+  const drawer       = document.getElementById('drawer');
+  const overlay      = document.getElementById('overlay');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    hamburgerBtn.classList.add('open');
+    hamburgerBtn.setAttribute('aria-expanded','true');
+    overlay.removeAttribute('aria-hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded','false');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  drawer.querySelectorAll('a.d-link, .d-sub-link').forEach(l => l.addEventListener('click', closeDrawer));
+  window.addEventListener('resize', () => { if (window.innerWidth > 768) closeDrawer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); document.querySelectorAll('[data-drop].open').forEach(i => i.classList.remove('open')); } });
+
+  document.querySelectorAll('[data-dgroup]').forEach(group => {
+    group.querySelector('.d-link').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = group.classList.contains('open');
+      document.querySelectorAll('[data-dgroup].open').forEach(g => g.classList.remove('open'));
+      if (!isOpen) group.classList.add('open');
+    });
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
